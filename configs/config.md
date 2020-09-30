@@ -69,10 +69,10 @@
 <!-- Barcode print time -->
 <prop name="graphicsLineDelay" type="String" value="1000"/>
 24.	Имя файла для записи таблиц ФР. Драйвер запишет эти данные в ФР при инициализации
-<!-- fieldsFileName to initialize printer tables -->
+<!-- fieldsFileName to initialize fiscalprinter tables -->
 <prop name="fieldsFileName" type="String" value="tables.csv"/>
 25.	Имя папки для поиска файлов таблиц. Драйвер выбирает файл по имени устройства. 
-<!-- fieldsFilesPath to initialize printer tables -->
+<!-- fieldsFilesPath to initialize fiscalprinter tables -->
 <prop name="fieldsFilesPath" type="String" value="I:\Projects\JavaPOS\Bin\tables\"/>
 26.	Количество строк заголовка чека
 <!-- Number of header lines -->
@@ -190,7 +190,7 @@
 <!-- openReceiptType, 0 - open receipt on item print, 1 - open receipt in beginFiscalReceipt -->
 <prop name="openReceiptType" type="String" value="1"/>
 61.	Режим заголовка, 0 - заголовок в драйвере, 1 - в принтере
-<!-- headerMode, 0 - header in driver, 1 - header in printer -->
+<!-- headerMode, 0 - header in driver, 1 - header in fiscalprinter -->
 <prop name="headerMode" type="String" value="0"/>
 62.	Позиция логотипа в заголовке чека
 <!-- headerImagePosition,  -->
