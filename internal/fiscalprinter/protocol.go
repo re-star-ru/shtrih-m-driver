@@ -1,14 +1,16 @@
 package fiscalprinter
 
 import (
-	"log"
 	"net"
 	"shtrih-drv/internal/fiscalprinter/port"
+	"shtrih-drv/internal/logger"
 	"time"
 )
 
-func NewPrinterProtocol() *PrinterProtocol {
-	return &PrinterProtocol{}
+func NewPrinterProtocol(logger logger.Logger) *PrinterProtocol {
+	return &PrinterProtocol{
+		logger: logger,
+	}
 }
 
 type PrinterProtocol struct {
@@ -17,8 +19,9 @@ type PrinterProtocol struct {
 	maxNakAnswerNumber int
 	maxAckNumber       int
 
-	port  *port.SocketPort
-	frame Frame
+	port   *port.SocketPort
+	frame  Frame
+	logger logger.Logger
 }
 
 func (p *PrinterProtocol) Connect() error {
@@ -49,7 +52,7 @@ func (p *PrinterProtocol) Connect() error {
 	}
 	defer conn.Close()
 	conn.SetDeadline(time.Now().Add(time.Millisecond * 700))
-	p.port = port.NewSocketPort(conn)
+	p.port = port.NewSocketPort(conn, p.logger)
 
 	for {
 		//port.setTimeout(byteTimeout)
@@ -96,7 +99,7 @@ func (p *PrinterProtocol) readControlByte() int {
 func (p *PrinterProtocol) portReadByte() int {
 	b, err := p.port.ReadByte()
 	if err != nil {
-		log.Fatal(err)
+		p.logger.Fatal(err)
 	}
 	return b
 }
@@ -104,7 +107,7 @@ func (p *PrinterProtocol) portReadByte() int {
 func (p *PrinterProtocol) portReadBytes(len int) []byte {
 	b, err := p.port.ReadBytes(len)
 	if err != nil {
-		log.Fatal(err)
+		p.logger.Fatal(err)
 	}
 	return b
 }

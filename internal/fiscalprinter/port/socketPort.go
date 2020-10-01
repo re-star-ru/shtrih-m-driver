@@ -1,8 +1,8 @@
 package port
 
 import (
-	"log"
 	"net"
+	"shtrih-drv/internal/logger"
 )
 
 type Error string
@@ -25,14 +25,16 @@ const (
 //	PortNameport
 //}
 
-func NewSocketPort(conn net.Conn) *SocketPort {
+func NewSocketPort(conn net.Conn, logger logger.Logger) *SocketPort {
 	return &SocketPort{
-		conn: conn,
+		conn:   conn,
+		logger: logger,
 	}
 }
 
 type SocketPort struct {
-	conn net.Conn
+	conn   net.Conn
+	logger logger.Logger
 }
 
 func (p SocketPort) ReadByte() (int, error) {
@@ -41,9 +43,9 @@ func (p SocketPort) ReadByte() (int, error) {
 	buf := []byte{1}
 	n, err := p.conn.Read(buf)
 	if err != nil {
-		log.Fatal(err)
+		p.logger.Fatal(err)
 	}
-	log.Println(n)
+	p.logger.Debug(n)
 
 	//b := p.inputStream.read()
 	if n == -1 {
@@ -79,7 +81,7 @@ func (p SocketPort) Write(b []byte) error {
 
 	for i < 2 {
 		n, err := p.conn.Write(b)
-		log.Println(n)
+		p.logger.Debug(n)
 
 		if err != nil {
 			return err
