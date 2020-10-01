@@ -17,14 +17,14 @@ func main() {
 	if err != nil {
 		log.Fatal()
 	}
-
 	slogger := logger.Sugar()
 
-	slogger.Debug("This is a DEBUG message")
-	slogger.Info("This is an INFO message")
-	slogger.Info("This is an INFO message with fields", "region", "us-west", "id", 2)
-	slogger.Warn("This is a WARN message")
-	slogger.Error("This is an ERROR message")
+	slogger.Info("Shtih driver starting")
+	//slogger.Debug("This is a DEBUG message")
+	//slogger.Info("This is an INFO message")
+	////slogger.Info("This is an INFO message with fields", "region", "us-west", "id", 2)
+	//slogger.Warn("This is a WARN message")
+	//slogger.Error("This is an ERROR message")
 
 	printer := fiscalprinter.NewPrinterProtocol(slogger)
 	err = printer.Connect()
