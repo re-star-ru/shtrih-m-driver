@@ -1,0 +1,92 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"BranchesTreeState\">\r\n    <expand>\r\n      <path>\r\n        <item name=\"ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n        <item name=\"LOCAL_ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n      </path>\r\n      <path>\r\n        <item name=\"ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n        <item name=\"REMOTE_ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n      </path>\r\n      <path>\r\n        <item name=\"ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n        <item name=\"REMOTE_ROOT\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n        <item name=\"GROUP_NODE:origin\" type=\"e8cecc67:BranchNodeDescriptor\" />\r\n      </path>\r\n    </expand>\r\n    <select />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"652d809b-6a5f-4f39-998b-4aab20c6fc39\" name=\"Default Changelist\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/configs/config.md\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/README.md\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/README.md\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/cmd/driver/main.go\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/cmd/driver/main.go\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Go File\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"GOROOT\" path=\"C:\\Go\" />\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GoLibraries\">\r\n    <option name=\"indexEntireGoPath\" value=\"false\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1iEJE88QVft1HbAcNHyISRrOBcM\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"ASKED_ADD_EXTERNAL_FILES\" value=\"true\" />\r\n    <property name=\"ASKED_SHARE_PROJECT_CONFIGURATION_FILES\" value=\"true\" />\r\n    <property name=\"DefaultGoTemplateProperty\" value=\"Go File\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"SHARE_PROJECT_CONFIGURATION_FILES\" value=\"true\" />\r\n    <property name=\"WebServerToolWindowFactoryState\" value=\"false\" />\r\n    <property name=\"go.import.settings.migrated\" value=\"true\" />\r\n    <property name=\"go.sdk.automatically.set\" value=\"true\" />\r\n    <property name=\"go.tried.to.enable.integration.vgo.integrator\" value=\"true\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$\" />\r\n    <property name=\"node.js.detected.package.eslint\" value=\"true\" />\r\n    <property name=\"node.js.detected.package.tslint\" value=\"true\" />\r\n    <property name=\"node.js.path.for.package.eslint\" value=\"project\" />\r\n    <property name=\"node.js.path.for.package.tslint\" value=\"project\" />\r\n    <property name=\"node.js.selected.package.eslint\" value=\"(autodetect)\" />\r\n    <property name=\"node.js.selected.package.tslint\" value=\"(autodetect)\" />\r\n    <property name=\"settings.editor.selected.configurable\" value=\"terminal\" />\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\fess9\\git\\shtrih-m-driver\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\fess9\\git\\shtrih-m-driver\\cmd\\driver\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Go Build.go build shtrih-drv/cmd/driver\">\r\n    <configuration name=\"go build shtrih-drv\" type=\"GoApplicationRunConfiguration\" factoryName=\"Go Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"shtrih-m-driver\" />\r\n      <working_directory value=\"$PROJECT_DIR$\" />\r\n      <kind value=\"PACKAGE\" />\r\n      <filePath value=\"$PROJECT_DIR$/main.go\" />\r\n      <package value=\"shtrih-drv\" />\r\n      <directory value=\"$PROJECT_DIR$\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <configuration name=\"go build shtrih-drv/cmd/driver\" type=\"GoApplicationRunConfiguration\" factoryName=\"Go Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"shtrih-m-driver\" />\r\n      <working_directory value=\"$PROJECT_DIR$\" />\r\n      <kind value=\"PACKAGE\" />\r\n      <filePath value=\"$PROJECT_DIR$/cmd/driver/main.go\" />\r\n      <package value=\"shtrih-drv/cmd/driver\" />\r\n      <directory value=\"$PROJECT_DIR$\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Go Build.go build shtrih-drv/cmd/driver\" />\r\n        <item itemvalue=\"Go Build.go build shtrih-drv\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <option name=\"ADD_EXTERNAL_FILES_SILENTLY\" value=\"true\" />\r\n    <MESSAGE value=\"init\" />\r\n    <MESSAGE value=\"configs\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"configs\" />\r\n  </component>\r\n  <component name=\"VgoProject\">\r\n    <integration-enabled>true</integration-enabled>\r\n  </component>\r\n  <component name=\"WindowStateProjectService\">\r\n    <state x=\"752\" y=\"353\" key=\"#Go_Modules\" timestamp=\"1601466761641\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state x=\"752\" y=\"353\" key=\"#Go_Modules/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601466761641\" />\r\n    <state x=\"414\" y=\"174\" key=\"#com.intellij.execution.impl.EditConfigurationsDialog\" timestamp=\"1601466837840\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state x=\"414\" y=\"174\" key=\"#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601466837840\" />\r\n    <state x=\"714\" y=\"321\" key=\"#com.intellij.fileTypes.FileTypeChooser\" timestamp=\"1601467460639\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state x=\"714\" y=\"321\" key=\"#com.intellij.fileTypes.FileTypeChooser/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601467460639\" />\r\n    <state x=\"740\" y=\"275\" key=\"FileChooserDialogImpl\" timestamp=\"1601467674986\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state x=\"740\" y=\"275\" key=\"FileChooserDialogImpl/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601467674986\" />\r\n    <state width=\"1877\" height=\"149\" key=\"GridCell.Tab.0.bottom\" timestamp=\"1601472640979\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state width=\"1877\" height=\"149\" key=\"GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601472640979\" />\r\n    <state width=\"1877\" height=\"149\" key=\"GridCell.Tab.0.center\" timestamp=\"1601472640979\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state width=\"1877\" height=\"149\" key=\"GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601472640979\" />\r\n    <state width=\"1877\" height=\"149\" key=\"GridCell.Tab.0.left\" timestamp=\"1601472640979\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state width=\"1877\" height=\"149\" key=\"GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601472640979\" />\r\n    <state width=\"1877\" height=\"149\" key=\"GridCell.Tab.0.right\" timestamp=\"1601472640979\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state width=\"1877\" height=\"149\" key=\"GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601472640979\" />\r\n    <state x=\"461\" y=\"164\" key=\"SettingsEditor\" timestamp=\"1601467709274\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state x=\"461\" y=\"164\" key=\"SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601467709274\" />\r\n    <state x=\"552\" y=\"252\" key=\"Vcs.Push.Dialog.v2\" timestamp=\"1601474486068\">\r\n      <screen x=\"0\" y=\"0\" width=\"1920\" height=\"1040\" />\r\n    </state>\r\n    <state x=\"552\" y=\"252\" key=\"Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040\" timestamp=\"1601474486068\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/workspace.xml	(revision 662ae62f41be9c8be1141ede2c23769984370fb8)
++++ .idea/workspace.xml	(date 1601539656239)
+@@ -19,11 +19,8 @@
+     <select />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="652d809b-6a5f-4f39-998b-4aab20c6fc39" name="Default Changelist" comment="">
+-      <change afterPath="$PROJECT_DIR$/configs/config.md" afterDir="false" />
++    <list default="true" id="652d809b-6a5f-4f39-998b-4aab20c6fc39" name="Default Changelist" comment="start reverse engenering java pos 1.13 driver">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/cmd/driver/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/driver/main.go" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -40,12 +37,14 @@
+   <component name="GOROOT" path="C:\Go" />
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++    <option name="UPDATE_TYPE" value="REBASE" />
+   </component>
+   <component name="GoLibraries">
+     <option name="indexEntireGoPath" value="false" />
+   </component>
+   <component name="ProjectId" id="1iEJE88QVft1HbAcNHyISRrOBcM" />
+   <component name="ProjectLevelVcsManager">
++    <OptionsSetting value="false" id="Update" />
+     <ConfirmationsSetting value="2" id="Add" />
+   </component>
+   <component name="ProjectViewState">
+@@ -124,7 +123,8 @@
+     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+     <MESSAGE value="init" />
+     <MESSAGE value="configs" />
+-    <option name="LAST_COMMIT_MESSAGE" value="configs" />
++    <MESSAGE value="start reverse engenering java pos 1.13 driver" />
++    <option name="LAST_COMMIT_MESSAGE" value="start reverse engenering java pos 1.13 driver" />
+   </component>
+   <component name="VgoProject">
+     <integration-enabled>true</integration-enabled>
+@@ -146,29 +146,33 @@
+       <screen x="0" y="0" width="1920" height="1040" />
+     </state>
+     <state x="740" y="275" key="FileChooserDialogImpl/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601467674986" />
+-    <state width="1877" height="149" key="GridCell.Tab.0.bottom" timestamp="1601472640979">
++    <state width="1877" height="149" key="GridCell.Tab.0.bottom" timestamp="1601474530140">
+       <screen x="0" y="0" width="1920" height="1040" />
+     </state>
+-    <state width="1877" height="149" key="GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601472640979" />
+-    <state width="1877" height="149" key="GridCell.Tab.0.center" timestamp="1601472640979">
++    <state width="1877" height="149" key="GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601474530140" />
++    <state width="1877" height="149" key="GridCell.Tab.0.center" timestamp="1601474530140">
+       <screen x="0" y="0" width="1920" height="1040" />
+     </state>
+-    <state width="1877" height="149" key="GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601472640979" />
+-    <state width="1877" height="149" key="GridCell.Tab.0.left" timestamp="1601472640979">
++    <state width="1877" height="149" key="GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601474530140" />
++    <state width="1877" height="149" key="GridCell.Tab.0.left" timestamp="1601474530140">
+       <screen x="0" y="0" width="1920" height="1040" />
+     </state>
+-    <state width="1877" height="149" key="GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601472640979" />
+-    <state width="1877" height="149" key="GridCell.Tab.0.right" timestamp="1601472640979">
++    <state width="1877" height="149" key="GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601474530140" />
++    <state width="1877" height="149" key="GridCell.Tab.0.right" timestamp="1601474530140">
+       <screen x="0" y="0" width="1920" height="1040" />
+     </state>
+-    <state width="1877" height="149" key="GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601472640979" />
++    <state width="1877" height="149" key="GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601474530140" />
+     <state x="461" y="164" key="SettingsEditor" timestamp="1601467709274">
+       <screen x="0" y="0" width="1920" height="1040" />
+     </state>
+     <state x="461" y="164" key="SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601467709274" />
+-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601474486068">
++    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601474532364">
++      <screen x="0" y="0" width="1920" height="1040" />
++    </state>
++    <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601474532364" />
++    <state x="777" y="433" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1601539656221">
+       <screen x="0" y="0" width="1920" height="1040" />
+     </state>
+-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601474486068" />
++    <state x="777" y="433" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601539656221" />
+   </component>
+ </project>
+\ No newline at end of file
