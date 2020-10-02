@@ -1,6 +1,7 @@
 package fiscalprinter
 
 import (
+	"log"
 	"net"
 	"shtrih-drv/internal/fiscalprinter/port"
 	"shtrih-drv/internal/logger"
@@ -56,7 +57,9 @@ func (p *PrinterProtocol) Connect() error {
 
 	for {
 		//port.setTimeout(byteTimeout)
-		p.port.Write([]byte{5})
+		if err := p.port.Write([]byte{5}); err != nil {
+			log.Fatal(err)
+		}
 		B := p.readControlByte()
 		switch B {
 		case 6:

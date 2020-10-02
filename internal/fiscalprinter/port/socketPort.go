@@ -81,7 +81,7 @@ func (p SocketPort) Write(b []byte) error {
 
 	for i < 2 {
 		n, err := p.conn.Write(b)
-		p.logger.Debug(n)
+		p.logger.Debug(n, b)
 
 		if err != nil {
 			return err
