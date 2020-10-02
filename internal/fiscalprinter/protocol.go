@@ -1,8 +1,8 @@
 package fiscalprinter
 
 import (
-	"log"
-	"net"
+	"encoding/hex"
+	"shtrih-drv/internal/fiscalprinter/command"
 	"shtrih-drv/internal/fiscalprinter/port"
 	"shtrih-drv/internal/logger"
 	"time"
@@ -14,15 +14,23 @@ func NewPrinterProtocol(logger logger.Logger) *PrinterProtocol {
 	}
 }
 
+const (
+	ACKNOWLEDGE          = 0x6
+	NEGATIVE_ACKNOWLEDGE = 0x15
+)
+
 type PrinterProtocol struct {
 	byteTimeout        int
 	maxEnqNumber       int
 	maxNakAnswerNumber int
 	maxAckNumber       int
 
-	port   *port.SocketPort
+	client port.TcpClient
 	frame  Frame
 	logger logger.Logger
+
+	txData []byte
+	rxData []byte
 }
 
 func (p *PrinterProtocol) Connect() error {
@@ -47,42 +55,40 @@ func (p *PrinterProtocol) Connect() error {
 	ackNumber := 0
 	enqNumber := 0
 
-	conn, err := net.Dial("tcp", "10.51.0.71:7778")
+	p.logger.Debug("Connect")
+	con, err := port.Connect("10.51.0.71:7778")
 	if err != nil {
 		return err
 	}
-	defer conn.Close()
-	conn.SetDeadline(time.Now().Add(time.Millisecond * 700))
-	p.port = port.NewSocketPort(conn, p.logger)
+	p.client = con
+	//defer conn.Close()
 
-	for {
-		//port.setTimeout(byteTimeout)
-		if err := p.port.Write([]byte{5}); err != nil {
-			log.Fatal(err)
-		}
-		B := p.readControlByte()
-		switch B {
-		case 6:
-			p.readAnswer(p.byteTimeout)
-			ackNumber++
-		case 21:
-			return nil
-		default:
-			time.Sleep(time.Millisecond * 100)
-			enqNumber++
-		}
-		//catch (IOException var4) {
-		//		enqNumber++;
-		//}
+	//port.setTimeout(byteTimeout)
+	p.portWrite(5)
+	if err := con.W.WriteByte(5); err != nil {
+		p.logger.Fatal(err)
+	}
+	con.W.Flush()
 
-		if ackNumber >= p.maxAckNumber {
-			//throw new DeviceException(2, Localizer.getString("NoConnection"));
-			return port.NoConnectionError
-		}
+	B, err := con.R.ReadByte()
+	if err != nil {
+		return err
+	}
+	p.logger.Debug(B)
 
-		if enqNumber < p.maxEnqNumber {
-			break
-		}
+	switch B {
+	case 6:
+		p.readAnswer(p.byteTimeout)
+		ackNumber++
+	case 21:
+		return nil
+	default:
+		time.Sleep(time.Millisecond * 100)
+		enqNumber++
+	}
+
+	if ackNumber >= p.maxAckNumber {
+		return port.NoConnectionError
 	}
 
 	return port.NoConnectionError
@@ -99,11 +105,21 @@ func (p *PrinterProtocol) readControlByte() int {
 	return result
 }
 
+func (p *PrinterProtocol) portWrite(b int) error {
+	//Logger2.logTx(logger, data)
+
+	data := []byte{byte(b)}
+	p.logger.Debug("-> ", hex.Dump(data))
+	return p.port.Write(data)
+}
+
 func (p *PrinterProtocol) portReadByte() int {
 	b, err := p.port.ReadByte()
 	if err != nil {
 		p.logger.Fatal(err)
 	}
+	p.logger.Debug("<- ", hex.Dump([]byte{byte(b)}))
+
 	return b
 }
 
@@ -165,4 +181,30 @@ label36: // TODO: убрать это нахер из моего кода
 
 		return nil, port.ReadAnswerError
 	}
+}
+
+func (p *PrinterProtocol) sendCommand(command command.PrinterCommand) {
+	p.logger.Debug("send command: ", command.GetText())
+
+	tx := command.EncodeData()
+
+	rx := p.sendEncodedCommand(tx, p.byteTimeout)
+	p.logger.Debug(rx)
+}
+
+func (p *PrinterProtocol) sendEncodedCommand(data []byte, timeout int) []byte {
+	p.logger.Debug("send encoded command: ", hex.Dump(data))
+
+	var err error
+	p.txData, err = p.frame.encode(data)
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+	//private byte[] sendCommand(byte[] data, int timeout) throws Exception {
+	//	this.txData = this.frame.encode(data);
+	//	byte[] rx = this.send(this.txData, timeout);
+	//	this.rxData = this.frame.encode(rx);
+	//	return rx;
+	//}
+	return nil
 }

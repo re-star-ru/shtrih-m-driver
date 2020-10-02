@@ -1,5 +1,10 @@
 package fiscalprinter
 
+import (
+	"bytes"
+	"shtrih-drv/internal/fiscalprinter/port"
+)
+
 func NewFrame() *Frame {
 	return &Frame{
 		2,
@@ -20,16 +25,17 @@ func (f *Frame) GetCrc(data []byte) byte {
 	return crc
 }
 
-//func (f *Frame) encode(data []byte) ([]byte, error) {
-//	baos := new ByteArrayOutputStream();
-//
-//	if (data.length > 255) {
-//		throw new Exception("Data length exeeds 256 bytes");
-//	} else {
-//		baos.write(2);
-//		baos.write(data.length);
-//		baos.write(data, 0, data.length);
-//		baos.write(this.getCrc(data));
-//		return baos.toByteArray();
-//	}
-//}
+func (f *Frame) encode(data []byte) ([]byte, error) {
+	var buf bytes.Buffer
+
+	if len(data) > 255 {
+		return nil, port.DataLenghtExeeds
+	} else {
+		buf.WriteByte(2)
+		buf.WriteByte(byte(len(data)))
+		buf.Write(data)
+		buf.WriteByte(f.GetCrc(data))
+
+		return buf.Bytes(), nil
+	}
+}

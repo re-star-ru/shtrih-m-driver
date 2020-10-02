@@ -1,8 +1,11 @@
 package port
 
 import (
+	"bufio"
+	"io"
+	"log"
 	"net"
-	"shtrih-drv/internal/logger"
+	"time"
 )
 
 type Error string
@@ -12,6 +15,7 @@ func (e Error) Error() string { return string(e) }
 const (
 	NoConnectionError = Error("No connection error")
 	ReadAnswerError   = Error("read Answer Error")
+	DataLenghtExeeds  = Error("Data length exeeds 256 bytes")
 )
 
 //package com.shtrih.fiscalprinter.port; todo
@@ -25,34 +29,66 @@ const (
 //	PortNameport
 //}
 
-func NewSocketPort(conn net.Conn, logger logger.Logger) *SocketPort {
+type TcpClient struct {
+	R    *bufio.Reader
+	W    *bufio.Writer
+	buf  []byte
+	Conn net.Conn
+}
+
+func Connect(host string) (TcpClient, error) {
+	conn, err := net.Dial("tcp", host)
+	conn.SetDeadline(time.Now().Add(time.Millisecond * 2000))
+
+	return TcpClient{
+		bufio.NewReader(conn),
+		bufio.NewWriter(conn),
+		make([]byte, 1024),
+		conn,
+	}, err
+}
+
+func NewSocketPort(conn net.Conn) *SocketPort {
 	return &SocketPort{
-		conn:   conn,
-		logger: logger,
+		conn: conn,
 	}
 }
 
 type SocketPort struct {
-	conn   net.Conn
-	logger logger.Logger
+	conn net.Conn
 }
 
 func (p SocketPort) ReadByte() (int, error) {
 
-	//input stream
-	buf := []byte{1}
-	n, err := p.conn.Read(buf)
-	if err != nil {
-		p.logger.Fatal(err)
-	}
-	p.logger.Debug(n)
+	buf := make([]byte, 0, 4096) // big buffer
+	tmp := make([]byte, 256)
 
-	//b := p.inputStream.read()
-	if n == -1 {
-		return 0, NoConnectionError
+	for {
+		n, err := p.conn.Read(tmp)
+		if err != nil {
+			if err != io.EOF {
+				log.Println("read error:", err)
+			}
+			break
+		}
+		//fmt.Println("got", n, "bytes.")
+		buf = append(buf, tmp[:n]...)
 	}
+	log.Println("total size:", len(buf))
 
-	return n, nil
+	////input stream
+	//buf := []byte{0}
+	//n, err := p.conn.Read(buf)
+	//if err != nil {
+	//	return 0, err
+	//}
+	//
+	////b := p.inputStream.read()
+	//if n == -1 {
+	//	return 0, NoConnectionError
+	//}
+	//
+	return len(buf), nil
 }
 
 func (p SocketPort) ReadBytes(len int) ([]byte, error) {
@@ -77,12 +113,18 @@ func (p SocketPort) ReadBytes(len int) ([]byte, error) {
 }
 
 func (p SocketPort) Write(b []byte) error {
+
+	//s, err := syscall.Socket(syscall.AF_INET, syscall.SOCK_STREAM, syscall.IPPROTO_TCP)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//f := os.NewFile(uintptr(s))
+
+	//p.conn.
+
 	i := 0
-
 	for i < 2 {
-		n, err := p.conn.Write(b)
-		p.logger.Debug(n, b)
-
+		_, err := p.conn.Write(b)
 		if err != nil {
 			return err
 		}

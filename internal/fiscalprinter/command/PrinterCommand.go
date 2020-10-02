@@ -1,6 +1,6 @@
-package fiscalprinter
+package command
 
-type PrinterCommand struct {
+type PrinterCommandImpl struct {
 	DefaultTimeout     int
 	timeout            int
 	resultCode         int
@@ -13,12 +13,12 @@ type PrinterCommand struct {
 	rxData []byte
 }
 
-func (p *PrinterCommand) encodeData() {
+func (p *PrinterCommandImpl) encodeData() {
 
 }
 
-func newPrinterCommand() *PrinterCommand {
-	return &PrinterCommand{
+func newPrinterCommand() *PrinterCommandImpl {
+	return &PrinterCommandImpl{
 		10000,
 		0,
 		0,

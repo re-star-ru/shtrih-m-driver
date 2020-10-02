@@ -1,8 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"log"
+	"net"
 	"shtrih-drv/internal/fiscalprinter"
+	"time"
 
 	"go.uber.org/zap/zapcore"
 
@@ -29,7 +32,94 @@ func main() {
 	printer := fiscalprinter.NewPrinterProtocol(slogger)
 	err = printer.Connect()
 	if err != nil {
-		log.Println(err.Error())
+		slogger.Error(err)
 		return
 	}
+
+	//conn, err := Connect("10.51.0.71:7778")
+	//
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//if err := conn.w.WriteByte(5); err != nil {
+	//	log.Fatal(err)
+	//}
+	//conn.w.Flush()
+	//
+	//b, err := conn.r.ReadByte()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//log.Println(b)
+	//
+	//time.Sleep(time.Millisecond * 100)
 }
+
+type TcpClient struct {
+	r    *bufio.Reader
+	w    *bufio.Writer
+	buf  []byte
+	conn net.Conn
+}
+
+func Connect(host string) (TcpClient, error) {
+	log.Println("Connect")
+	conn, err := net.Dial("tcp", host)
+	conn.SetDeadline(time.Now().Add(time.Millisecond * 1000))
+
+	return TcpClient{
+		bufio.NewReader(conn),
+		bufio.NewWriter(conn),
+		make([]byte, 1024),
+		conn,
+	}, err
+}
+
+//
+//func (tcp TcpClient) Send(dataSend string) (string, error) {
+//	var (
+//		returnData string
+//		returnErr  error
+//	)
+//	tcp.w.WriteString(dataSend + "\r\n")
+//	tcp.w.Flush()
+//
+//ILOOP:
+//	for {
+//		n, err := tcp.r.Read(tcp.buf)
+//		data := string(tcp.buf[:n])
+//		switch err {
+//		case io.EOF:
+//			break ILOOP
+//		case nil:
+//			returnData = data
+//			returnErr = nil
+//			if isTransportOver(data) {
+//				break ILOOP
+//			}
+//		default:
+//			returnData = ""
+//			returnErr = err
+//		}
+//	}
+//	return returnData, returnErr
+//}
+//func (tcp TcpClient) Close() {
+//	tcp.conn.Close()
+//}
+//func isTransportOver(data string) (over bool) {
+//	over = strings.HasSuffix(data, "\r\n")
+//	return
+//}
+//
+////func read(cn net.Conn) {
+////	log.Println("read...")
+////	var buf []byte
+////
+////	for {
+////		n, err := cn.Read(buf)
+////		log.Println(buf, n, err)
+//
+//	}
+//}
