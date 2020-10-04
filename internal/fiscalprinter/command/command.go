@@ -1,6 +1,7 @@
 package command
 
-type PrinterCommand interface {
+type PrinterCommander interface {
+	GetCode() int
 	GetText() string
 	EncodeData() []byte
 }

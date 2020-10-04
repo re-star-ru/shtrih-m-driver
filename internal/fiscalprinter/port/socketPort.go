@@ -2,8 +2,6 @@ package port
 
 import (
 	"bufio"
-	"io"
-	"log"
 	"net"
 	"time"
 )
@@ -38,6 +36,10 @@ type TcpClient struct {
 
 func Connect(host string) (TcpClient, error) {
 	conn, err := net.Dial("tcp", host)
+	if err != nil {
+		return TcpClient{}, err
+	}
+
 	conn.SetDeadline(time.Now().Add(time.Millisecond * 2000))
 
 	return TcpClient{
@@ -58,38 +60,38 @@ type SocketPort struct {
 	conn net.Conn
 }
 
-func (p SocketPort) ReadByte() (int, error) {
-
-	buf := make([]byte, 0, 4096) // big buffer
-	tmp := make([]byte, 256)
-
-	for {
-		n, err := p.conn.Read(tmp)
-		if err != nil {
-			if err != io.EOF {
-				log.Println("read error:", err)
-			}
-			break
-		}
-		//fmt.Println("got", n, "bytes.")
-		buf = append(buf, tmp[:n]...)
-	}
-	log.Println("total size:", len(buf))
-
-	////input stream
-	//buf := []byte{0}
-	//n, err := p.conn.Read(buf)
-	//if err != nil {
-	//	return 0, err
-	//}
-	//
-	////b := p.inputStream.read()
-	//if n == -1 {
-	//	return 0, NoConnectionError
-	//}
-	//
-	return len(buf), nil
-}
+//func (p SocketPort) ReadByte() (int, error) {
+//
+//	buf := make([]byte, 0, 4096) // big buffer
+//	tmp := make([]byte, 256)
+//
+//	for {
+//		n, err := p.conn.Read(tmp)
+//		if err != nil {
+//			if err != io.EOF {
+//				log.Println("read error:", err)
+//			}
+//			break
+//		}
+//		//fmt.Println("got", n, "bytes.")
+//		buf = append(buf, tmp[:n]...)
+//	}
+//	log.Println("total size:", len(buf))
+//
+//	////input stream
+//	//buf := []byte{0}
+//	//n, err := p.conn.Read(buf)
+//	//if err != nil {
+//	//	return 0, err
+//	//}
+//	//
+//	////b := p.inputStream.read()
+//	//if n == -1 {
+//	//	return 0, NoConnectionError
+//	//}
+//	//
+//	return len(buf), nil
+//}
 
 func (p SocketPort) ReadBytes(len int) ([]byte, error) {
 	data := make([]byte, len)

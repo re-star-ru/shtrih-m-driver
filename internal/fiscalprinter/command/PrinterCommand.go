@@ -1,6 +1,8 @@
 package command
 
-type PrinterCommandImpl struct {
+import "bytes"
+
+type PrinterCommand struct {
 	DefaultTimeout     int
 	timeout            int
 	resultCode         int
@@ -9,16 +11,41 @@ type PrinterCommandImpl struct {
 	repeadNeeded       bool
 	errorReportEnabled bool
 
+	commandCode int
+
+	text string
+
 	txData []byte
 	rxData []byte
 }
 
-func (p *PrinterCommandImpl) encodeData() {
+func (p *PrinterCommand) EncodeData() []byte {
 
+	code := p.commandCode
+
+	buf := bytes.NewBuffer([]byte{})
+
+	if code > 255 {
+		buf.WriteByte(byte(code >> 8 & 255))
+		buf.WriteByte(byte(code & 255))
+	}
+	if code <= 255 {
+		buf.WriteByte(byte(code))
+	}
+
+	return buf.Bytes()
 }
 
-func newPrinterCommand() *PrinterCommandImpl {
-	return &PrinterCommandImpl{
+func (p *PrinterCommand) GetCode() int {
+	return p.commandCode
+}
+
+func (p *PrinterCommand) GetText() string {
+	return p.text
+}
+
+func NewPrinterCommand() *PrinterCommand {
+	return &PrinterCommand{
 		10000,
 		0,
 		0,
@@ -26,6 +53,8 @@ func newPrinterCommand() *PrinterCommandImpl {
 		false,
 		false,
 		true,
+		0,
+		"default",
 		[]byte{},
 		[]byte{},
 	}

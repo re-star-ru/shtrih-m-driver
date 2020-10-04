@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"shtrih-drv/internal/fiscalprinter"
+	"shtrih-drv/internal/fiscalprinter/command"
 	"time"
 
 	"go.uber.org/zap/zapcore"
@@ -34,6 +35,15 @@ func main() {
 	if err != nil {
 		slogger.Error(err)
 		return
+	}
+
+	//code := 300
+	//log.Println(code >> 8 & 255)
+	//log.Println(code & 255)
+
+	c := command.NewReadDeviceMetrics()
+	if err := printer.SendCommand(c); err != nil {
+		slogger.Fatal(err)
 	}
 
 	//conn, err := Connect("10.51.0.71:7778")
