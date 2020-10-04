@@ -1,6 +1,8 @@
 package command
 
-import "bytes"
+import (
+	"bytes"
+)
 
 type PrinterCommand struct {
 	DefaultTimeout     int
@@ -15,11 +17,12 @@ type PrinterCommand struct {
 
 	text string
 
-	txData []byte
-	rxData []byte
+	txData   []byte
+	rxData   []byte
+	password int
 }
 
-func (p *PrinterCommand) EncodeData() []byte {
+func (p *PrinterCommand) EncodeData() ([]byte, error) {
 
 	code := p.commandCode
 
@@ -33,7 +36,14 @@ func (p *PrinterCommand) EncodeData() []byte {
 		buf.WriteByte(byte(code))
 	}
 
-	return buf.Bytes()
+	buf2 := bytes.NewBuffer([]byte{})
+	if err := p.Encode(buf2); err != nil {
+		return nil, err
+	}
+	p.txData = buf2.Bytes()
+	buf.Write(p.txData)
+
+	return buf.Bytes(), nil
 }
 
 func (p *PrinterCommand) GetCode() int {
@@ -42,6 +52,25 @@ func (p *PrinterCommand) GetCode() int {
 
 func (p *PrinterCommand) GetText() string {
 	return p.text
+}
+
+func (c *PrinterCommand) Encode(buf *bytes.Buffer) error {
+	s := 30
+
+	if err := buf.WriteByte(byte(s >> 0 & 255)); err != nil {
+		return err
+	}
+	if err := buf.WriteByte(byte(s >> 8 & 255)); err != nil {
+		return err
+	}
+	if err := buf.WriteByte(byte(s >> 16 & 255)); err != nil {
+		return err
+	}
+	if err := buf.WriteByte(byte(s >> 24 & 255)); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewPrinterCommand() *PrinterCommand {
@@ -57,5 +86,6 @@ func NewPrinterCommand() *PrinterCommand {
 		"default",
 		[]byte{},
 		[]byte{},
+		30,
 	}
 }

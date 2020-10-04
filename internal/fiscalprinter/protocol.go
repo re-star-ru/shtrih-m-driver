@@ -6,6 +6,8 @@ import (
 	"shtrih-drv/internal/fiscalprinter/port"
 	"shtrih-drv/internal/logger"
 	"time"
+
+	"golang.org/x/text/encoding/charmap"
 )
 
 func NewPrinterProtocol(logger logger.Logger) *PrinterProtocol {
@@ -34,14 +36,6 @@ func NewPrinterProtocol(logger logger.Logger) *PrinterProtocol {
 		maxAckNumber:       3,
 	}
 }
-
-const (
-	SOH = 0x1  // start of heading
-	STX = 0x2  // start of text
-	ENQ = 0x5  // enquire
-	ACK = 0x6  // acknowledgement
-	NAK = 0x15 // negative acknowledgment
-)
 
 type PrinterProtocol struct {
 	byteTimeout        int
@@ -123,7 +117,7 @@ func (p *PrinterProtocol) portWrite(b int) error {
 func (p *PrinterProtocol) portWriteData(b []byte) error {
 	//Logger2.logTx(logger, data)
 
-	p.logger.Debug("-> ", hex.Dump(b))
+	p.logger.Debug("-> ", "\n", hex.Dump(b))
 	_, err := p.client.W.Write(b)
 	if err != nil {
 		return err
@@ -136,7 +130,7 @@ func (p *PrinterProtocol) portReadByte() (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	p.logger.Debug("<- ", hex.Dump([]byte{byte(b)}))
+	p.logger.Debug("<- ", "\n", hex.Dump([]byte{byte(b)}))
 
 	return int(b), nil
 }
@@ -152,7 +146,7 @@ func (p *PrinterProtocol) portReadBytes(l int) []byte {
 	if err != nil {
 		p.logger.Fatal(err)
 	}
-	p.logger.Debug("<- ", hex.Dump(buf))
+	p.logger.Debug("<- ", "\n", hex.Dump(buf))
 	return buf
 }
 
@@ -184,7 +178,7 @@ label36: // TODO: убрать это нахер из моего кода
 		}
 		dataLength++
 		commandData := p.portReadBytes(dataLength)
-		p.logger.Debug(commandData)
+		//p.logger.Debug(commandData)
 
 		crc := commandData[len(commandData)-1]
 
@@ -234,7 +228,7 @@ label36: // TODO: убрать это нахер из моего кода
 
 func (p *PrinterProtocol) SendCommand(command command.PrinterCommander) error {
 	p.logger.Debug("send command: ", command.GetText())
-	tx := command.EncodeData()
+	tx, _ := command.EncodeData()
 
 	rx, err := p.sendEncodedCommand(tx, p.byteTimeout)
 	if err != nil {
@@ -242,6 +236,12 @@ func (p *PrinterProtocol) SendCommand(command command.PrinterCommander) error {
 	}
 
 	p.logger.Debug("rx: ", rx)
+	rxe, err := charmap.Windows1251.NewDecoder().Bytes(rx)
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+	p.logger.Debug("txe: ", string(rxe))
+
 	return nil
 }
 
@@ -251,16 +251,16 @@ func (p *PrinterProtocol) sendEncodedCommand(data []byte, timeout int) ([]byte, 
 	if err != nil {
 		return nil, err
 	}
-	p.logger.Debug("send encoded command after encode: ", hex.Dump(p.txData))
+	//p.logger.Debug("send encoded command after encode: ", hex.Dump(p.txData))
 
 	rx, err := p.send(p.txData)
 	if err != nil {
 		return nil, err
 	}
-	p.logger.Debug("recive encoded command after encode: ", hex.Dump(rx))
+	//p.logger.Debug("recive encoded command after encode: ", hex.Dump(rx))
 
 	p.rxData, err = p.frame.encode(rx)
-	p.logger.Debug("recive encoded command after encode: ", hex.Dump(p.rxData))
+	//p.logger.Debug("recive encoded command after encode: ", hex.Dump(p.rxData))
 
 	//private byte[] sendCommand(byte[] data, int timeout) throws Exception {
 	//	this.txData = this.frame.encode(data);

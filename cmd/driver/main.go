@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+
 	"log"
 	"net"
 	"shtrih-drv/internal/fiscalprinter"
@@ -14,6 +15,7 @@ import (
 )
 
 func main() {
+
 	loggerConfig := zap.NewDevelopmentConfig()
 	loggerConfig.EncoderConfig.TimeKey = "timestamp"
 	loggerConfig.EncoderConfig.EncodeTime = zapcore.TimeEncoderOfLayout("2006-01-02 15:04:05")
@@ -45,6 +47,15 @@ func main() {
 	if err := printer.SendCommand(c); err != nil {
 		slogger.Fatal(err)
 	}
+
+	t := time.Now()
+	ls := command.NewReadLongStatus()
+	if err := printer.SendCommand(ls); err != nil {
+		slogger.Fatal(err)
+	}
+	slogger.Debug(time.Since(t))
+
+	//ReadPrinterModelParameters next
 
 	//conn, err := Connect("10.51.0.71:7778")
 	//
