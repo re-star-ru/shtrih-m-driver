@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"log"
 	"net"
-	"time"
 )
 
 //buf.WriteByte(2) // start
@@ -74,16 +73,44 @@ func readShortStatusCommand(password uint32) []byte {
 	return dataBuffer.Bytes()
 }
 
+func ping() {
+	con, err := net.Dial("tcp", "10.51.0.71:7778")
+	defer con.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
+	rw.WriteByte(0x05)
+	rw.Flush()
+	b, _ := rw.ReadByte()
+	switch b {
+	case 0x6:
+		log.Println("OK, need recive")
+	case 0x15:
+		log.Println("OK, nothing to recive")
+	default:
+		log.Fatal("ERR, ping byte:", b)
+	}
+
+	rw.WriteByte(0x06)
+	rw.Flush()
+}
+
 func status() {
 	rss := readShortStatusCommand(30)
 	frame := createFrame(rss)
 	println(hex.Dump(frame))
-	sendFrame(frame)
+	ping()
+
+	//sendFrame(frame)
 }
 
 func sendFrame(frame []byte) {
-	t := time.Now()
+	//t := time.Now()
 	con, err := net.Dial("tcp", "10.51.0.71:7778")
+	defer con.Close()
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -91,29 +118,28 @@ func sendFrame(frame []byte) {
 	rw.Write(frame)
 	rw.Flush()
 
-	b, err := rw.ReadByte()
+	_, err = rw.ReadByte()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Control byte:", b)
-	log.Println("hex:")
-	println(hex.Dump([]byte{b}))
-
-	res2 := make([]byte, 32)
-	n2, err := rw.Read(res2)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Println("num:", n2)
-	log.Println("buf:", res2)
-	log.Println("hex:")
-	println(hex.Dump(res2))
-
-	rw.WriteByte(byte(0x06))
-	rw.Flush()
-	con.Close()
-	log.Println(time.Since(t))
+	//log.Println("Control byte:", b)
+	//log.Println("hex:")
+	//println(hex.Dump([]byte{b}))
+	//
+	//res2 := make([]byte, 32)
+	//n2, err := rw.Read(res2)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//log.Println("num:", n2)
+	//log.Println("buf:", res2)
+	//log.Println("hex:")
+	//println(hex.Dump(res2))
+	//
+	//rw.WriteByte(byte(0x06))
+	//rw.Flush()
+	//log.Println(time.Since(t))
 }
 
 //02 | 10 | 10 | 00 | 1E 92 02 02 00 00 9F E5 18 01 00 89 08 00 | 6E
