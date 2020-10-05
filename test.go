@@ -1,9 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
+	"log"
+	"net"
+	"time"
 )
 
 //buf.WriteByte(2) // start
@@ -39,7 +43,6 @@ import (
 //(00 - FF) пароль
 func main() {
 	status()
-	//status()
 }
 
 func createFrame(data []byte) []byte {
@@ -75,39 +78,89 @@ func status() {
 	rss := readShortStatusCommand(30)
 	frame := createFrame(rss)
 	println(hex.Dump(frame))
+	sendFrame(frame)
 }
 
-func sendFrame([]byte) {
-	//t := time.Now()
-	//con, err := net.Dial("tcp", "10.51.0.71:7778")
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
-	//rw.Write(buf.Bytes())
-	//rw.Flush()
-	//
-	//b, err := rw.ReadByte()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//log.Println("Control byte:", b)
-	//log.Println("hex:")
-	//println(hex.Dump([]byte{b}))
-	//
-	//res2 := make([]byte, 32)
-	//n2, err := rw.Read(res2)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//log.Println("num:", n2)
-	//log.Println("buf:", res2)
-	//log.Println("hex:")
-	//println(hex.Dump(res2))
-	//
-	//rw.Write([]byte{06})
-	//rw.Flush()
-	//
-	//con.Close()
-	//log.Println(time.Since(t))
+func sendFrame(frame []byte) {
+	t := time.Now()
+	con, err := net.Dial("tcp", "10.51.0.71:7778")
+	if err != nil {
+		log.Fatal(err)
+	}
+	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
+	rw.Write(frame)
+	rw.Flush()
+
+	b, err := rw.ReadByte()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Control byte:", b)
+	log.Println("hex:")
+	println(hex.Dump([]byte{b}))
+
+	res2 := make([]byte, 32)
+	n2, err := rw.Read(res2)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("num:", n2)
+	log.Println("buf:", res2)
+	log.Println("hex:")
+	println(hex.Dump(res2))
+
+	rw.WriteByte(byte(0x06))
+	rw.Flush()
+	con.Close()
+	log.Println(time.Since(t))
 }
+
+//02 | 10 | 10 | 00 | 1E 92 02 02 00 00 9F E5 18 01 00 89 08 00 | 6E
+//02 | 10 | 10 | 00 | 1e 92 02 02 00 00 9f e5 18 01 00 89 08 00 | 6e
+//02 | 10 | 10 | 00 | 1E 92 02 02 00 00 9F E5 18 01 00 89 08 00 | 6E
+
+//----------------------------------------
+//Краткий запрос состояния:
+//----------------------------------------
+//Режим:
+//2, Открытая смена; 24 часа не кончились
+//----------------------------------------
+//Подрежим                  : 0, Бумага присутствует
+//Статус режима             : 0
+//Количество операций в чеке: 0
+//Напряжение батареи, В     : 3,12
+//Напряжение источника, В   : 25,44
+//----------------------------------------
+//ФлагиKKT                  : 0292h, 658
+//----------------------------------------
+//Увеличенная точность количества  : [нет]
+//Бумага на выходе из накопителя   : [нет]
+//Бумага на входе в накопитель     : [нет]
+//Денежный ящик открыт             : [нет]
+//Крышка корпуса поднята           : [нет]
+//Рычаг термоголовки чека опущен   : [да]
+//Рычаг термоголовки журнала опущен: [да]
+//Оптический датчик чека           : [да]
+//Оптический датчик журнала        : [да]
+//2 знака после запятой в цене     : [да]
+//Нижний датчик ПД                 : [да]
+//Верхний датчик ПД                : [да]
+//Рулон чековой ленты              : [да]
+//Рулон контрольной ленты          : [да]
+//----------------------------------------
+//02 | 10 | 10 | 00 | 1E 92 02 02 00 00 9F E5 18 01 00 89 08 00 | 6E
+
+//int operatorNumber = in.readByte();
+//int flags = in.readShort();
+//int mode = in.readByte() & 15;
+//int subMode = in.readByte();
+//int receiptOperationsLo = in.readByte();
+//int batteryState = in.readByte();
+//int powerState = in.readByte();
+//int FMResultCode = in.readByte();
+//int EJResultCode = in.readByte();
+//int receiptOperationsHi = in.readByte();
+//double batteryVoltage = (double)batteryState / 255.0D * 100.0D * 5.0D / 100.0D;
+//double powerVoltage = (double)powerState * 24.0D / 216.0D * 100.0D / 100.0D;
+//int receiptOperations = receiptOperationsLo + (receiptOperationsHi << 8);
