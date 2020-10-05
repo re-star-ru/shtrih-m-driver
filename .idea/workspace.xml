@@ -19,9 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="652d809b-6a5f-4f39-998b-4aab20c6fc39" name="Default Changelist" comment="start reverse engenering java pos 1.13 driver">
-      <change afterPath="$PROJECT_DIR$/internal/fiscalprinter/command/commandBuffer/commandBuffer.go" afterDir="false" />
+    <list default="true" id="652d809b-6a5f-4f39-998b-4aab20c6fc39" name="Default Changelist" comment="start tcp client">
+      <change afterPath="$PROJECT_DIR$/test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/driver/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/driver/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,9 +134,7 @@
     <MESSAGE value="init" />
     <MESSAGE value="configs" />
     <MESSAGE value="start reverse engenering java pos 1.13 driver" />
-    <MESSAGE value="reive first string" />
-    <MESSAGE value="разобраться с кодировкой" />
-    <option name="LAST_COMMIT_MESSAGE" value="разобраться с кодировкой" />
+    <option name="LAST_COMMIT_MESSAGE" value="start reverse engenering java pos 1.13 driver" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -160,26 +160,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601467674986" />
-    <state width="1877" height="390" key="GridCell.Tab.0.bottom" timestamp="1601873185728">
+    <state width="1877" height="247" key="GridCell.Tab.0.bottom" timestamp="1601896373562">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="218" key="GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601643377710" />
-    <state width="1877" height="390" key="GridCell.Tab.0.center" timestamp="1601873185728">
+    <state width="1877" height="247" key="GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601896373562" />
+    <state width="1877" height="247" key="GridCell.Tab.0.center" timestamp="1601896373562">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="218" key="GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601643377710" />
-    <state width="1877" height="390" key="GridCell.Tab.0.left" timestamp="1601873185727">
+    <state width="1877" height="247" key="GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601896373562" />
+    <state width="1877" height="247" key="GridCell.Tab.0.left" timestamp="1601896373562">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185727" />
-    <state width="1877" height="218" key="GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601643377709" />
-    <state width="1877" height="390" key="GridCell.Tab.0.right" timestamp="1601873185728">
+    <state width="1877" height="247" key="GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601896373562" />
+    <state width="1877" height="247" key="GridCell.Tab.0.right" timestamp="1601896373562">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="218" key="GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601643377710" />
+    <state width="1877" height="247" key="GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601896373562" />
     <state width="1877" height="390" key="GridCell.Tab.1.bottom" timestamp="1601873185728">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -204,49 +204,9 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601541027396" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601873542863">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601474486068">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1601873542863" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601474486068" />
-    <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1601873039032">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="968" height="528" key="XDebugger.FullValuePopup/0.0.1920.1040@0.0.1920.1040" timestamp="1601873039032" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1601838074388">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1601838074388" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/fiscalprinter/protocol.go</url>
-          <line>299</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/fiscalprinter/protocol.go</url>
-          <line>296</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/fiscalprinter/command/PrinterCommand.go</url>
-          <line>45</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/fiscalprinter/command/PrinterCommand.go</url>
-          <line>42</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/fiscalprinter/command/PrinterCommand.go</url>
-          <line>38</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
