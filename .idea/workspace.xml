@@ -20,8 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="652d809b-6a5f-4f39-998b-4aab20c6fc39" name="Default Changelist" comment="start reverse engenering java pos 1.13 driver">
+      <change afterPath="$PROJECT_DIR$/internal/fiscalprinter/command/commandBuffer/commandBuffer.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/fiscalprinter/command/PrinterCommand.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/fiscalprinter/command/PrinterCommand.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,10 +204,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601541027396" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601838092838">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601873542863">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1601838092838" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1601873542863" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601474486068" />
     <state width="968" height="528" key="XDebugger.FullValuePopup" timestamp="1601873039032">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -230,11 +230,6 @@
           <url>file://$PROJECT_DIR$/internal/fiscalprinter/protocol.go</url>
           <line>296</line>
           <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/internal/fiscalprinter/protocol.go</url>
-          <line>232</line>
-          <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/internal/fiscalprinter/command/PrinterCommand.go</url>
