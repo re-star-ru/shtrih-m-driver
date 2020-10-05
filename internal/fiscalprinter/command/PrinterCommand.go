@@ -37,9 +37,9 @@ func (p *PrinterCommand) EncodeData() ([]byte, error) {
 	}
 
 	buf2 := bytes.NewBuffer([]byte{})
-	if err := p.Encode(buf2); err != nil {
-		return nil, err
-	}
+	//if err := p.Encode(buf2); err != nil {
+	//	return nil, err
+	//}
 	p.txData = buf2.Bytes()
 	buf.Write(p.txData)
 
