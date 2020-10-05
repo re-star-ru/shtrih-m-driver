@@ -11,7 +11,14 @@ import (
 //buf.Write(data) // data
 //buf.WriteByte(f.GetCrc(data)) // control sum (crc)
 
+// win drv
 //02 05 10 1E 00 00 00 0B
+// go
+//02 05 10 1e 00 00 00 0b
+
+//
+//02 05 10 1E 00 00 00 0B
+//02 05 0a 1e 00 00 00 11
 //02 06 FF 02 02 00 00 00 F9
 //02 06 FF 01 02 00 00 00 FA
 //02 05 10    02 00 00 00 17
@@ -35,19 +42,42 @@ func main() {
 	//status()
 }
 
+func createFrame(data []byte) []byte {
+	// frame buffer
+	frameBuf := bytes.NewBuffer([]byte{})
+	frameBuf.WriteByte(0x02) // write start
+
+	dl := len(data)
+	frameBuf.WriteByte(byte(dl)) // write data len
+	frameBuf.Write(data)         // write data
+
+	crc := byte(dl)
+	for i := 0; i < dl; i++ {
+		crc ^= data[i]
+	}
+	frameBuf.WriteByte(crc) // write control sum
+
+	return frameBuf.Bytes()
+}
+
+func readShortStatusCommand(password uint32) []byte {
+	dataBuffer := bytes.NewBuffer([]byte{})
+	dataBuffer.Write([]byte{0x10}) // write command
+
+	passwordBinary := make([]byte, 4)
+	binary.LittleEndian.PutUint32(passwordBinary, password)
+	dataBuffer.Write(passwordBinary) // write password
+
+	return dataBuffer.Bytes()
+}
+
 func status() {
-	buf := bytes.NewBuffer([]byte{})
-	buf.WriteByte(0x02)           // write start
-	buf.Write([]byte{0x05, 0x10}) // write command
+	rss := readShortStatusCommand(30)
+	frame := createFrame(rss)
+	println(hex.Dump(frame))
+}
 
-	password := make([]byte, 4)
-	binary.LittleEndian.PutUint32(password, 30)
-
-	buf.Write(password) // write password
-
-	buf.Write([]byte{0}) // write control sum
-	println(hex.Dump(buf.Bytes()))
-
+func sendFrame([]byte) {
 	//t := time.Now()
 	//con, err := net.Dial("tcp", "10.51.0.71:7778")
 	//if err != nil {
