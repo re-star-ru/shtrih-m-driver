@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -20,9 +23,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="652d809b-6a5f-4f39-998b-4aab20c6fc39" name="Default Changelist" comment="start tcp client">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/driver/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/driver/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/current.log" beforeDir="false" afterPath="$PROJECT_DIR$/current.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shtrih/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shtrih/client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shtrih/cmdConsts.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shtrih/cmdConsts.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shtrih/cmds.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shtrih/cmds.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shtrih/printer.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shtrih/printer.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,28 +77,20 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\fess9\git\shtrih-m-driver" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\fess9\git\shtrih-m-driver\internal\fiscalprinter\command" />
       <recent name="C:\Users\fess9\git\shtrih-m-driver\internal\printer" />
       <recent name="C:\Users\fess9\git\shtrih-m-driver\cmd\driver" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\fess9\git\shtrih-m-driver" />
+    </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build shtrih-drv/cmd/driver">
-    <configuration name="go build shtrih-drv" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
-      <module name="shtrih-m-driver" />
-      <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <filePath value="$PROJECT_DIR$/main.go" />
-      <package value="shtrih-drv" />
-      <directory value="$PROJECT_DIR$" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager">
     <configuration name="go build shtrih-drv/cmd/driver" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="shtrih-m-driver" />
       <working_directory value="$PROJECT_DIR$" />
@@ -101,14 +100,9 @@
       <directory value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
-    <list>
-      <item itemvalue="Go Build.go build shtrih-drv" />
-      <item itemvalue="Go Build.go build shtrih-drv/cmd/driver" />
-    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build shtrih-drv/cmd/driver" />
-        <item itemvalue="Go Build.go build shtrih-drv" />
       </list>
     </recent_temporary>
   </component>
@@ -147,69 +141,77 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="752" y="353" key="#Go_Modules/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601466761641" />
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1601466837840">
+    <state x="414" y="174" width="1092" height="739" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1601984982413">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="174" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601466837840" />
-    <state x="714" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1601467460639">
+    <state x="414" y="174" width="1092" height="739" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601984982413" />
+    <state x="714" y="321" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1601984595474">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="714" y="321" key="#com.intellij.fileTypes.FileTypeChooser/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601467460639" />
+    <state x="714" y="321" key="#com.intellij.fileTypes.FileTypeChooser/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601984595474" />
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1601984877987">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601984877987" />
     <state x="628" y="297" width="664" height="641" key="EditFileWatcherDialog" timestamp="1601541026785">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="628" y="297" width="664" height="641" key="EditFileWatcherDialog/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601541026785" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1601467674986">
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1601984935981">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601467674986" />
-    <state width="1877" height="222" key="GridCell.Tab.0.bottom" timestamp="1601983000439">
+    <state x="740" y="275" key="FileChooserDialogImpl/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601984935981" />
+    <state width="1877" height="339" key="GridCell.Tab.0.bottom" timestamp="1601990265791">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="222" key="GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601983000439" />
-    <state width="1877" height="222" key="GridCell.Tab.0.center" timestamp="1601983000438">
+    <state width="1877" height="339" key="GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601990265791" />
+    <state width="1877" height="339" key="GridCell.Tab.0.center" timestamp="1601990265791">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="222" key="GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601983000438" />
-    <state width="1877" height="222" key="GridCell.Tab.0.left" timestamp="1601983000438">
+    <state width="1877" height="339" key="GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601990265791" />
+    <state width="1877" height="339" key="GridCell.Tab.0.left" timestamp="1601990265791">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185727" />
-    <state width="1877" height="222" key="GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601983000438" />
-    <state width="1877" height="222" key="GridCell.Tab.0.right" timestamp="1601983000438">
+    <state width="1877" height="339" key="GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601990265791" />
+    <state width="1877" height="339" key="GridCell.Tab.0.right" timestamp="1601990265791">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="222" key="GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601983000438" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1601901880523">
+    <state width="1877" height="339" key="GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601990265791" />
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1601989277035">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601901880523" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1601901880523">
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601989277035" />
+    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1601989277035">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601901880523" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1601901880523">
+    <state width="1877" height="348" key="GridCell.Tab.1.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601989277035" />
+    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1601989277035">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601901880523" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1601901880523">
+    <state width="1877" height="348" key="GridCell.Tab.1.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601989277035" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1601989277035">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601901880523" />
-    <state x="461" y="164" key="SettingsEditor" timestamp="1601980650756">
+    <state width="1877" height="348" key="GridCell.Tab.1.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601989277035" />
+    <state x="461" y="164" key="SettingsEditor" timestamp="1601984679449">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="461" y="164" key="SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601980650756" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601982989016">
+    <state x="461" y="164" key="SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601984679449" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601983056552">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601982989016" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601983056552" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1601985993905">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601985993905" />
   </component>
 </project>

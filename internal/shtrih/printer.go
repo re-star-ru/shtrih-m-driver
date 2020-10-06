@@ -4,80 +4,100 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
 	"fmt"
 	"shtrih-drv/internal/logger"
 )
 
 type Printer struct {
-	logger logger.Logger
-	client *client
+	logger   logger.Logger
+	client   *client
+	password uint32
 }
 
-func NewPrinter(logger logger.Logger) *Printer {
+func NewPrinter(logger logger.Logger, host string, password uint32) *Printer {
 	return &Printer{
-		logger: logger,
-		client: newClient(logger),
+		logger:   logger,
+		client:   newClient(logger, host),
+		password: password,
 	}
 }
 
-func (p *Printer) ReadSerial() {
+func (p *Printer) Ping() {
+	p.client.ping()
+}
+
+func (p *Printer) FnReadStatus() {
 	p.client.ping()
 
-	if err := p.sendCommand(30, FnReadStatus); err != nil {
+	con, err := p.sendCommand(FnReadStatus)
+	if err != nil {
 		p.logger.Fatal(err)
 	}
-	data, err := p.client.receiveDataFromFrame()
+	defer con.Close()
+
+	data, err := p.client.receiveDataFromFrame(con)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
 
 	r := bufio.NewReader(bytes.NewReader(data))
-	cmdBin, err := r.ReadBytes(0)
-	println("cmdbin: ")
-	println(hex.Dump(cmdBin))
+	r.ReadBytes(0) // чтение байтов команды и null
 
 	////
 	fsStatusByte, _ := r.ReadByte()
-	println("fs status byte:", fsStatusByte)
 	code := uint64(fsStatusByte)
+	p.logger.Debug(fmt.Sprintf("status bits: %b", code))
 
-	fmt.Printf("status bits: %064b \n", code)
-	println("проведена настройка фн:", code&1 != 0)
-	println("isFiscalModeOpened:", code&2 != 0)
-	println("isFiscalModeClosed:", code&4 != 0)
-	println("Закончена передача фискальных данных в ОФД ", code&8 != 0)
-	println()
+	p.logger.Debug(fmt.Sprintf("\nпроведена настройка фн: %v \nфискальный режим открыт: %v \n"+
+		"фискальный режим закрыт: %v \nзакончена передача фискальных данных в ОФД: %v \n",
+		code&1 != 0, code&2 != 0, code&4 != 0, code&8 != 0))
 
 	fsDocTypeByte, _ := r.ReadByte()
-	println("fs doc type:", fsDocTypeByte)
-
 	fsIsDocRecivedByte, _ := r.ReadByte()
-	println("fs is doc received:", fsIsDocRecivedByte)
-
 	fsIsDayOpenedByte, _ := r.ReadByte()
-	println("fs is day opened:", fsIsDayOpenedByte)
-
 	fsFlagsByte, _ := r.ReadByte()
-	println("fs flags:", fsFlagsByte)
 
 	fsDateYearByte, _ := r.ReadByte()
 	fsDateMounthByte, _ := r.ReadByte()
 	fsDateDayByte, _ := r.ReadByte()
-	println("year, mounth, day:", fsDateYearByte, fsDateMounthByte, fsDateDayByte)
 
 	fsTimeHourByte, _ := r.ReadByte()
 	fsTimeMinByte, _ := r.ReadByte()
-	println("hour, minute:", fsTimeHourByte, fsTimeMinByte)
 
 	fsSerialBytes := make([]byte, 16)
 	r.Read(fsSerialBytes)
-	println("fs serial: ", string(fsSerialBytes))
-	print(hex.Dump(fsSerialBytes))
 
 	fsLastDocNumber := make([]byte, 4)
 	r.Read(fsLastDocNumber)
 
-	println("fs last doc number: ", binary.LittleEndian.Uint32(fsLastDocNumber))
-	print(hex.Dump(fsLastDocNumber))
+	p.logger.Debug(fmt.Sprintf(
+		"\nfs doc type: %v\n"+
+			"fs is doc received: %v\n"+
+			"fs is day opened: %v \n"+
+			"fs flags: %v \n"+
+			"fs date: %v.%v.%v\n"+
+			"fs time: %v:%v\n"+
+			"fs serial: %s\n"+
+			"fs last doc number: %v",
+		fsDocTypeByte, fsIsDocRecivedByte, fsIsDayOpenedByte, fsFlagsByte,
+		fsDateYearByte, fsDateMounthByte, fsDateDayByte,
+		fsTimeHourByte, fsTimeMinByte,
+		fsSerialBytes, binary.LittleEndian.Uint32(fsLastDocNumber)),
+	)
+}
+
+func (p *Printer) ReadShortStatus() {
+	p.client.ping()
+
+	con, err := p.sendCommand(ReadShortStatus)
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+	defer con.Close()
+
+	_, err = p.client.receiveDataFromFrame(con)
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+
 }

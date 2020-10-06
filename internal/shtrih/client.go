@@ -6,38 +6,43 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"shtrih-drv/internal/logger"
 )
 
 type client struct {
 	logger logger.Logger
+	host   string
 }
 
-func newClient(logger logger.Logger) *client {
-	return &client{logger: logger}
+func newClient(logger logger.Logger, host string) *client {
+	return &client{logger: logger, host: host}
 }
 
 func (c *client) ping() {
-	con, err := net.Dial("tcp", "10.51.0.71:7778")
-	defer con.Close()
+	con, err := net.Dial("tcp", c.host)
 	if err != nil {
 		c.logger.Fatal(err)
 	}
+	defer con.Close()
 
 	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
-	rw.WriteByte(0x05)
+	rw.WriteByte(ENQ)
 	rw.Flush()
+	c.logger.Debug("-> send ENQ")
+
 	b, _ := rw.ReadByte()
+	c.logger.Debug("<- recive control byte")
 	switch b {
-	case 0x6:
-		c.logger.Debug("OK, need recive, recive now")
-		rw.WriteByte(0x06)
+	case ACK:
+		c.logger.Debug("OK, ACK, recive now")
+		rw.WriteByte(ACK)
 		rw.Flush()
-	case 0x15:
-		c.logger.Debug("OK, nothing to recive")
+	case NAK:
+		c.logger.Debug("OK, NAK, nothing to recive")
 	default:
-		rw.WriteByte(0x06)
+		rw.WriteByte(ACK)
 		rw.Flush()
 		c.logger.Fatal("ERR, ping byte:", b)
 	}
@@ -61,27 +66,23 @@ func (c *client) createFrame(data []byte) []byte {
 	return frameBuf.Bytes()
 }
 
-func (c *client) sendFrame(frame []byte) error {
-	con, err := net.Dial("tcp", "10.51.0.71:7778")
-	if err != nil {
-		c.logger.Fatal(err)
-	}
-	defer con.Close()
-
+func (c *client) sendFrame(frame []byte, con net.Conn) error {
 	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 	rw.Write(frame)
 	rw.Flush()
+	c.logger.Debug("-> send frame: \n", hex.Dump(frame))
 
 	b, err := rw.ReadByte()
 	if err != nil {
+		con.Close()
 		c.logger.Fatal(err)
 	}
 
 	switch b {
-	case 0x06:
+	case ACK:
 		return nil
-	case 0x15:
-		return errors.New("21, nothig to recive")
+	case NAK:
+		return errors.New("NAK, nothig to recive")
 	default:
 		return errors.New(fmt.Sprint("control byte is:", b, ": wft?"))
 	}
@@ -102,40 +103,32 @@ func checkCRC(data []byte, rcrc byte) error {
 	return nil
 }
 
-func (c *client) receiveDataFromFrame() ([]byte, error) {
-	con, err := net.Dial("tcp", "10.51.0.71:7778")
-	if err != nil {
-		c.logger.Fatal(err)
-	}
+func (c *client) receiveDataFromFrame(con net.Conn) ([]byte, error) {
 	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 	defer func() {
-		rw.WriteByte(byte(0x06))
+		rw.WriteByte(byte(NAK))
 		rw.Flush()
-
 		con.Close()
 	}()
 
 	var frame bytes.Buffer
 
-	stx, _ := rw.ReadByte() // read byte STX (0x02) err need
-	println("stx byte:", stx)
-
-	dlen, _ := rw.ReadByte() // read byte dataLen (0x02)
-	println("data len:", dlen)
-
+	stx, err := rw.ReadByte() // read byte STX (0x02) err need
+	if err != nil {
+		log.Fatal(err)
+	}
+	dlen, _ := rw.ReadByte() // read byte dataLen
 	data := make([]byte, dlen)
-	n, _ := rw.Read(data)
-	println("read data bytes len:", n)
-
+	n, _ := rw.Read(data)   // read data bytes
 	crc, _ := rw.ReadByte() // read crc byte
-	println("crc:", crc)
 
 	frame.WriteByte(stx)
 	frame.WriteByte(dlen)
 	frame.Write(data)
 	frame.WriteByte(crc)
-	c.logger.Debug("<- recive frame")
-	print(hex.Dump(frame.Bytes()))
+	c.logger.Debug("<- recive frame: \n",
+		fmt.Sprintf("stx: %v, data len: %v, crc: %v \n", stx, dlen, n),
+		hex.Dump(frame.Bytes()))
 
 	if err := checkCRC(data, crc); err != nil {
 		return nil, err

@@ -1,20 +1,972 @@
-2020-10-06 14:15:16.6455	INFO	driver/main.go:27	Shtrih driver starting
-2020-10-06 14:15:16.6835	DEBUG	driver/main.go:28	This is a DEBUG message
-2020-10-06 14:15:16.6895	DEBUG	shtrih/client.go:34	OK, need recive, recive now
-2020-10-06 14:15:16.7175	DEBUG	shtrih/client.go:137	<- recive frame
-2020-10-06 14:15:26.5710	INFO	driver/main.go:27	Shtrih driver starting
-2020-10-06 14:15:26.6050	DEBUG	driver/main.go:28	This is a DEBUG message
-2020-10-06 14:15:26.6120	DEBUG	shtrih/client.go:38	OK, nothing to recive
-2020-10-06 14:15:26.6373	DEBUG	shtrih/client.go:137	<- recive frame
-2020-10-06 14:15:38.1273	INFO	driver/main.go:27	Shtrih driver starting
-2020-10-06 14:15:38.1599	DEBUG	driver/main.go:28	This is a DEBUG message
-2020-10-06 14:15:38.1704	DEBUG	shtrih/client.go:38	OK, nothing to recive
-2020-10-06 14:15:38.1957	DEBUG	shtrih/client.go:137	<- recive frame
-2020-10-06 14:15:44.5903	INFO	driver/main.go:27	Shtrih driver starting
-2020-10-06 14:15:44.6233	DEBUG	driver/main.go:28	This is a DEBUG message
-2020-10-06 14:15:44.6290	DEBUG	shtrih/client.go:38	OK, nothing to recive
-2020-10-06 14:15:44.6529	DEBUG	shtrih/client.go:137	<- recive frame
-2020-10-06 14:16:42.6322	INFO	driver/main.go:27	Shtrih driver starting
-2020-10-06 14:16:42.6642	DEBUG	driver/main.go:28	This is a DEBUG message
-2020-10-06 14:16:42.6723	DEBUG	shtrih/client.go:38	OK, nothing to recive
-2020-10-06 14:16:42.7025	DEBUG	shtrih/client.go:137	<- recive frame
+2020-10-06 15:30:19.6042	INFO	driver/main.go:27	Shtrih driver starting
+2020-10-06 15:30:19.6392	DEBUG	driver/main.go:28	This is a DEBUG message
+2020-10-06 15:30:19.6452	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:30:19.6472	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:30:19.6752	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:30:19.6752	DEBUG	shtrih/printer.go:43	status bits: 11 
+
+2020-10-06 15:30:19.6752	DEBUG	shtrih/printer.go:45	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:30:19.6752	DEBUG	shtrih/printer.go:67	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:34:29.1037	DEBUG	driver/main.go:22	Log level:	{"logLevel": "debug"}
+2020-10-06 15:34:29.1337	INFO	driver/main.go:28	Shtrih driver starting
+2020-10-06 15:34:29.1417	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:34:29.1527	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:34:29.1797	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:34:29.1797	DEBUG	shtrih/printer.go:43	status bits: 11 
+
+2020-10-06 15:34:29.1797	DEBUG	shtrih/printer.go:45	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:34:29.1797	DEBUG	shtrih/printer.go:67	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:36:22.7407	DEBUG	driver/main.go:23	Log level:debug
+2020-10-06 15:36:22.7757	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:36:22.7817	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:36:22.7847	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:36:22.8147	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:36:22.8157	DEBUG	shtrih/printer.go:43	status bits: 11 
+
+2020-10-06 15:36:22.8157	DEBUG	shtrih/printer.go:45	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:36:22.8157	DEBUG	shtrih/printer.go:67	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:36:54.3570	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:36:54.3990	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:36:54.4060	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:36:54.4100	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:36:54.4360	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:36:54.4360	DEBUG	shtrih/printer.go:43	status bits: 11 
+
+2020-10-06 15:36:54.4360	DEBUG	shtrih/printer.go:45	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:36:54.4370	DEBUG	shtrih/printer.go:67	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:37:56.7289	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:37:56.7660	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:37:56.7740	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:37:56.7830	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:37:56.8060	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:37:56.8070	DEBUG	shtrih/printer.go:42	status bits: 11 
+
+2020-10-06 15:37:56.8070	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:37:56.8070	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:38:25.8327	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:38:25.8687	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:38:25.8767	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:38:25.8807	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:38:25.9047	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:38:25.9047	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:38:25.9047	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:38:25.9057	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:43:16.4266	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:43:16.4636	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:43:23.5307	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:43:23.5667	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:43:41.9548	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:43:41.9988	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:43:42.0068	DEBUG	shtrih/client.go:39	OK, nothing to recive
+2020-10-06 15:43:42.0098	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:43:42.0298	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:43:42.0298	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:43:42.0308	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:43:42.0308	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:44:11.6856	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:44:11.7266	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:44:11.7356	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:44:11.7376	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:44:11.7666	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:44:11.7666	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:44:11.7666	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:44:11.7666	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:44:11.7716	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:44:11.7736	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:44:26.4762	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:44:26.5122	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:44:26.5442	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:44:26.5542	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:44:43.2099	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:44:43.2519	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:44:43.2589	DEBUG	shtrih/client.go:39	OK, nothing to recive
+2020-10-06 15:44:43.2629	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:44:43.2839	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 0f 1f 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 40  |281000100007442@|
+00000020  2e 00 00 bd                                       |....|
+
+2020-10-06 15:44:43.2849	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:44:43.2849	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:44:43.2849	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:46:23.7885	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:46:23.8245	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:46:23.8335	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:46:23.8365	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:46:23.8625	DEBUG	shtrih/client.go:126	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:46:23.8635	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:46:23.8635	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:46:23.8635	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:46:23.8685	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:46:23.8725	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:46:41.3174	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:46:41.3534	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:46:41.3584	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:46:41.3614	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:46:59.7319	DEBUG	shtrih/client.go:126	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:47:10.9574	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:47:10.9924	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:47:10.9984	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:47:11.0044	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:47:11.0294	DEBUG	shtrih/client.go:126	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:47:11.0304	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:47:11.0304	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:47:11.0304	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:47:11.0384	DEBUG	shtrih/client.go:35	OK, need recive, recive now
+2020-10-06 15:47:11.0414	DEBUG	shtrih/client.go:75	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:47:56.0308	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:47:56.0648	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:47:56.0728	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:47:56.0758	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:47:56.1038	DEBUG	shtrih/client.go:129	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:47:56.1048	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:47:56.1048	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:47:56.1048	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:47:56.1098	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:47:56.1138	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:48:39.1253	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:48:39.1593	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:48:39.1653	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:48:39.1683	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:48:39.1943	DEBUG	shtrih/client.go:130	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:48:39.1943	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:48:39.1943	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:48:39.1943	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:48:39.2450	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:48:39.2518	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:49:09.2806	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:49:09.3196	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:49:09.3446	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:49:09.3696	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:49:09.3926	DEBUG	shtrih/client.go:132	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:49:09.3926	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:49:09.3926	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:49:09.3926	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:49:09.3986	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:49:09.4011	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:49:35.7260	DEBUG	driver/main.go:24	log level: debug
+2020-10-06 15:49:35.7670	INFO	driver/main.go:31	Shtrih driver starting
+2020-10-06 15:49:35.7730	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:49:35.7770	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:49:35.8050	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:49:35.8050	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:49:35.8050	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:49:35.8050	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:49:35.8300	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:49:35.8330	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:50:17.1982	DEBUG	driver/main.go:24	log level: debug
+2020-10-06 15:50:17.2352	INFO	driver/main.go:31	Shtrih driver starting
+2020-10-06 15:50:17.2412	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:50:17.2472	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:50:19.6395	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:50:19.6395	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:50:19.6395	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:50:19.6395	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:50:19.9486	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:50:19.9506	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:50:42.2392	DEBUG	driver/main.go:24	log level: debug
+2020-10-06 15:50:42.2802	INFO	driver/main.go:31	Shtrih driver starting
+2020-10-06 15:50:42.2852	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:50:42.2872	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:50:42.3142	DEBUG	shtrih/client.go:131	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:50:42.3142	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:50:42.3142	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:50:42.3142	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:50:42.6183	DEBUG	shtrih/client.go:36	OK, need recive, recive now
+2020-10-06 15:50:42.6214	DEBUG	shtrih/client.go:76	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:51:53.2320	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:51:53.2680	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:51:53.2770	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:51:53.2830	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:51:53.2830	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:51:53.2860	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:51:53.3100	DEBUG	shtrih/client.go:134	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:51:53.3100	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:51:53.3100	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:51:53.3100	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:51:53.3290	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:51:53.3320	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:51:53.3320	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:51:53.3350	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:52:20.0691	DEBUG	driver/main.go:24	log level: debug
+2020-10-06 15:52:20.1091	INFO	driver/main.go:31	Shtrih driver starting
+2020-10-06 15:52:20.1151	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:52:20.1181	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:52:20.1181	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:52:20.1221	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:52:20.1521	DEBUG	shtrih/client.go:134	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:52:20.1521	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:52:20.1521	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:52:20.1521	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:52:20.1551	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:52:20.1571	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:52:20.1571	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:52:20.1601	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:53:49.6581	DEBUG	driver/main.go:24	log level: debug
+2020-10-06 15:53:49.6951	INFO	driver/main.go:31	Shtrih driver starting
+2020-10-06 15:53:49.6981	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:53:49.7011	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:53:49.7011	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:53:49.7031	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 15:53:49.7291	DEBUG	shtrih/client.go:134	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 15:53:49.7291	DEBUG	shtrih/printer.go:42	status bits: 11
+2020-10-06 15:53:49.7291	DEBUG	shtrih/printer.go:44	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 15:53:49.7291	DEBUG	shtrih/printer.go:66	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 15:31
+fs serial: 9281000100007442
+fs last doc number: 11840
+2020-10-06 15:53:49.7321	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:53:49.7361	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:53:49.7361	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:53:49.7471	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:55:42.9671	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:55:43.0071	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:55:43.0111	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:55:43.0131	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:55:43.0131	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:56:34.4657	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:56:34.5017	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:56:34.5147	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:56:34.5167	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:56:34.5167	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 15:56:40.1962	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:56:40.2362	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:56:42.7392	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:56:42.7402	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:56:42.7402	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 15:57:00.6092	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:57:00.6472	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:57:03.1919	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:57:03.1928	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:57:03.1928	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 15:57:53.3241	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:57:53.3641	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:57:57.0988	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:57:57.1318	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:57:57.1348	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:57:57.1368	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:57:57.1368	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 15:58:00.1084	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:58:00.1454	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:58:00.1494	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:58:00.1504	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:58:00.1504	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 15:58:34.8769	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:58:34.9129	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:58:34.9159	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:58:34.9209	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:58:34.9209	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 15:58:34.9239	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:58:43.9453	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:58:43.9953	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:58:44.0125	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:58:48.0941	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:58:48.1361	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:58:48.1391	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:58:48.1531	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:58:48.1531	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:58:53.1359	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:58:53.1719	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:58:53.1759	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:58:53.1779	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:58:53.1789	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 15:59:02.1348	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:59:02.1818	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:59:02.1858	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:59:02.1888	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:59:02.1888	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 15:59:02.1928	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 15:59:51.8190	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 15:59:51.8550	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 15:59:53.3370	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 15:59:53.3400	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 15:59:53.3400	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 15:59:54.8200	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:00:02.4690	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:00:02.5070	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:00:06.9044	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:00:06.9074	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:00:06.9074	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 16:00:18.8982	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:01:26.0950	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:01:26.1320	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:01:26.1360	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:01:30.0705	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:01:30.1045	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:01:30.1335	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:01:34.7032	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:01:34.7392	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:01:34.7532	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:01:34.7692	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:01:34.7692	DEBUG	shtrih/client.go:43	OK, nothing to recive
+2020-10-06 16:01:34.7732	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 16:01:34.7944	DEBUG	shtrih/client.go:134	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 16:01:34.7944	DEBUG	shtrih/printer.go:46	status bits: 11
+2020-10-06 16:01:34.7944	DEBUG	shtrih/printer.go:48	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 16:01:34.7944	DEBUG	shtrih/printer.go:70	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 16:20
+fs serial: 9281000100007442
+fs last doc number: 11841
+2020-10-06 16:01:38.7880	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:01:38.8210	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:01:38.8240	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:01:38.8300	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:01:38.8300	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 16:01:38.8340	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 16:01:38.8590	DEBUG	shtrih/client.go:134	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 16:01:38.8590	DEBUG	shtrih/printer.go:46	status bits: 11
+2020-10-06 16:01:38.8590	DEBUG	shtrih/printer.go:48	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 16:01:38.8600	DEBUG	shtrih/printer.go:70	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 16:20
+fs serial: 9281000100007442
+fs last doc number: 11841
+2020-10-06 16:02:26.5348	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:02:26.5718	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:02:26.5758	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:02:26.5788	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:02:26.5788	DEBUG	shtrih/client.go:39	OK, need recive, recive now
+2020-10-06 16:02:26.5818	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:03:06.4132	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:03:06.4612	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:03:06.4652	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:03:06.4682	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:03:06.4682	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:03:06.4722	DEBUG	shtrih/client.go:79	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:13:03.6139	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:13:03.6549	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:13:03.6579	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:13:03.6599	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:13:03.6599	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:13:03.6619	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:13:03.6699	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 16, crc: 16 
+
+2020-10-06 16:13:14.4247	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:13:14.4607	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:13:14.4647	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:13:14.4667	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:13:14.4667	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:13:14.4697	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 16:13:14.4997	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 16:13:14.5007	DEBUG	shtrih/printer.go:49	status bits: 11
+2020-10-06 16:13:14.5007	DEBUG	shtrih/printer.go:51	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 16:13:14.5007	DEBUG	shtrih/printer.go:73	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 16:20
+fs serial: 9281000100007442
+fs last doc number: 11841
+2020-10-06 16:13:14.5037	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:13:14.5087	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:13:14.5097	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:13:14.5318	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:13:14.5433	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 16, crc: 16 
+
+2020-10-06 16:14:27.5124	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:14:27.5454	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:14:27.5484	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:14:27.5504	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:14:27.5504	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:14:27.5524	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 16:14:27.5794	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 16:14:27.5794	DEBUG	shtrih/printer.go:49	status bits: 11
+2020-10-06 16:14:27.5794	DEBUG	shtrih/printer.go:51	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 16:14:27.5794	DEBUG	shtrih/printer.go:73	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 16:20
+fs serial: 9281000100007442
+fs last doc number: 11841
+2020-10-06 16:14:27.5814	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:14:27.5844	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:14:27.5844	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:14:27.5864	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:14:27.5934	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 16, crc: 16 
+
+2020-10-06 16:14:27.5964	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:14:27.5984	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:14:27.5984	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:14:27.6004	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:14:27.6114	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:14:27.6114	DEBUG	shtrih/client.go:43	OK, NAK, nothing to recive
+2020-10-06 16:14:27.6134	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:14:27.6154	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:14:27.6154	DEBUG	shtrih/client.go:43	OK, NAK, nothing to recive
+2020-10-06 16:14:27.6174	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:14:27.6193	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:14:27.6193	DEBUG	shtrih/client.go:43	OK, NAK, nothing to recive
+2020-10-06 16:15:24.6527	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:15:24.6877	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:15:24.6907	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:15:24.6927	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:15:24.6927	DEBUG	shtrih/client.go:43	OK, NAK, nothing to recive
+2020-10-06 16:15:24.6957	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 16:15:24.7167	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 16:15:24.7167	DEBUG	shtrih/printer.go:49	status bits: 11
+2020-10-06 16:15:24.7167	DEBUG	shtrih/printer.go:51	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 16:15:24.7167	DEBUG	shtrih/printer.go:73	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 16:20
+fs serial: 9281000100007442
+fs last doc number: 11841
+2020-10-06 16:15:24.7187	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:15:24.7207	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:15:24.7207	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:15:24.7237	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:15:24.7377	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 16, crc: 16 
+
+2020-10-06 16:15:52.1540	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:15:52.1870	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:15:52.1990	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:15:52.2021	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:15:52.2021	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:15:52.2050	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 16:15:52.2315	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+
+2020-10-06 16:15:52.2315	DEBUG	shtrih/printer.go:49	status bits: 11
+2020-10-06 16:15:52.2315	DEBUG	shtrih/printer.go:51	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 16:15:52.2315	DEBUG	shtrih/printer.go:73	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 16:20
+fs serial: 9281000100007442
+fs last doc number: 11841
+2020-10-06 16:15:52.2347	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:15:52.2379	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:15:52.2379	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:15:52.2401	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:15:52.2471	DEBUG	shtrih/client.go:124	<- recive frame: 
+stx: 2, data len: 16, crc: 16 
+
+2020-10-06 16:17:45.8056	DEBUG	driver/main.go:23	log level: debug
+2020-10-06 16:17:45.8396	INFO	driver/main.go:30	Shtrih driver starting
+2020-10-06 16:17:45.8436	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:17:45.8476	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:17:45.8476	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:17:45.8516	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 06 ff 01 1e 00 00 00  e6                       |.........|
+
+2020-10-06 16:17:45.8746	DEBUG	shtrih/client.go:129	<- recive frame: 
+stx: 2, data len: 33, crc: 33 
+00000000  02 21 ff 01 00 03 00 00  01 00 14 0a 06 10 14 39  |.!.............9|
+00000010  32 38 31 30 30 30 31 30  30 30 30 37 34 34 32 41  |281000100007442A|
+00000020  2e 00 00 a8                                       |....|
+
+2020-10-06 16:17:45.8756	DEBUG	shtrih/printer.go:49	status bits: 11
+2020-10-06 16:17:45.8756	DEBUG	shtrih/printer.go:51	
+проведена настройка фн: true 
+фискальный режим открыт: true 
+фискальный режим закрыт: false 
+закончена передача фискальных данных в ОФД: false 
+
+2020-10-06 16:17:45.8756	DEBUG	shtrih/printer.go:73	
+fs doc type: 0
+fs is doc received: 0
+fs is day opened: 1 
+fs flags: 0 
+fs date: 20.10.6
+fs time: 16:20
+fs serial: 9281000100007442
+fs last doc number: 11841
+2020-10-06 16:17:45.8786	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-06 16:17:45.8806	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-06 16:17:45.8806	DEBUG	shtrih/client.go:39	OK, ACK, recive now
+2020-10-06 16:17:45.8836	DEBUG	shtrih/client.go:73	-> send frame: 
+00000000  02 05 10 1e 00 00 00 0b                           |........|
+
+2020-10-06 16:17:45.8936	DEBUG	shtrih/client.go:129	<- recive frame: 
+stx: 2, data len: 16, crc: 16 
+00000000  02 10 10 00 1e 92 02 02  00 00 9f e5 20 01 00 8a  |............ ...|
+00000010  08 00 55                                          |..U|
+
