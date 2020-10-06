@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
+	"encoding/hex"
 	"fmt"
+	"log"
 	"shtrih-drv/internal/logger"
 )
 
@@ -29,15 +31,9 @@ func (p *Printer) Ping() {
 func (p *Printer) FnReadStatus() {
 	p.client.ping()
 
-	con, err := p.sendCommand(FnReadStatus)
+	data, err := p.sendCommand(FnReadStatus)
 	if err != nil {
-		p.logger.Fatal(err)
-	}
-	defer con.Close()
-
-	data, err := p.client.receiveDataFromFrame(con)
-	if err != nil {
-		p.logger.Fatal(err)
+		log.Fatal(err)
 	}
 
 	r := bufio.NewReader(bytes.NewReader(data))
@@ -89,15 +85,37 @@ func (p *Printer) FnReadStatus() {
 func (p *Printer) ReadShortStatus() {
 	p.client.ping()
 
-	con, err := p.sendCommand(ReadShortStatus)
-	if err != nil {
-		p.logger.Fatal(err)
-	}
-	defer con.Close()
-
-	_, err = p.client.receiveDataFromFrame(con)
+	data, err := p.sendCommand(ReadShortStatus)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
 
+	in := bufio.NewReader(bytes.NewReader(data))
+
+	cmdBin, _ := in.ReadBytes(0) // чтение байтов команды и null
+	println(hex.Dump(cmdBin))
+
+	operatorNumber, _ := in.ReadByte()
+
+	flags := make([]byte, 2)
+	in.Read(flags)
+
+	mode, _ := in.ReadByte() // & 15; ? wft
+	subMode, _ := in.ReadByte()
+	receiptOperationsLo, _ := in.ReadByte()
+	batteryState, _ := in.ReadByte()
+	//double batteryVoltage = (double)batteryState / 255.0D * 100.0D * 5.0D / 100.0D;
+	//double powerVoltage = (double)powerState * 24.0D / 216.0D * 100.0D / 100.0D;
+	powerState, _ := in.ReadByte()
+	FMResultCode, _ := in.ReadByte()
+	EJResultCode, _ := in.ReadByte()
+	receiptOperationsHi, _ := in.ReadByte()
+
+	//int receiptOperations = receiptOperationsLo + (receiptOperationsHi << 8);
+	str := fmt.Sprintf("\noperator number: %v\nflags: %v\nmode: %v\nsubMode: %v\n"+
+		"receiptOperationsLo: %v\nbatteryState: %v\npowerState: %v\n"+
+		"FMResultCode: %v\nEJResultCode: %v\nreceiptOperationsHi: %v", operatorNumber, flags, mode, subMode,
+		receiptOperationsLo, batteryState, powerState, FMResultCode, EJResultCode, receiptOperationsHi)
+
+	p.logger.Debug(str)
 }

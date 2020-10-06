@@ -22,7 +22,7 @@ func (p *Printer) createCommand(command uint16) []byte {
 	return dataBuffer.Bytes()
 }
 
-func (p *Printer) sendCommand(command uint16) (net.Conn, error) {
+func (p *Printer) sendCommand(command uint16) ([]byte, error) {
 	cmdBinary := p.createCommand(command)
 	frame := p.client.createFrame(cmdBinary)
 
@@ -30,6 +30,8 @@ func (p *Printer) sendCommand(command uint16) (net.Conn, error) {
 	if err := p.client.sendFrame(frame, con); err != nil {
 		return nil, err
 	}
+	defer con.Close()
 
-	return con, nil
+	return p.client.receiveDataFromFrame(con)
+
 }
