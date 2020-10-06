@@ -2,8 +2,9 @@ package shtrih
 
 const (
 	// команды принтера
-	ReadShortStatus = 16 // короткий статус принтера
-	PrintZReport    = 65
+	ReadShortStatus            = 16 // короткий статус принтера
+	PrintReportWithoutClearing = 64 // Снять отчет без гашения
+	PrintZReport               = 65 // z report?
 
 	// команды фискального накопителя
 	FnReadStatus = 65281 // чтение статуса фискального накопителя

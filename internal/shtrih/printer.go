@@ -123,7 +123,15 @@ func (p *Printer) ReadShortStatus() {
 func (p *Printer) PrintZReport() {
 	p.client.ping()
 
-	_, err := p.sendCommand(PrintZReport)
+	// c++
+	//02 05 40 1E 00 00 00 5B
+	//02 | 03 | 40 | 00 | 00 | 43
+
+	//go
+	//02 05 40 1e 00 00 00 5b
+	//02 03 40 00 00 43
+
+	_, err := p.sendCommand(PrintReportWithoutClearing)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
