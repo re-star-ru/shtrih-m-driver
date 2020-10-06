@@ -1,0 +1,16 @@
+2020-10-06 14:15:16.6455	INFO	driver/main.go:27	Shtrih driver starting
+2020-10-06 14:15:16.6835	DEBUG	driver/main.go:28	This is a DEBUG message
+2020-10-06 14:15:16.6895	DEBUG	shtrih/client.go:34	OK, need recive, recive now
+2020-10-06 14:15:16.7175	DEBUG	shtrih/client.go:137	<- recive frame
+2020-10-06 14:15:26.5710	INFO	driver/main.go:27	Shtrih driver starting
+2020-10-06 14:15:26.6050	DEBUG	driver/main.go:28	This is a DEBUG message
+2020-10-06 14:15:26.6120	DEBUG	shtrih/client.go:38	OK, nothing to recive
+2020-10-06 14:15:26.6373	DEBUG	shtrih/client.go:137	<- recive frame
+2020-10-06 14:15:38.1273	INFO	driver/main.go:27	Shtrih driver starting
+2020-10-06 14:15:38.1599	DEBUG	driver/main.go:28	This is a DEBUG message
+2020-10-06 14:15:38.1704	DEBUG	shtrih/client.go:38	OK, nothing to recive
+2020-10-06 14:15:38.1957	DEBUG	shtrih/client.go:137	<- recive frame
+2020-10-06 14:15:44.5903	INFO	driver/main.go:27	Shtrih driver starting
+2020-10-06 14:15:44.6233	DEBUG	driver/main.go:28	This is a DEBUG message
+2020-10-06 14:15:44.6290	DEBUG	shtrih/client.go:38	OK, nothing to recive
+2020-10-06 14:15:44.6529	DEBUG	shtrih/client.go:137	<- recive frame
