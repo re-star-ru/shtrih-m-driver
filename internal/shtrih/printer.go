@@ -119,3 +119,12 @@ func (p *Printer) ReadShortStatus() {
 
 	p.logger.Debug(str)
 }
+
+func (p *Printer) PrintZReport() {
+	p.client.ping()
+
+	_, err := p.sendCommand(PrintZReport)
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+}
