@@ -128,7 +128,8 @@
     <MESSAGE value="refactoring" />
     <MESSAGE value="asd" />
     <MESSAGE value="refactoring, add printer error handler" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactoring, add printer error handler" />
+    <MESSAGE value="readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="readme" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -203,10 +204,10 @@
     </state>
     <state x="756" y="138" width="998" height="708" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1602003081522" />
     <state x="461" y="164" key="SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601541027396" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1602096340303">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1602096486567">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1602096340303" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1602096486567" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601904935079" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1602093393396">
       <screen x="0" y="0" width="1920" height="1040" />
