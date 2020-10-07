@@ -1,4 +1,6 @@
 # shtrih-m-driver
-go driver for shtrih-m
+go tcp driver for shtrih-m
 
-all commands in int decimal
+todo: 
+- [ ] config for max timeout request for one connection
+- [ ] config for retrys for command
