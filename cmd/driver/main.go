@@ -21,7 +21,6 @@ func createLogger() *zap.SugaredLogger {
 
 	slogger := logger.Sugar()
 	slogger.Debug("log level: ", loggerConfig.Level.String())
-
 	return slogger
 }
 
@@ -33,10 +32,9 @@ func main() {
 	password := uint32(30)
 
 	printer := shtrih.NewPrinter(logger, host, password)
-	//printer.FnReadStatus()
-	////
-	//
-	//printer.ReadShortStatus()
-	printer.PrintZReport()
+	printer.FnReadStatus()
 
+	//printer.ReadShortStatus()
+	printer.PrintReportWithoutClearing()
+	printer.PrintReportWithoutClearing()
 }

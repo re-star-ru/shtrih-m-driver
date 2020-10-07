@@ -6,7 +6,7 @@ import (
 	"net"
 )
 
-func (p *Printer) createCommand(command uint16) []byte {
+func (p *Printer) createCommandData(command uint16) ([]byte, int) {
 	dataBuffer := bytes.NewBuffer([]byte{})
 
 	cb := make([]byte, 2)
@@ -19,19 +19,26 @@ func (p *Printer) createCommand(command uint16) []byte {
 	binary.LittleEndian.PutUint32(passwordBinary, p.password)
 	dataBuffer.Write(passwordBinary) // write password
 
-	return dataBuffer.Bytes()
+	return dataBuffer.Bytes(), len(cb)
 }
 
 func (p *Printer) sendCommand(command uint16) ([]byte, error) {
-	cmdBinary := p.createCommand(command)
+	cmdBinary, cmdLen := p.createCommandData(command)
 	frame := p.client.createFrame(cmdBinary)
 
 	con, _ := net.Dial("tcp", p.client.host)
 	if err := p.client.sendFrame(frame, con); err != nil {
 		return nil, err
 	}
-	defer con.Close()
 
-	return p.client.receiveDataFromFrame(con)
+	rFrame, err := p.client.receiveFrame(con, byte(cmdLen))
+	if err != nil {
+		p.logger.Fatal(err)
+	}
 
+	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+		return nil, err
+	}
+
+	return rFrame.DATA, nil
 }

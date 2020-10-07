@@ -77,6 +77,7 @@ func (c *client) sendFrame(frame []byte, con net.Conn) error {
 		con.Close()
 		c.logger.Fatal(err)
 	}
+	c.logger.Debug("<- recive control byte: ", b)
 
 	switch b {
 	case ACK:

@@ -6,7 +6,6 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"log"
 	"shtrih-drv/internal/logger"
 )
 
@@ -29,16 +28,17 @@ func (p *Printer) Ping() {
 }
 
 func (p *Printer) FnReadStatus() {
+	p.logger.Debug("Send command FnReadStatus")
+
 	p.client.ping()
 
 	data, err := p.sendCommand(FnReadStatus)
 	if err != nil {
-		log.Fatal(err)
+		p.logger.Error(err)
+		return
 	}
 
 	r := bufio.NewReader(bytes.NewReader(data))
-	r.ReadBytes(0) // чтение байтов команды и null
-
 	////
 	fsStatusByte, _ := r.ReadByte()
 	code := uint64(fsStatusByte)
@@ -83,11 +83,14 @@ func (p *Printer) FnReadStatus() {
 }
 
 func (p *Printer) ReadShortStatus() {
+	p.logger.Debug("Send command ReadShortStatus")
+
 	p.client.ping()
 
 	data, err := p.sendCommand(ReadShortStatus)
 	if err != nil {
-		p.logger.Fatal(err)
+		p.logger.Error(err)
+		return
 	}
 
 	in := bufio.NewReader(bytes.NewReader(data))
@@ -120,19 +123,14 @@ func (p *Printer) ReadShortStatus() {
 	p.logger.Debug(str)
 }
 
-func (p *Printer) PrintZReport() {
+func (p *Printer) PrintReportWithoutClearing() {
+	p.logger.Debug("Send command PrintReportWithoutClearing")
+
 	p.client.ping()
-
-	// c++
-	//02 05 40 1E 00 00 00 5B
-	//02 | 03 | 40 | 00 | 00 | 43
-
-	//go
-	//02 05 40 1e 00 00 00 5b
-	//02 03 40 00 00 43
 
 	_, err := p.sendCommand(PrintReportWithoutClearing)
 	if err != nil {
-		p.logger.Fatal(err)
+		p.logger.Error(err)
+		return
 	}
 }
