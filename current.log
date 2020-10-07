@@ -2905,3 +2905,8 @@ main.main
 	C:/Users/fess9/git/shtrih-m-driver/cmd/driver/main.go:39
 runtime.main
 	C:/Go/src/runtime/proc.go:204
+2020-10-07 21:51:01.9666	DEBUG	driver/main.go:23	log level: debug
+2020-10-07 21:51:01.9945	INFO	driver/main.go:29	Shtrih driver starting
+2020-10-07 21:51:02.0085	DEBUG	shtrih/client.go:33	-> send ENQ
+2020-10-07 21:51:02.0215	DEBUG	shtrih/client.go:36	<- recive control byte
+2020-10-07 21:51:02.0215	DEBUG	shtrih/client.go:39	OK, ACK, recive now

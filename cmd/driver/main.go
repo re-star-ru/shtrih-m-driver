@@ -32,9 +32,11 @@ func main() {
 	password := uint32(30)
 
 	printer := shtrih.NewPrinter(logger, host, password)
-	printer.FnReadStatus()
+	//printer.FnReadStatus()
 
 	//printer.ReadShortStatus()
-	printer.PrintReportWithoutClearing()
-	printer.PrintReportWithoutClearing()
+	//printer.PrintReportWithoutClearing()
+	//printer.PrintReportWithoutClearing()
+
+	printer.PrintCheck()
 }
