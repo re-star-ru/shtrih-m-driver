@@ -134,3 +134,46 @@ func (p *Printer) PrintReportWithoutClearing() {
 		return
 	}
 }
+
+func (p *Printer) writeCashierName(cashierName string) {
+	lines := make([]string, 1)
+	lines[0] = cashierName
+	//directIO(SMFPTR_DIO_WRITE_CASHIER_NAME, null, lines)
+}
+
+/**
+ * Write cashier name *
+ */
+//public static final int SMFPTR_DIO_WRITE_CASHIER_NAME = 0x2C;
+
+//DIO
+const (
+	SMFPTR_DIO_WRITE_CASHIER_NAME = 0x2C
+)
+
+// ////////////////////////////////////////////////////////////////////////
+// table numbers
+// ////////////////////////////////////////////////////////////////////////
+// ECR type and mode
+const (
+	SMFP_TABLE_CASHIER int = 2
+)
+
+func (p *Printer) writeCasierName(name string) error {
+	//operator := p.readPrinterStatus().getOperator()
+	//p.writeTable(SMFP_TABLE_CASHIER, operator, 2, name)
+	return nil
+}
+
+//func writeAdminName(String name) throws Exception {
+//	ReadShortStatus command = new ReadShortStatus(sysPassword);
+//	execute(command);
+//	int operator = command.getStatus().getOperatorNumber();
+//	writeTable(SMFP_TABLE_CASHIER, operator, 2, name);
+//}
+//
+//String[] lines = (String[]) object;
+//DIOUtils.checkObjectMinLength(lines, 1);
+//String cashierName = lines[0];
+//getPrinter().writeAdminName(cashierName);
+//getPrinter().writeCasierName(cashierName);

@@ -6,7 +6,7 @@ import (
 	"net"
 )
 
-func (p *Printer) createCommandData(command uint16) ([]byte, int) {
+func (p *Printer) createCommandData(command uint16) (data []byte, cmdLen int) {
 	dataBuffer := bytes.NewBuffer([]byte{})
 
 	cb := make([]byte, 2)
@@ -41,4 +41,49 @@ func (p *Printer) sendCommand(command uint16) ([]byte, error) {
 	}
 
 	return rFrame.DATA, nil
+}
+
+func (p *Printer) WriteTable(tableNumber, rowNumber byte, fieldNumber uint16, fieldValue []byte) {
+	data, cmdLen := p.createCommandData(WriteTable)
+
+	buf := bytes.NewBuffer(data)
+	buf.WriteByte(tableNumber)
+	buf.WriteByte(rowNumber)
+
+	cb := make([]byte, 2)
+	binary.BigEndian.PutUint16(cb, fieldNumber)
+	cb = bytes.TrimPrefix(cb, []byte{0})
+	buf.Write(cb)
+
+	//stream.write((v >>> 0) & 0xFF);
+	//stream.write((v >>> 8) & 0xFF);
+	//out.writeShort(rowNumber);
+	//out.writeByte(fieldNumber);
+	//out.writeBytes(fieldValue);
+
+	_, err := p.sendCommand(WriteTable)
+	if err != nil {
+		p.logger.Fatal(err)
+		return
+	}
+
+	//params := make([]string, 4)
+	//params[0] = strconv.Itoa(tableNumber)
+	//params[1] = strconv.Itoa(rowNumber)
+	//params[2] = strconv.Itoa(fieldNumber)
+	//params[3] = fieldValue
+	//
+	////public void execute(int[] data, Object object) throws Exception {
+	////	DIOUtils.checkDataMinLength(data, 3);
+	////	DIOUtils.checkObjectMinLength((String[]) object, 1);
+	////
+	////	int tableNumber = data[0];
+	////	int rowNumber = data[1];
+	////	int fieldNumber = data[2];
+	////	String fieldValue = ((String[]) (object))[0];
+	////fieldValue = service.decodeText(fieldValue)
+	//p.writeTable(tableNumber, rowNumber, fieldNumber, fieldValue)
+	////service.printer.check();
+	//}
+
 }
