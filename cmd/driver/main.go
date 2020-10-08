@@ -38,7 +38,8 @@ func main() {
 	//printer.ReadShortStatus()
 
 	time.Sleep(time.Second * 40)
-	printer.PrintReportWithoutClearing()
+	//printer.PrintReportWithoutClearing()
 
+	printer.WriteTable(shtrih.SMFP_TABLE_CASHIER, 15, 2, "operator")
 	//printer.PrintCheck()
 }

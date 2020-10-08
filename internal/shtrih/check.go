@@ -1,8 +1,9 @@
 package shtrih
 
 import (
-	"math"
-	"math/big"
+	"errors"
+
+	"github.com/shopspring/decimal"
 )
 
 type CheckPackage struct {
@@ -67,36 +68,83 @@ type CheckPackage struct {
 	/**
 	 * Сумма наличной оплаты
 	 */
-	d big.Float
-
-
-	BigDecimal Cash = BigDecimal.ZERO;
+	Cash decimal.Decimal
 
 	/**
 	 * Сумма электронной оплаты
 	 */
-	@Attribute(required = false)
-	public BigDecimal ElectronicPayment = BigDecimal.ZERO;
+	ElectronicPayment decimal.Decimal
 
 	/**
-	 * Сумма предоплатой (зачетом аванса)
+	* Сумма предоплатой (зачетом аванса)
 	 */
-	@Attribute(required = false)
-	public BigDecimal AdvancePayment = BigDecimal.ZERO;
+	AdvancePayment decimal.Decimal
 
 	/**
-	 * Сумма постоплатой (в кредит)
+	* Сумма постоплатой (в кредит)
 	 */
-	@Attribute(required = false)
-	public BigDecimal Credit = BigDecimal.ZERO;
-
-	/**
-	 * Сумма встречным предоставлением
-	 */
-	@Attribute(required = false)
-	public BigDecimal CashProvision = BigDecimal.ZERO;
+	Credit decimal.Decimal
+	///**
+	// * Сумма встречным предоставлением
+	// */
+	//@Attribute(required = false)
+	//public BigDecimal CashProvision = BigDecimal.ZERO;
 }
 
 type Position struct {
 	typeString string
+}
+
+type FiscalString struct {
+	Name              string          // Наименование товара
+	Quantity          decimal.Decimal // Количество товара
+	PriceWithDiscount decimal.Decimal // Цена единицы товара с учетом скидок/наценок
+	SumWithDiscount   decimal.Decimal // 	 * Конечная сумма по позиции чека с учетом всех скидок/наценок
+
+	/**
+	 * Ставка НДС. Список значений:
+	 *  "none" - БЕЗ НДС
+	 *  "20" - НДС 20
+	 *  "10" - НДС 10
+	 *  "0" - НДС 0
+	 *  "10/110" - расч. ставка 10/110
+	 *  "20/120" - расч. ставка 20/120
+	 */
+	Tax string
+
+	SignMethodCalculation int    // Признак способа расчета
+	SignCalculationObject int    // Признак предмета расчета
+	MeasurementUnit       string // Единица измерения предмета расчета
+
+	//GoodCodeData GoodCodeData // Данные кода товарной номенклатуры
+
+}
+
+func (f *FiscalString) getTax() (int, error) {
+	switch f.Tax {
+	case "20":
+		return 1, nil
+	case "10":
+		return 2, nil
+	case "20/120":
+		return 3, nil
+	case "10/110":
+		return 4, nil
+	case "0":
+		return 5, nil
+	case "none":
+		return 6, nil
+	default:
+		return 0, errors.New("Неизвестный тип налоговой ставки: " + f.Tax)
+	}
+}
+
+type TextString struct {
+	Text       string // Строка с произвольным текстом
+	FontNumber int    // Строка с произвольным текстом
+}
+
+type BarcodeString struct {
+	BarcodeType string // Строка, определяющая тип штрихкода
+	Barcode     string // Значение штрихкода
 }
