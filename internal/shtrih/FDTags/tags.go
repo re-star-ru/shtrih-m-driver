@@ -34,4 +34,21 @@ const (
 	FDNumber            = 1040 // Номер Фискального документа
 	FNNumber            = 1041 // Номер фискального накопителя
 	FPD                 = 1077 // Фискальный признак документа
+
+	Client              = 1227 // Покупатель клиент
+	ClientINN           = 1228 // ИНН покупателя
+	CheckNumberForShift = 1042 // Номер чека за смену
+	SettlementAttribute = 1054 // ПризнакРассчета
+	TaxationSystemCheck = 1055 // Применяемая система налогообложения
+	ClientEmailOrNumber = 1008 // емейл или номер клиента
+
+	SubjectOfCalculation  = 1059 // предмет рассчета
+	CalculationSum        = 1020 //сумма рассчета указанного в чеке
+	CalculationSumCash    = 1031 // сумма по чеку наличными
+	CalculationSumNonCash = 1081 // сумма по чеку безналичными
+
+	CalculationSumWithVAT0   = 1104 // сумма расчета по чеку с НДС по ставке 0%
+	CalculationSumWithoutVAT = 1105 // сумма расчета по чеку без НДС
+	CalculationVAT20120      = 1106 // сумма ндс по растчетной ставке 20/120
+	QRCode                   = 1196 // QR-код, обязательлный
 )

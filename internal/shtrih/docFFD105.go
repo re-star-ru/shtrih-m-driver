@@ -1,7 +1,5 @@
 package shtrih
 
-import "shtrih-drv/internal/shtrih/FDTags"
-
 func (p *Printer) PrintCheck() {
 	p.Ping()
 
@@ -79,8 +77,43 @@ func (p *Printer) ProcessCheck(params CheckPackage, electronically bool) error {
 
 	//err := p.writeFiscalStrings(params.Positions.FiscalStrings)
 
-	writeVATINTagIfNotNullAndNotEmpty(p, FDTags.CashierINN, params.Parameters.CashierVATIN)
+	//Инн кассира
+	//writeVATINTagIfNotNullAndNotEmpty(p, FDTags.CashierINN, params.Parameters.CashierVATIN)
 
+	// телефон или электронный адрес покупателя, не могут быть одновременно заданы
+	//writeTagIfNotNullAndNotEmpty(printer, FDTags.ClientEmailOrNumber, params.Parameters.CustomerEmail)
+	//writeTagIfNotNullAndNotEmpty(printer, FDTags.ClientEmailOrNumber, params.Parameters.CustomerPhone)
+
+	// адрес электронной почты отправителя чека
+	//writeTagIfNotNullAndNotEmpty(printer, FDTags.EmailCheckSender, params.Parameters.SenderEmail)
+
+	// признак агента
+	//if (params.Parameters.AgentSign > 0) {
+	//	printer.fsWriteTag(1057, params.Parameters.AgentSign, 1);
+	//}
+
+	//if params.Payments.getCash() > 0 {
+	//	printer.printRecTotal(0, params.Payments.getCash(), "0")
+	//}
+	//
+	//if params.Payments.getElectronicPayment() > 0 {
+	//	printer.printRecTotal(0, params.Payments.getElectronicPayment(), "1")
+	//
+	//}
+	//
+	//if params.Payments.getAdvancePayment() > 0 {
+	//	printer.printRecTotal(0, params.Payments.getAdvancePayment(), "13")
+	//
+	//}
+	//if params.Payments.getCredit() > 0 {
+	//	printer.printRecTotal(0, params.Payments.getCredit(), "14")
+	//
+	//}
+	//if params.Payments.getCashProvision() > 0 {
+	//	printer.printRecTotal(0, params.Payments.getCashProvision(), "15")
+	//}
+
+	//p.endFiscalReceipt(false);
 	return nil
 }
 
@@ -92,6 +125,14 @@ func writeVATINTagIfNotNullAndNotEmpty(printer Printer, tagID int, value string)
 	//if value != "" {
 	//	printer.fsWriteTag(tagId, formatInn(value)) // write string tag
 	//}
+	return nil
+}
+
+func writeTagIfNotNullAndNotEmpty(printer Printer, tagId int, value string) error {
+	//if value != "" {
+	//	printer.fsWriteTag(tagId, value)
+	//}
+
 	return nil
 }
 
