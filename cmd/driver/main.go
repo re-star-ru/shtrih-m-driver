@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"shtrih-drv/internal/shtrih"
+	"time"
 
 	"go.uber.org/zap/zapcore"
 
@@ -35,8 +36,9 @@ func main() {
 	//printer.FnReadStatus()
 
 	//printer.ReadShortStatus()
-	//printer.PrintReportWithoutClearing()
-	//printer.PrintReportWithoutClearing()
 
-	printer.PrintCheck()
+	time.Sleep(time.Second * 40)
+	printer.PrintReportWithoutClearing()
+
+	//printer.PrintCheck()
 }
