@@ -23,10 +23,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="652d809b-6a5f-4f39-998b-4aab20c6fc39" name="Default Changelist" comment="start tcp client">
-      <change afterPath="$PROJECT_DIR$/internal/shtrih/printCheck.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/driver/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/driver/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/current.log" beforeDir="false" afterPath="$PROJECT_DIR$/current.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/shtrih/cmdConsts.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shtrih/cmdConsts.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/shtrih/printer.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/shtrih/printer.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -129,10 +129,7 @@
     <MESSAGE value="configs" />
     <MESSAGE value="start reverse engenering java pos 1.13 driver" />
     <MESSAGE value="refactoring" />
-    <MESSAGE value="asd" />
-    <MESSAGE value="refactoring, add printer error handler" />
-    <MESSAGE value="readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactoring" />
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
@@ -161,28 +158,28 @@
     <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1601984935981">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601467674986" />
-    <state width="1877" height="259" key="GridCell.Tab.0.bottom" timestamp="1602096661955">
+    <state x="740" y="275" key="FileChooserDialogImpl/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601984935981" />
+    <state width="1877" height="541" key="GridCell.Tab.0.bottom" timestamp="1601992663655">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="259" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1602096661955" />
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601901880523" />
-    <state width="1877" height="259" key="GridCell.Tab.0.center" timestamp="1602096661954">
+    <state width="1877" height="390" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
+    <state width="1877" height="541" key="GridCell.Tab.0.bottom/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601992663655" />
+    <state width="1877" height="541" key="GridCell.Tab.0.center" timestamp="1601992663654">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="259" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1602096661954" />
-    <state width="1877" height="348" key="GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601901880522" />
-    <state width="1877" height="259" key="GridCell.Tab.0.left" timestamp="1602096661954">
+    <state width="1877" height="390" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
+    <state width="1877" height="541" key="GridCell.Tab.0.center/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601992663654" />
+    <state width="1877" height="541" key="GridCell.Tab.0.left" timestamp="1601992663654">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="259" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1602096661954" />
-    <state width="1877" height="348" key="GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601901880522" />
-    <state width="1877" height="259" key="GridCell.Tab.0.right" timestamp="1602096661955">
+    <state width="1877" height="390" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185727" />
+    <state width="1877" height="541" key="GridCell.Tab.0.left/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601992663654" />
+    <state width="1877" height="541" key="GridCell.Tab.0.right" timestamp="1601992663655">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="259" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1602096661955" />
-    <state width="1877" height="348" key="GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601901880523" />
-    <state width="1877" height="390" key="GridCell.Tab.1.bottom" timestamp="1602092141116">
+    <state width="1877" height="390" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1601873185728" />
+    <state width="1877" height="541" key="GridCell.Tab.0.right/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601992663655" />
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1601989277035">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1877" height="390" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1602092141116" />
@@ -205,14 +202,12 @@
     <state x="756" y="138" width="998" height="708" key="SettingsEditor" timestamp="1602003081522">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="756" y="138" width="998" height="708" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1602003081522" />
-    <state x="461" y="164" key="SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601541027396" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1602096585414">
+    <state x="461" y="164" key="SettingsEditor/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601984679449" />
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1601991809925">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1602096585414" />
-    <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601904935079" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1602093393396">
+    <state x="552" y="252" key="Vcs.Push.Dialog.v2/1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1601991809925" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1601985993905">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1602093393396" />
