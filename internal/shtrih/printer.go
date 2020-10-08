@@ -156,7 +156,7 @@ const (
 // ////////////////////////////////////////////////////////////////////////
 // ECR type and mode
 const (
-	SMFP_TABLE_CASHIER int = 2
+	SmfpTableCashier byte = 2
 )
 
 func (p *Printer) writeCasierName(name string) error {

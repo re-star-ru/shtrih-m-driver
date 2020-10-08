@@ -3,6 +3,7 @@ package shtrih
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/hex"
 	"net"
 )
 
@@ -47,6 +48,7 @@ func (p *Printer) WriteTable(tableNumber, rowNumber byte, fieldNumber uint16, fi
 	data, cmdLen := p.createCommandData(WriteTable)
 
 	buf := bytes.NewBuffer(data)
+
 	buf.WriteByte(tableNumber)
 	buf.WriteByte(rowNumber)
 
@@ -54,6 +56,27 @@ func (p *Printer) WriteTable(tableNumber, rowNumber byte, fieldNumber uint16, fi
 	binary.BigEndian.PutUint16(cb, fieldNumber)
 	cb = bytes.TrimPrefix(cb, []byte{0})
 	buf.Write(cb)
+	buf.Write(fieldValue)
+	frame := p.client.createFrame(buf.Bytes())
+
+	p.logger.Debug("write table frame:")
+	p.logger.Debug("\n", hex.Dump(frame))
+
+	con, _ := net.Dial("tcp", p.client.host)
+	if err := p.client.sendFrame(frame, con); err != nil {
+		p.logger.Fatal(err)
+	}
+
+	rFrame, err := p.client.receiveFrame(con, byte(cmdLen))
+	p.logger.Debug("recived table frame:")
+	p.logger.Debug("\n", hex.Dump(rFrame.bytes()))
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+
+	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+		p.logger.Fatal(err)
+	}
 
 	//stream.write((v >>> 0) & 0xFF);
 	//stream.write((v >>> 8) & 0xFF);
@@ -61,11 +84,11 @@ func (p *Printer) WriteTable(tableNumber, rowNumber byte, fieldNumber uint16, fi
 	//out.writeByte(fieldNumber);
 	//out.writeBytes(fieldValue);
 
-	_, err := p.sendCommand(WriteTable)
-	if err != nil {
-		p.logger.Fatal(err)
-		return
-	}
+	//_, err := p.sendCommand(WriteTable)
+	//if err != nil {
+	//	p.logger.Fatal(err)
+	//	return
+	//}
 
 	//params := make([]string, 4)
 	//params[0] = strconv.Itoa(tableNumber)
