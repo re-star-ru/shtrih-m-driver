@@ -6,7 +6,7 @@ import (
 	"net"
 )
 
-func (p *Printer) createCommandData(command uint16) ([]byte, int) {
+func (p *Printer) createCommandData(command uint16) (data []byte, cmdLen int) {
 	dataBuffer := bytes.NewBuffer([]byte{})
 
 	cb := make([]byte, 2)
@@ -43,7 +43,24 @@ func (p *Printer) sendCommand(command uint16) ([]byte, error) {
 	return rFrame.DATA, nil
 }
 
-func (p *Printer) WriteTable(tableNumber, rowNumber, fieldNumber int, fieldValue []byte) {
+func (p *Printer) WriteTable(tableNumber, rowNumber byte, fieldNumber uint16, fieldValue []byte) {
+	data, cmdLen := p.createCommandData(WriteTable)
+
+	buf := bytes.NewBuffer(data)
+	buf.WriteByte(tableNumber)
+	buf.WriteByte(rowNumber)
+
+	cb := make([]byte, 2)
+	binary.BigEndian.PutUint16(cb, fieldNumber)
+	cb = bytes.TrimPrefix(cb, []byte{0})
+	buf.Write(cb)
+
+	//stream.write((v >>> 0) & 0xFF);
+	//stream.write((v >>> 8) & 0xFF);
+	//out.writeShort(rowNumber);
+	//out.writeByte(fieldNumber);
+	//out.writeBytes(fieldValue);
+
 	_, err := p.sendCommand(WriteTable)
 	if err != nil {
 		p.logger.Fatal(err)
