@@ -7,12 +7,18 @@ import (
 	"encoding/hex"
 	"fmt"
 	"shtrih-drv/internal/logger"
+
+	"golang.org/x/text/encoding/charmap"
+
+	"golang.org/x/text/encoding"
 )
 
 type Printer struct {
 	logger   logger.Logger
 	client   *client
 	password uint32
+	decoder  *encoding.Decoder
+	encoder  *encoding.Encoder
 }
 
 func NewPrinter(logger logger.Logger, host string, password uint32) *Printer {
@@ -20,17 +26,13 @@ func NewPrinter(logger logger.Logger, host string, password uint32) *Printer {
 		logger:   logger,
 		client:   newClient(logger, host),
 		password: password,
+		decoder:  charmap.Windows1251.NewDecoder(),
+		encoder:  charmap.Windows1251.NewEncoder(),
 	}
-}
-
-func (p *Printer) Ping() {
-	p.client.ping()
 }
 
 func (p *Printer) FnReadStatus() {
 	p.logger.Debug("Send command FnReadStatus")
-
-	p.client.ping()
 
 	data, err := p.sendCommand(FnReadStatus)
 	if err != nil {
@@ -85,8 +87,6 @@ func (p *Printer) FnReadStatus() {
 func (p *Printer) ReadShortStatus() {
 	p.logger.Debug("Send command ReadShortStatus")
 
-	p.client.ping()
-
 	data, err := p.sendCommand(ReadShortStatus)
 	if err != nil {
 		p.logger.Error(err)
@@ -125,8 +125,6 @@ func (p *Printer) ReadShortStatus() {
 
 func (p *Printer) PrintReportWithoutClearing() {
 	p.logger.Debug("Send command PrintReportWithoutClearing")
-
-	p.client.ping()
 
 	_, err := p.sendCommand(PrintReportWithoutClearing)
 	if err != nil {

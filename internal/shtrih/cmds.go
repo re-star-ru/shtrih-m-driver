@@ -1,9 +1,10 @@
 package shtrih
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
+	"errors"
 	"net"
 )
 
@@ -28,11 +29,14 @@ func (p *Printer) sendCommand(command uint16) ([]byte, error) {
 	frame := p.client.createFrame(cmdBinary)
 
 	con, _ := net.Dial("tcp", p.client.host)
-	if err := p.client.sendFrame(frame, con); err != nil {
+	defer con.Close()
+	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
+
+	if err := p.client.sendFrame(frame, con, rw); err != nil {
 		return nil, err
 	}
 
-	rFrame, err := p.client.receiveFrame(con, byte(cmdLen))
+	rFrame, err := p.client.receiveFrame(con, byte(cmdLen), rw)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -41,35 +45,47 @@ func (p *Printer) sendCommand(command uint16) ([]byte, error) {
 		return nil, err
 	}
 
+	var cmdCodeRecived uint16
+	if len(rFrame.CMD) == 1 {
+		cmdCodeRecived = uint16(rFrame.CMD[0])
+	}
+	if len(rFrame.CMD) == 2 {
+		cmdCodeRecived = binary.BigEndian.Uint16(rFrame.CMD)
+	}
+	if cmdCodeRecived != command {
+		return nil, errors.New("отправленная и полученная команды не совпадаютс")
+	}
+
 	return rFrame.DATA, nil
+	//return nil, nil
 }
 
-func (p *Printer) WriteTable(tableNumber, rowNumber byte, fieldNumber uint16, fieldValue []byte) {
+func (p *Printer) WriteTable(tableNumber byte, rowNumber uint16, fieldNumber byte, fieldValue string) {
 	data, cmdLen := p.createCommandData(WriteTable)
 
 	buf := bytes.NewBuffer(data)
 
 	buf.WriteByte(tableNumber)
-	buf.WriteByte(rowNumber)
 
 	cb := make([]byte, 2)
-	binary.BigEndian.PutUint16(cb, fieldNumber)
-	cb = bytes.TrimPrefix(cb, []byte{0})
+	binary.LittleEndian.PutUint16(cb, rowNumber)
 	buf.Write(cb)
-	buf.Write(fieldValue)
+
+	buf.WriteByte(fieldNumber)
+
+	fvb, _ := p.encoder.Bytes([]byte(fieldValue)) // конвентируем строку в win1251
+	buf.Write(fvb)
 	frame := p.client.createFrame(buf.Bytes())
 
-	p.logger.Debug("write table frame:")
-	p.logger.Debug("\n", hex.Dump(frame))
-
 	con, _ := net.Dial("tcp", p.client.host)
-	if err := p.client.sendFrame(frame, con); err != nil {
+	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
+
+	defer con.Close()
+	if err := p.client.sendFrame(frame, con, rw); err != nil {
 		p.logger.Fatal(err)
 	}
 
-	rFrame, err := p.client.receiveFrame(con, byte(cmdLen))
-	p.logger.Debug("recived table frame:")
-	p.logger.Debug("\n", hex.Dump(rFrame.bytes()))
+	rFrame, err := p.client.receiveFrame(con, byte(cmdLen), rw)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -77,36 +93,4 @@ func (p *Printer) WriteTable(tableNumber, rowNumber byte, fieldNumber uint16, fi
 	if err := checkOnPrinterError(rFrame.ERR); err != nil {
 		p.logger.Fatal(err)
 	}
-
-	//stream.write((v >>> 0) & 0xFF);
-	//stream.write((v >>> 8) & 0xFF);
-	//out.writeShort(rowNumber);
-	//out.writeByte(fieldNumber);
-	//out.writeBytes(fieldValue);
-
-	//_, err := p.sendCommand(WriteTable)
-	//if err != nil {
-	//	p.logger.Fatal(err)
-	//	return
-	//}
-
-	//params := make([]string, 4)
-	//params[0] = strconv.Itoa(tableNumber)
-	//params[1] = strconv.Itoa(rowNumber)
-	//params[2] = strconv.Itoa(fieldNumber)
-	//params[3] = fieldValue
-	//
-	////public void execute(int[] data, Object object) throws Exception {
-	////	DIOUtils.checkDataMinLength(data, 3);
-	////	DIOUtils.checkObjectMinLength((String[]) object, 1);
-	////
-	////	int tableNumber = data[0];
-	////	int rowNumber = data[1];
-	////	int fieldNumber = data[2];
-	////	String fieldValue = ((String[]) (object))[0];
-	////fieldValue = service.decodeText(fieldValue)
-	//p.writeTable(tableNumber, rowNumber, fieldNumber, fieldValue)
-	////service.printer.check();
-	//}
-
 }

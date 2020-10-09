@@ -1,7 +1,7 @@
 package shtrih
 
 func (p *Printer) PrintCheck() {
-	p.Ping()
+	//p.Ping()
 
 	// todo print check
 }
@@ -9,7 +9,7 @@ func (p *Printer) PrintCheck() {
 // 1
 // Открытие смены, передаются данные о кассире
 func (p *Printer) OpenShift(cashier string) {
-	p.Ping()
+	//p.Ping()
 
 	// todo print check
 }
@@ -17,7 +17,7 @@ func (p *Printer) OpenShift(cashier string) {
 // last
 // закрытие смены, так же передаются данные о кассире
 func (p *Printer) CloseShift(cashier string) {
-	p.Ping()
+	//p.Ping()
 
 	// todo print check
 }
