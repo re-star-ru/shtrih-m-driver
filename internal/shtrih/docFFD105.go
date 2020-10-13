@@ -34,7 +34,7 @@ func (p *Printer) CloseShift(cashier string) {
  * @param params         данные чека
  * @param electronically Формирование чека в только электроном виде. Печать чека не осуществляется.
  */
-func (p *Printer) ProcessCheck(params CheckPackage, electronically bool) error {
+func (p *Printer) ProcessCheck(params CheckPackage, print bool) error {
 
 	// TODO: проверка на открытую смену
 	//LongPrinterStatus printerStatus = printer.readLongPrinterStatus();
@@ -79,7 +79,7 @@ func (p *Printer) ProcessCheck(params CheckPackage, electronically bool) error {
 	//docNumber := fsStatus.getDocumentNumber + 1                            // Получаем номер создаваемого фискального документа
 	//shiftNumber := printer.readLongPrinterStatus().getCurrentShiftNumber() // получаем номер текущей смены
 
-	if electronically {
+	if !print {
 		p.WriteTable(tables.RegionalSettings, 1, 7, "1") // не печатать 1 документ
 	}
 
@@ -94,8 +94,8 @@ func (p *Printer) ProcessCheck(params CheckPackage, electronically bool) error {
 	//err := p.writeFiscalStrings(params.Positions.FiscalStrings)
 
 	//Инн кассира
-	//writeVATINTagIfNotNullAndNotEmpty(p, FDTags.CashierINN, params.Parameters.CashierVATIN)
-	p.FNWriteTLV()
+	//writeVATINTagIfNotNullAndNotEmpty(p, FDTags.CashierINN, params.Parameters.CashierVATIN) //
+	//p.FNWriteTLV()
 
 	// телефон или электронный адрес покупателя, не могут быть одновременно заданы
 	//writeTagIfNotNullAndNotEmpty(printer, FDTags.ClientEmailOrNumber, params.Parameters.CustomerEmail)
@@ -131,6 +131,24 @@ func (p *Printer) ProcessCheck(params CheckPackage, electronically bool) error {
 	//}
 
 	//p.endFiscalReceipt(false);
+	return nil
+}
+func (p *Printer) FSOperationV2(printer string, item FiscalString) error {
+	// Позиция с признаком способа расчета и признаком предмета расчета
+	// 1214, признак способа расчета, если не указывать будет 0
+	// ВНИМАНИЕ: значение сохраняется после вызова printRecItem
+	//printer.setParameter(SmFptrConst.SMFPTR_DIO_PARAM_ITEM_PAYMENT_TYPE, item.SignMethodCalculation);
+	//
+	//// 1212, признак предмета расчета, если не указывать будет 0
+	//// ВНИМАНИЕ: значение сохраняется после вызова printRecItem
+	//printer.setParameter(SmFptrConst.SMFPTR_DIO_PARAM_ITEM_SUBJECT_TYPE, item.SignCalculationObject);
+	//
+	//// Позиция с коррекцией на +-1 копейку
+	//// Сумма позиции будет сброшена драйвером после вызова printRecItem
+	//printer.setParameter(SmFptrConst.SMFPTR_DIO_PARAM_ITEM_TOTAL_AMOUNT, (int) item.getAmount());
+	//printer.setDepartment(item.Department);
+	//printer.printRecItem(item.Name, 0, item.getQuantity(), item.getTax(), item.getPrice(), "")
+
 	return nil
 }
 

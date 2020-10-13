@@ -14,6 +14,7 @@ var (
 	FSPrinterError05 = PrinterError{msg: "ФН: Закончен срок эксплуатации ФН", num: 5}                                          //FSPrinterError05 = ФН: Закончен срок эксплуатации ФН
 	FSPrinterError06 = PrinterError{msg: "ФН: Архив ФН переполнен", num: 6}                                                    //FSPrinterError06 = ФН: Архив ФН переполнен
 
+	PrinterError7E = PrinterError{msg: "Неверное значение в поле длины", num: 126}  //
 	PrinterError33 = PrinterError{msg: "Некорректные параметры в команде", num: 51} // PrinterError33 = Некорректные параметры в команде
 	PrinterError50 = PrinterError{msg: "Идет печать предыдущей команды", num: 80}   // PrinterError50 = Идет печать предыдущей команды
 	PrinterError4F = PrinterError{msg: "Неверный пароль", num: 79}
@@ -46,6 +47,7 @@ func (err PrinterError) Is(target error) bool {
 }
 
 func checkOnPrinterError(err byte) error {
+
 	switch err {
 	case 0:
 		return nil
@@ -55,6 +57,8 @@ func checkOnPrinterError(err byte) error {
 		return PrinterError50
 	case PrinterError33.num:
 		return PrinterError33
+	case PrinterError7E.num:
+		return PrinterError7E
 	default:
 		return PrinterErrorUnknown.wrap(errors.New(fmt.Sprint("unknown error code:", err)))
 	}

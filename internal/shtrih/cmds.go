@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
+	"encoding/hex"
 	"errors"
+	"golang.org/x/text/encoding/charmap"
 	"net"
 )
 
@@ -116,3 +118,60 @@ func (p *Printer) FNWriteTLV(tlv []byte) {
 //0020   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
 //0030   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
 //0040   00 00 00 00 00 00 00 00 00 00 00 | 8a               ............
+
+////////////////////////////////////// Продажа
+
+func (p *Printer) PrintSale(amount, price uint64) {
+	data, cmdLen := p.createCommandData(PrintSale)
+	buf := bytes.NewBuffer(data)
+
+	bufArgs := bytes.NewBuffer([]byte{})
+	if err := binary.Write(bufArgs, binary.LittleEndian, amount); err != nil {
+		p.logger.Fatal(err)
+	}
+	buf.Write(bufArgs.Bytes()[:5])
+	bufArgs.Reset()
+
+	if err := binary.Write(bufArgs, binary.LittleEndian, price); err != nil {
+		p.logger.Fatal(err)
+	}
+	buf.Write(bufArgs.Bytes()[:5])
+
+	buf.WriteByte(0) // Номер отдела
+	buf.WriteByte(0) // Налоговая группа 1
+	buf.WriteByte(0) // Налоговая группа 2
+	buf.WriteByte(0) // Налоговая группа 3
+	buf.WriteByte(0) // Налоговая группа 4
+	p.logger.Debug("outcome: \n", hex.Dump(buf.Bytes()))
+
+	str, err := charmap.Windows1251.NewEncoder().String("Пример 1")
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+
+	buf.WriteString(str)
+	buf.WriteByte(0) // окончание строки
+
+	//p.logger.Debug(hex.Dump(buf.Bytes()))
+
+	rFrame, err := p.send(buf.Bytes(), cmdLen)
+
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+
+	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+		p.logger.Fatal(err)
+	}
+
+	p.logger.Debug("income: \n", hex.Dump(rFrame.bytes()))
+
+}
+
+//      5        5
+//02 | 05 | 10 1e 00 00 00 | 0b
+//            2         4
+//02 | 06 | ff 01 | 1e 00 00 00 | e6
+//     29   1          5             10               15             20                25               29
+//02 | 1d | 80 | 1e 00 00 00 | 02 00 00 00 00 | 05 00 00 00 00 | 00 00 00 00 00 | cf f0 e8 ec e5 | f0 20 31 00 | bb
+//							   02 00 00 00 00

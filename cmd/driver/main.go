@@ -1,13 +1,12 @@
 package main
 
 import (
+	"encoding/binary"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"log"
 	"shtrih-drv/internal/shtrih"
-	"shtrih-drv/internal/shtrih/tables"
-
-	"go.uber.org/zap/zapcore"
-
-	"go.uber.org/zap"
+	"shtrih-drv/internal/shtrih/TLV"
 )
 
 func createLogger() *zap.SugaredLogger {
@@ -33,13 +32,27 @@ func main() {
 	password := uint32(30)
 
 	printer := shtrih.NewPrinter(logger, host, password)
+	printer.ReadShortStatus()
+
+	printer.FnReadStatus()
+
+	printer.PrintSale(2, 5)
 	//
-	//printer.FnReadStatus()
 	//printer.ReadShortStatus()
 
 	//printer.PrintReportWithoutClearing()
 	//printer.PrintCheck()
 
-	printer.WriteTable(tables.TableCashier, 14, 2, "Оператор14")
+	//printer.WriteTable(tables.TableCashier, 14, 2, "Оператор14")
 	//printer.ReadFieldInfo(shtrih.SmfpTableCashier, 1)
+
+	//testTLV(logger)
+}
+func testTLV(log *zap.SugaredLogger) {
+	data := TLV.New(TLV.FNNumber, 15)
+	log.Debug(data)
+
+	log.Debug(binary.LittleEndian.Uint16(data[:2]))
+	log.Debug(binary.LittleEndian.Uint16(data[2:4]))
+
 }
