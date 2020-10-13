@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"net"
 	"shtrih-drv/internal/logger"
 
 	"golang.org/x/text/encoding/charmap"
@@ -19,6 +20,10 @@ type Printer struct {
 	password uint32
 	decoder  *encoding.Decoder
 	encoder  *encoding.Encoder
+}
+
+func (p *Printer) setFiscalReceiptType(fiscalReceiptType int) error {
+	return nil
 }
 
 func NewPrinter(logger logger.Logger, host string, password uint32) *Printer {
@@ -133,35 +138,39 @@ func (p *Printer) PrintReportWithoutClearing() {
 	}
 }
 
-func (p *Printer) writeCashierName(cashierName string) {
-	lines := make([]string, 1)
-	lines[0] = cashierName
-	//directIO(SMFPTR_DIO_WRITE_CASHIER_NAME, null, lines)
+func (p *Printer) ReadFieldInfo(table, field byte) {
+	cmdBinary, cmdLen := p.createCommandData(ReadFieldInfo)
+	buf := bytes.NewBuffer(cmdBinary)
+	buf.WriteByte(table)
+	buf.WriteByte(field)
+	cmdBinary = buf.Bytes()
+
+	frame := p.client.createFrame(cmdBinary)
+
+	con, _ := net.Dial("tcp", p.client.host)
+	defer con.Close()
+	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
+
+	if err := p.client.sendFrame(frame, con, rw); err != nil {
+		p.logger.Fatal(err)
+	}
+
+	rFrame, err := p.client.receiveFrame(con, byte(cmdLen), rw)
+	if err != nil {
+		p.logger.Fatal(err)
+	}
+
+	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+		p.logger.Fatal(err)
+	}
+
+	p.logger.Debug("Field info\n", hex.Dump(rFrame.DATA))
 }
 
 /**
  * Write cashier name *
  */
 //public static final int SMFPTR_DIO_WRITE_CASHIER_NAME = 0x2C;
-
-//DIO
-const (
-	SMFPTR_DIO_WRITE_CASHIER_NAME = 0x2C
-)
-
-// ////////////////////////////////////////////////////////////////////////
-// table numbers
-// ////////////////////////////////////////////////////////////////////////
-// ECR type and mode
-const (
-	SmfpTableCashier byte = 2
-)
-
-func (p *Printer) writeCasierName(name string) error {
-	//operator := p.readPrinterStatus().getOperator()
-	//p.writeTable(SMFP_TABLE_CASHIER, operator, 2, name)
-	return nil
-}
 
 //func writeAdminName(String name) throws Exception {
 //	ReadShortStatus command = new ReadShortStatus(sysPassword);

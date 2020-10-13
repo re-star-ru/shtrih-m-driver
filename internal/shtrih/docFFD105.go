@@ -1,5 +1,12 @@
 package shtrih
 
+import (
+	"errors"
+	"fmt"
+	"shtrih-drv/internal/shtrih/check"
+	"shtrih-drv/internal/shtrih/tables"
+)
+
 func (p *Printer) PrintCheck() {
 	//p.Ping()
 
@@ -10,7 +17,6 @@ func (p *Printer) PrintCheck() {
 // Открытие смены, передаются данные о кассире
 func (p *Printer) OpenShift(cashier string) {
 	//p.Ping()
-
 	// todo print check
 }
 
@@ -40,30 +46,32 @@ func (p *Printer) ProcessCheck(params CheckPackage, electronically bool) error {
 	//new SmFiscalPrinterException(2, "Закрытая смена, операция невозможна"));
 	//}
 
+	chk := check.New()
+
 	// 1021, кассир
-	p.writeCashierName(params.CashierName) // печать имени кассира, возможно инн?
+	//p.writeCashierName(params.CashierName) // печать имени кассира, возможно инн?
+	//p.WriteTable(tables.SmfpTableCashier, 14, 2, "Оператор14") // запись имени текущего кассира в таблицу
+	chk.CashierName = "Оператор 14"
 
 	// Задаем тип чека
-	//// Receipt type constants
-	//public static final int SMFPTR_RT_SALE = 100;
-	//public static final int SMFPTR_RT_BUY = 101;
-	//public static final int SMFPTR_RT_RETSALE = 102;
-	//public static final int SMFPTR_RT_RETBUY = 103;
-	//switch params.Parameters.PaymentType {
-	//case 1: // приход
-	//	printer.setFiscalReceiptType(SMFPTR_RT_SALE = 100)
-	//case 2: // возврат прихода
-	//	printer.setFiscalReceiptType(SMFPTR_RT_RETSALE = 102);
-	//case 3: // расход
-	//	printer.setFiscalReceiptType(SMFPTR_RT_BUY = 101);
-	//case 4: // возврат расхода
-	//	printer.setFiscalReceiptType(SMFPTR_RT_RETBUY = 103);
-	//default:
-	//	return errors.New("Неизвестный тип чека: ", params.Parameters.PaymentType)
-	//}
+	switch params.PaymentType {
+	case 1: // приход
+		chk.FiscalReceiptType = check.SMFPTR_RT_SALE
+	case 2: // возврат прихода
+		chk.FiscalReceiptType = check.SMFPTR_RT_RETSALE
+	case 3: // расход
+		chk.FiscalReceiptType = check.SMFPTR_RT_BUY
+	case 4: // возврат расхода
+		chk.FiscalReceiptType = check.SMFPTR_RT_RETBUY
+	default:
+		err := errors.New(fmt.Sprint("Неизвестный тип чека: ", params.PaymentType))
+		p.logger.Fatal(err)
+		return err
+	}
 
 	// Указываем систему налогообложения
 	//p.SetParameter(SMFPTR_DIO_PARAM_TAX_SYSTEM = 16, params.Parameters.getTaxVariant())
+	chk.TaxVariant = params.TaxVariant
 
 	//p.beginFiscalReceipt(false) // начинаем печать чека без хедера
 
@@ -71,9 +79,9 @@ func (p *Printer) ProcessCheck(params CheckPackage, electronically bool) error {
 	//docNumber := fsStatus.getDocumentNumber + 1                            // Получаем номер создаваемого фискального документа
 	//shiftNumber := printer.readLongPrinterStatus().getCurrentShiftNumber() // получаем номер текущей смены
 
-	//if (electronically) {
-	//		printer.writeTable(17, 1, 7, "1"); // не печатать 1 документ
-	//}
+	if electronically {
+		p.WriteTable(tables.RegionalSettings, 1, 7, "1") // не печатать 1 документ
+	}
 
 	//52011 номер сборки
 	//boolean isNewMobile = isMobile(printer) && printerStatus.getFirmwareBuild() >= 20041;
@@ -87,6 +95,7 @@ func (p *Printer) ProcessCheck(params CheckPackage, electronically bool) error {
 
 	//Инн кассира
 	//writeVATINTagIfNotNullAndNotEmpty(p, FDTags.CashierINN, params.Parameters.CashierVATIN)
+	p.FNWriteTLV()
 
 	// телефон или электронный адрес покупателя, не могут быть одновременно заданы
 	//writeTagIfNotNullAndNotEmpty(printer, FDTags.ClientEmailOrNumber, params.Parameters.CustomerEmail)
@@ -143,3 +152,36 @@ func writeTagIfNotNullAndNotEmpty(printer Printer, tagId int, value string) erro
 
 	return nil
 }
+
+//КАССОВЫЙ ЧЕК
+//ФН:9281000100007442
+//РН ККТ:0001837854048714
+//ИНН:263209745357
+//ФД:11904
+//ДАТА, ВРЕМЯ:13.10.2020 15:34:00
+//ФП:4074622255 (3104F2DDCD2F)
+//СМЕНА:920
+//НОМЕР ЧЕКА ЗА СМЕНУ:6
+//ПРИЗН. РАСЧЕТА:1 (Приход)
+//ИТОГ:1500.00
+//ИНН КАССИРА:263209745357
+//ПРЕДМ. РАСЧЕТА:
+//НАИМЕН. ПРЕДМ. РАСЧЕТА:Дефектовка
+//ЦЕНА ЗА ЕД. ПРЕДМ. РАСЧ.:1500.00
+//КОЛ-ВО ПРЕДМ. РАСЧЕТА:1.000000
+//СТОИМ. ПРЕДМ. РАСЧЕТА:1500.00
+//ПРИЗН. СПОСОБА РАСЧ.:4
+//ПРИЗН. ПРЕДМЕТА РАСЧ.:4
+//КАССИР:Волков Е. И.
+//НАЛИЧНЫМИ:1500.00
+//БЕЗНАЛИЧНЫМИ:0.00
+//ПРЕДВАРИТЕЛЬНАЯ ОПЛАТА (АВАНС):0.00
+//ПОСЛЕДУЮЩАЯ ОПЛАТА (КРЕДИТ):0.00
+//ИНАЯ ФОРМА ОПЛАТЫ:0.00
+//САЙТ ФНС:www.nalog.ru
+//МЕСТО РАСЧЕТОВ:касса
+//ВЕРСИЯ ФФД:2 (1.05)
+//СУММА БЕЗ НДС:1500.00
+//НАИМЕН. ПОЛЬЗ.:ИП Волков Евгений Иванович
+//АДР.РАСЧЕТОВ:Ставропольский край, пос. Горячеводский, ул. Совхозная д. 85
+//СНО:8 (ЕНВД)

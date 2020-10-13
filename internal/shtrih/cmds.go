@@ -60,6 +60,19 @@ func (p *Printer) sendCommand(command uint16) ([]byte, error) {
 	//return nil, nil
 }
 
+func (p *Printer) send(date []byte, cmdLen int) (*frame, error) {
+	con, _ := net.Dial("tcp", p.client.host)
+	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
+
+	defer con.Close()
+	frame := p.client.createFrame(date)
+	if err := p.client.sendFrame(frame, con, rw); err != nil {
+		p.logger.Fatal(err)
+	}
+
+	return p.client.receiveFrame(con, byte(cmdLen), rw)
+}
+
 func (p *Printer) WriteTable(tableNumber byte, rowNumber uint16, fieldNumber byte, fieldValue string) {
 	data, cmdLen := p.createCommandData(WriteTable)
 
@@ -75,17 +88,9 @@ func (p *Printer) WriteTable(tableNumber byte, rowNumber uint16, fieldNumber byt
 
 	fvb, _ := p.encoder.Bytes([]byte(fieldValue)) // конвентируем строку в win1251
 	buf.Write(fvb)
-	frame := p.client.createFrame(buf.Bytes())
+	buf.WriteByte(0) // окончание строки
 
-	con, _ := net.Dial("tcp", p.client.host)
-	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
-
-	defer con.Close()
-	if err := p.client.sendFrame(frame, con, rw); err != nil {
-		p.logger.Fatal(err)
-	}
-
-	rFrame, err := p.client.receiveFrame(con, byte(cmdLen), rw)
+	rFrame, err := p.send(buf.Bytes(), cmdLen) // отправка команды и получение фрейма с возвращенными данными
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -94,3 +99,20 @@ func (p *Printer) WriteTable(tableNumber byte, rowNumber uint16, fieldNumber byt
 		p.logger.Fatal(err)
 	}
 }
+
+// Запись в TLV структуру фискального накопителя
+func (p *Printer) FNWriteTLV(tlv []byte) {
+	data, _ := p.createCommandData(FnWriteTLV)
+	dataBuf := bytes.NewBuffer(data)
+	dataBuf.Write(tlv)
+}
+
+//0000   02 07 2e 1e 00 00 00 02 01 34
+//c++
+//0000   02 07 2e 1e 00 00 00 02 01 34
+
+//0000   02 | 49 | 1e | 1e 00 00 00 | 02 | 0f 00 | 02 | ce ef e5 f0 e0   .I..............
+//0010   f2 ee 31 35 00 00 00 00 00 00 00 00 00 00 00 00   ..15............
+//0020   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+//0030   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
+//0040   00 00 00 00 00 00 00 00 00 00 00 | 8a               ............

@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"shtrih-drv/internal/shtrih"
+	"shtrih-drv/internal/shtrih/tables"
 
 	"go.uber.org/zap/zapcore"
 
@@ -32,12 +33,13 @@ func main() {
 	password := uint32(30)
 
 	printer := shtrih.NewPrinter(logger, host, password)
-
-	printer.FnReadStatus()
-	printer.ReadShortStatus()
+	//
+	//printer.FnReadStatus()
+	//printer.ReadShortStatus()
 
 	//printer.PrintReportWithoutClearing()
 	//printer.PrintCheck()
 
-	printer.WriteTable(shtrih.SmfpTableCashier, 14, 2, "Оператор151")
+	printer.WriteTable(tables.TableCashier, 14, 2, "Оператор14")
+	//printer.ReadFieldInfo(shtrih.SmfpTableCashier, 1)
 }

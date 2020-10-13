@@ -1,4 +1,4 @@
-package FDTags
+package TLV
 
 const (
 	DocumentName        = 1000 // наименование документа

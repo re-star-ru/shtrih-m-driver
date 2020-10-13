@@ -2,16 +2,24 @@ package shtrih
 
 const (
 	// команды принтера
-	ReadShortStatus            = 16  // короткий статус принтера
-	PrintReportWithoutClearing = 64  // Снять отчет без гашения
-	PrintZReport               = 65  // z report?
-	WriteTable                 = 30  // запись в таблицу
-	ReadTable                  = 31  // чтение из таблицы
-	PrintReceiptCopy           = 140 // Печать последнего чека
+	ReadShortStatus            = 16 // короткий статус принтера
+	PrintReportWithoutClearing = 64 // Снять отчет без гашения
+	PrintZReport               = 65 // z report?
+	WriteTable                 = 30 // запись в таблицу
+
+	ReadFieldInfo    = 46  // Чтение инфо о поле
+	ReadTable        = 31  // чтение из таблицы
+	PrintReceiptCopy = 140 // Печать последнего чека
+
+	ReadTableStruct = 45 // чтение структуры таблицы
 
 	// команды фискального накопителя
 	FnReadStatus = 65281 // чтение статуса фискального накопителя
 	FnReadSerial = 65282 // чтение серийного номера фискального накопителя
+
+	WideRequest = 247 // расширенный запрос
+
+	FnWriteTLV = 65292 // Передать произвольную TLV структуру
 
 	FSDayClose = 65347 // Закрытие фискальной смены
 	FSDayOpen  = 65291 // Открытие фискальной смены
