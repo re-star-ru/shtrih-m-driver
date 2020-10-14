@@ -129,30 +129,32 @@ func (p *Printer) PrintSale(amount, price uint64) {
 	if err := binary.Write(bufArgs, binary.LittleEndian, amount); err != nil {
 		p.logger.Fatal(err)
 	}
+
 	buf.Write(bufArgs.Bytes()[:5])
 	bufArgs.Reset()
 
 	if err := binary.Write(bufArgs, binary.LittleEndian, price); err != nil {
 		p.logger.Fatal(err)
 	}
+
 	buf.Write(bufArgs.Bytes()[:5])
 
-	buf.WriteByte(0) // Номер отдела
-	buf.WriteByte(0) // Налоговая группа 1
-	buf.WriteByte(0) // Налоговая группа 2
-	buf.WriteByte(0) // Налоговая группа 3
-	buf.WriteByte(0) // Налоговая группа 4
+	buf.WriteByte(1) // Номер отдела
+	buf.WriteByte(1) // Налоговая группа 1
+	buf.WriteByte(1) // Налоговая группа 2
+	buf.WriteByte(1) // Налоговая группа 3
+	buf.WriteByte(1) // Налоговая группа 4
 	p.logger.Debug("outcome: \n", hex.Dump(buf.Bytes()))
 
-	str, err := charmap.Windows1251.NewEncoder().String("Пример 1")
+	str, err := charmap.Windows1251.NewEncoder().String("ASD ASD ASD ASD")
 	if err != nil {
 		p.logger.Fatal(err)
 	}
 
-	buf.WriteString(str)
-	buf.WriteByte(0) // окончание строки
+	buf.Write([]byte(str)) // Нужно добавить до 40 байт ровно
+	buf.WriteByte(0)       // окончание строки
 
-	//p.logger.Debug(hex.Dump(buf.Bytes()))
+	p.logger.Debug("\n", hex.Dump(buf.Bytes()))
 
 	rFrame, err := p.send(buf.Bytes(), cmdLen)
 
