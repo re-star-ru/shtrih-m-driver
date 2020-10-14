@@ -6,8 +6,9 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
-	"golang.org/x/text/encoding/charmap"
 	"net"
+
+	"golang.org/x/text/encoding/charmap"
 )
 
 func (p *Printer) createCommandData(command uint16) (data []byte, cmdLen int) {
@@ -150,9 +151,11 @@ func (p *Printer) PrintSale(amount, price uint64) {
 	if err != nil {
 		p.logger.Fatal(err)
 	}
+	rStrBytes := make([]byte, 40)
+	copy(rStrBytes, []byte(str))
 
-	buf.Write([]byte(str)) // Нужно добавить до 40 байт ровно
-	buf.WriteByte(0)       // окончание строки
+	p.logger.Debug("len of string bytes: ", len(rStrBytes))
+	buf.Write(rStrBytes) // Нужно добавить до 40 байт ровно
 
 	p.logger.Debug("\n", hex.Dump(buf.Bytes()))
 
