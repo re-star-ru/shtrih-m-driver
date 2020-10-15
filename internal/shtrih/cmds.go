@@ -4,11 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
-	"encoding/hex"
 	"errors"
 	"net"
-
-	"golang.org/x/text/encoding/charmap"
 )
 
 func (p *Printer) createCommandData(command uint16) (data []byte, cmdLen int) {
@@ -119,59 +116,6 @@ func (p *Printer) FNWriteTLV(tlv []byte) {
 //0020   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
 //0030   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
 //0040   00 00 00 00 00 00 00 00 00 00 00 | 8a               ............
-
-////////////////////////////////////// Продажа
-
-func (p *Printer) PrintSale(amount, price uint64) {
-	data, cmdLen := p.createCommandData(PrintSale)
-	buf := bytes.NewBuffer(data)
-
-	bufArgs := bytes.NewBuffer([]byte{})
-	if err := binary.Write(bufArgs, binary.LittleEndian, amount); err != nil {
-		p.logger.Fatal(err)
-	}
-
-	buf.Write(bufArgs.Bytes()[:5])
-	bufArgs.Reset()
-
-	if err := binary.Write(bufArgs, binary.LittleEndian, price); err != nil {
-		p.logger.Fatal(err)
-	}
-
-	buf.Write(bufArgs.Bytes()[:5])
-
-	buf.WriteByte(1) // Номер отдела
-	buf.WriteByte(1) // Налоговая группа 1
-	buf.WriteByte(1) // Налоговая группа 2
-	buf.WriteByte(1) // Налоговая группа 3
-	buf.WriteByte(1) // Налоговая группа 4
-	p.logger.Debug("outcome: \n", hex.Dump(buf.Bytes()))
-
-	str, err := charmap.Windows1251.NewEncoder().String("ASD ASD ASD ASD")
-	if err != nil {
-		p.logger.Fatal(err)
-	}
-	rStrBytes := make([]byte, 40)
-	copy(rStrBytes, []byte(str))
-
-	p.logger.Debug("len of string bytes: ", len(rStrBytes))
-	buf.Write(rStrBytes) // Нужно добавить до 40 байт ровно
-
-	p.logger.Debug("\n", hex.Dump(buf.Bytes()))
-
-	rFrame, err := p.send(buf.Bytes(), cmdLen)
-
-	if err != nil {
-		p.logger.Fatal(err)
-	}
-
-	if err := checkOnPrinterError(rFrame.ERR); err != nil {
-		p.logger.Fatal(err)
-	}
-
-	p.logger.Debug("income: \n", hex.Dump(rFrame.bytes()))
-
-}
 
 //      5        5
 //02 | 05 | 10 1e 00 00 00 | 0b

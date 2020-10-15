@@ -14,13 +14,38 @@ var (
 	FSPrinterError05 = PrinterError{msg: "ФН: Закончен срок эксплуатации ФН", num: 5}                                          //FSPrinterError05 = ФН: Закончен срок эксплуатации ФН
 	FSPrinterError06 = PrinterError{msg: "ФН: Архив ФН переполнен", num: 6}                                                    //FSPrinterError06 = ФН: Архив ФН переполнен
 
-	PrinterError7E = PrinterError{msg: "Неверное значение в поле длины", num: 126}  //
 	PrinterError33 = PrinterError{msg: "Некорректные параметры в команде", num: 51} // PrinterError33 = Некорректные параметры в команде
-	PrinterError50 = PrinterError{msg: "Идет печать предыдущей команды", num: 80}   // PrinterError50 = Идет печать предыдущей команды
+	PrinterError40 = PrinterError{msg: "Переполнение диапазона скидок", num: 64}    // PrinterError40 = Переполнение диапазона скидок
 	PrinterError4F = PrinterError{msg: "Неверный пароль", num: 79}
+	PrinterError50 = PrinterError{msg: "Идет печать предыдущей команды", num: 80} // PrinterError50 = Идет печать предыдущей команды
+	PrinterError69 = PrinterError{msg: "Переполнение денег по обороту налогов", num: 105}
+	PrinterError73 = PrinterError{msg: "Команда не поддерживается в данном режиме", num: 115} // Команда не поддерживается в данном режиме
+	PrinterError7E = PrinterError{msg: "Неверное значение в поле длины", num: 126}            //
+	PrinterError8E = PrinterError{msg: "Нулевой итог чека", num: 142}                         // Нулевой итог чека
+
+	PrinterError45 = PrinterError{msg: "Cумма всех типов оплаты меньше итога чека", num: 69}
 
 	PrinterErrorUnknown = PrinterError{msg: "Неизвестная ошибка"}
 )
+
+var printerErrors = []PrinterError{
+	PrinterError45,
+	PrinterError69,
+	PrinterError73,
+	PrinterError8E,
+	FSPrinterError01,
+	FSPrinterError02,
+	FSPrinterError03,
+	FSPrinterError04,
+	FSPrinterError05,
+	FSPrinterError06,
+	PrinterError40,
+	PrinterError7E,
+	PrinterError33,
+	PrinterError50,
+	PrinterError4F,
+	PrinterErrorUnknown,
+}
 
 type PrinterError struct {
 	msg string
@@ -47,21 +72,17 @@ func (err PrinterError) Is(target error) bool {
 }
 
 func checkOnPrinterError(err byte) error {
-
-	switch err {
-	case 0:
+	if err == 0 {
 		return nil
-	case PrinterError4F.num:
-		return PrinterError4F
-	case PrinterError50.num:
-		return PrinterError50
-	case PrinterError33.num:
-		return PrinterError33
-	case PrinterError7E.num:
-		return PrinterError7E
-	default:
-		return PrinterErrorUnknown.wrap(errors.New(fmt.Sprint("unknown error code:", err)))
 	}
+
+	for _, v := range printerErrors {
+		if err == v.num {
+			return v
+		}
+	}
+
+	return PrinterErrorUnknown.wrap(errors.New(fmt.Sprint("unknown error code:", err)))
 }
 
 //FSPrinterError08 = ФН: Нет запрошенных данных
