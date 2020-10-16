@@ -7,7 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"shtrih-drv/internal/logger"
+
+	"github.com/fess932/shtrih-drv/internal/logger"
 )
 
 type client struct {

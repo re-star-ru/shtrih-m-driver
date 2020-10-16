@@ -5,7 +5,8 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
-	"shtrih-drv/internal/shtrih/check"
+
+	"github.com/fess932/shtrih-drv/internal/shtrih/check"
 
 	"golang.org/x/text/encoding/charmap"
 

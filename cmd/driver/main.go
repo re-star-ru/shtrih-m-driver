@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/binary"
 	"log"
-	"shtrih-drv/internal/shtrih"
-	"shtrih-drv/internal/shtrih/TLV"
+
+	"github.com/fess932/shtrih-drv/internal/shtrih"
+	"github.com/fess932/shtrih-drv/internal/shtrih/TLV"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -33,12 +34,10 @@ func main() {
 	password := uint32(30)
 
 	printer := shtrih.NewPrinter(logger, host, password)
-	printer.SellOperationV2()
-	//printer.CloseCheck()
+	//printer.SellOperationV2()
+	//printer.CloseCheckV2()
 
-	printer.CloseCheckV2()
-
-	//printer.ReadShortStatus()
+	printer.ReadShortStatus()
 	//
 	//printer.FnReadStatus()
 

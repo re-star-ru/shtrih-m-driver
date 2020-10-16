@@ -3,8 +3,9 @@ package shtrih
 import (
 	"errors"
 	"fmt"
-	"shtrih-drv/internal/shtrih/check"
-	"shtrih-drv/internal/shtrih/tables"
+
+	"github.com/fess932/shtrih-drv/internal/shtrih/check"
+	"github.com/fess932/shtrih-drv/internal/shtrih/tables"
 )
 
 func (p *Printer) PrintCheck() {

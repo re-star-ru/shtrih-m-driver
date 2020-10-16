@@ -7,7 +7,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net"
-	"shtrih-drv/internal/logger"
+
+	"github.com/fess932/shtrih-drv/internal/logger"
 
 	"golang.org/x/text/encoding/charmap"
 

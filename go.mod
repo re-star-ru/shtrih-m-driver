@@ -1,4 +1,4 @@
-module shtrih-drv
+module github.com/fess932/shtrih-drv
 
 go 1.15
 
