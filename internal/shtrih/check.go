@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"github.com/fess932/shtrih-drv/internal/shtrih/check"
+	"github.com/fess932/shtrih-m-driver/internal/shtrih/check"
 
 	"golang.org/x/text/encoding/charmap"
 

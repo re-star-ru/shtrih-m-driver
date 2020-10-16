@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/fess932/shtrih-drv/internal/logger"
+	"github.com/fess932/shtrih-m-driver/internal/logger"
 )
 
 type client struct {

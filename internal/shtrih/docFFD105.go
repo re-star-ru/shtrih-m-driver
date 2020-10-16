@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/fess932/shtrih-drv/internal/shtrih/check"
-	"github.com/fess932/shtrih-drv/internal/shtrih/tables"
+	"github.com/fess932/shtrih-m-driver/internal/shtrih/check"
+	"github.com/fess932/shtrih-m-driver/internal/shtrih/tables"
 )
 
 func (p *Printer) PrintCheck() {
