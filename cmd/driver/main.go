@@ -27,6 +27,7 @@ func createLogger() *zap.SugaredLogger {
 }
 
 func main() {
+
 	logger := createLogger()
 	logger.Info("Shtrih driver starting")
 
