@@ -4,169 +4,41 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
-	"errors"
 
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
 
 	"golang.org/x/text/encoding/charmap"
-
-	"github.com/shopspring/decimal"
 )
 
 type CheckPackage struct {
-	CashierName  string // ФИО и должность уполномоченного лица для проведения операции
-	CashierVATIN string // ИНН уполномоченного лица для проведения операции
-
-	/**
-	 * Тип расчета
-	 * 1 - Приход
-	 * 2 - Возврат прихода
-	 * 3 - Расход
-	 * 4 - Возврат расхода
-	 */
-	PaymentType int
-
-	/**
-	 * Код системы налогообложения
-	 * 0 Общая
-	 * 1 Упрощенная Доход
-	 * 2 Упрощенная Доход минус Расход
-	 * 3 Единый налог на вмененный доход
-	 * 4 Единый сельскохозяйственный налог
-	 * 5 Патентная система налогообложения
-	 */
-	TaxVariant int
-
-	/**
-	 * Email покупателя
-	 */
-	CustomerEmail string
-
-	/**
-	 * Телефонный номер покупателя
-	 */
-	CustomerPhone string
-
-	/**
-	 * Адрес электронной почты отправителя чека
-	 */
-	SenderEmail string
-
-	/**
-	 * Адрес проведения расчетов
-	 */
-	AddressSettle string
-
-	/**
-	 * Место проведения расчетов
-	 */
-	PlaceSettle string
-
-	/**
-	 * Позиции в новом чеке
-	 */
-	Positions []Position
-
-	/**
-	 * Параметры закрытия чека. Чек коррекции может быть оплачен только одним видом оплаты
-	 * и без сдачи.
-	 */
-
-	/**
-	 * Сумма наличной оплаты
-	 */
-	Cash decimal.Decimal
-
-	/**
-	 * Сумма электронной оплаты
-	 */
-	ElectronicPayment decimal.Decimal
-
-	/**
-	* Сумма предоплатой (зачетом аванса)
-	 */
-	AdvancePayment decimal.Decimal
-
-	/**
-	* Сумма постоплатой (в кредит)
-	 */
-	Credit decimal.Decimal
-	///**
-	// * Сумма встречным предоставлением
-	// */
-	//@Attribute(required = false)
-	//public BigDecimal CashProvision = BigDecimal.ZERO;
+	Operations []Operation // список операций в чеке
+	Cash       int64       // сумма оплаты наличными
+	Casheless  int64       // сумма оплаты безналичными
+	TaxSystem  byte        // система налогообложения
+	BottomLine string      // нижняя часть чека
 }
 
-type Position struct {
-	typeString string
+type Operation struct {
+	Type    byte   // тип операции
+	Amount  int64  // количество товара
+	Price   int64  // цена в копейках
+	Sum     int64  // 	сумма товар * цену
+	Subject byte   // Предмет рассчета
+	Name    string // Наименование продукта
 }
 
-type FiscalString struct {
-	Name              string          // Наименование товара
-	Quantity          decimal.Decimal // Количество товара
-	PriceWithDiscount decimal.Decimal // Цена единицы товара с учетом скидок/наценок
-	SumWithDiscount   decimal.Decimal // 	 * Конечная сумма по позиции чека с учетом всех скидок/наценок
+////////////////////////////////////// Операция v2
 
-	/**
-	 * Ставка НДС. Список значений:
-	 *  "none" - БЕЗ НДС
-	 *  "20" - НДС 20
-	 *  "10" - НДС 10
-	 *  "0" - НДС 0
-	 *  "10/110" - расч. ставка 10/110
-	 *  "20/120" - расч. ставка 20/120
-	 */
-	Tax string
-
-	SignMethodCalculation int    // Признак способа расчета
-	SignCalculationObject int    // Признак предмета расчета
-	MeasurementUnit       string // Единица измерения предмета расчета
-
-	//GoodCodeData GoodCodeData // Данные кода товарной номенклатуры
-
-}
-
-func (f *FiscalString) getTax() (int, error) {
-	switch f.Tax {
-	case "20":
-		return 1, nil
-	case "10":
-		return 2, nil
-	case "20/120":
-		return 3, nil
-	case "10/110":
-		return 4, nil
-	case "0":
-		return 5, nil
-	case "none":
-		return 6, nil
-	default:
-		return 0, errors.New("Неизвестный тип налоговой ставки: " + f.Tax)
-	}
-}
-
-type TextString struct {
-	Text       string // Строка с произвольным текстом
-	FontNumber int    // Строка с произвольным текстом
-}
-
-type BarcodeString struct {
-	BarcodeType string // Строка, определяющая тип штрихкода
-	Barcode     string // Значение штрихкода
-}
-
-////////////////////////////////////// Продажа
-
-func (p *Printer) SellOperationV2() {
+func (p *Printer) SellOperationV2(op Operation) {
 	data, cmdLen := p.createCommandData(consts.OperationV2)
 	buf := bytes.NewBuffer(data)
+
 	// Запись типа операции
-	buf.WriteByte(consts.Income) // Тип операции
+	buf.WriteByte(op.Type)
 
 	// Запись количества товара
 	// Количество записывается в миллиграммах
-	amount, err := intToBytesWithLen(2*consts.Milligram, 6)
+	amount, err := intToBytesWithLen(op.Amount*consts.Milligram, 6)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -175,7 +47,7 @@ func (p *Printer) SellOperationV2() {
 
 	// запись цены товара
 	// цена записывается в копейках
-	price, err := intToBytesWithLen(1, 5) // одна копейка
+	price, err := intToBytesWithLen(op.Price, 5) // одна копейка
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -183,7 +55,7 @@ func (p *Printer) SellOperationV2() {
 
 	// запись суммы товара
 	// Сумма записывается в копейках
-	summ, err := intToBytesWithLen(2, 5) // две копейки
+	summ, err := intToBytesWithLen(op.Sum, 5) // две копейки
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -195,9 +67,9 @@ func (p *Printer) SellOperationV2() {
 	//if err != nil {
 	//	p.logger.Fatal(err)
 	//}
+	buf.Write([]byte{0xff, 0xff, 0xff, 0xff, 0xff}) // если нет налога надо отправлять 0xff*6
+	//buf.Write(tax)
 
-	const ff = 0xff
-	buf.Write([]byte{ff, ff, ff, ff, ff}) // если нет налога надо отправлять 0xff
 	// Запись налоговой ставки
 	buf.WriteByte(consts.VAT0)
 	// Запись номера отдела
@@ -207,11 +79,11 @@ func (p *Printer) SellOperationV2() {
 	buf.WriteByte(consts.FullPayment)
 
 	// Запись признака предмета рассчета
-	buf.WriteByte(consts.Service)
+	buf.WriteByte(op.Subject)
 
 	// Запись название товара 0 - 128 байт строка
 	// кодировка win1251
-	str, err := charmap.Windows1251.NewEncoder().String("Товар 1 charmap1251")
+	str, err := charmap.Windows1251.NewEncoder().String(op.Name)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -240,48 +112,51 @@ func (p *Printer) SellOperationV2() {
 
 ///////////////////////////////////// Закрытие чека
 
-func (p *Printer) CloseCheckV2() {
+func (p *Printer) CloseCheckV2(chk CheckPackage) {
 	data, cmdLen := p.createCommandData(consts.CloseCheckV2)
 	buf := bytes.NewBuffer(data)
 	p.logger.Debug("cmdlen:", cmdLen)
 
-	// запись суммы наличных
-	cash, err := intToBytesWithLen(2, 5)
+	// запись суммы наличных - типа оплаты 1
+	cash, err := intToBytesWithLen(chk.Cash, 5)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
 	buf.Write(cash)
 
 	// запись суммы типа оплаты 2 - безнал
-	casheless, err := intToBytesWithLen(0, 5)
+	casheless, err := intToBytesWithLen(chk.Casheless, 5)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
+	buf.Write(casheless)
 
-	for i := 1; i < 16; i++ {
-		buf.Write(casheless) // 2 - 16
+	for i := 2; i < 16; i++ {
+		buf.Write(make([]byte, 5)) // 3 - 16
 	}
 
 	buf.WriteByte(0) // округление до рубля
 
-	buf.Write(casheless) // налог 1
-	buf.Write(casheless) // налог 2
-	buf.Write(casheless) // налог 3
-	buf.Write(casheless) // налог 4
-	buf.Write(casheless) // налог 5
-	buf.Write(casheless) // налог 6
+	for i := 0; i < 5; i++ {
+		buf.Write(make([]byte, 5)) // налог 1-6
 
-	buf.WriteByte(consts.ENVD) //система налогоообложения, биты а не байт
+	}
+	//buf.Write(casheless) // налог 1
+	//buf.Write(casheless) // налог 2
+	//buf.Write(casheless) // налог 3
+	//buf.Write(casheless) // налог 4
+	//buf.Write(casheless) // налог 5
+	//buf.Write(casheless) // налог 6
+
+	buf.WriteByte(chk.TaxSystem) //система налогоообложения, биты а не байт
 
 	// Запись название товара 0 - 128 байт строка
-	str, err := charmap.Windows1251.NewEncoder().String("нижняя часть чека 64 байта")
-	//str := "Товар 1"
-	//charmap.Windows1251.NewEncoder().String()
+	str, err := charmap.Windows1251.NewEncoder().String(chk.BottomLine)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
 	rStrBytes := make([]byte, 64)
-	copy(rStrBytes, []byte(str))
+	copy(rStrBytes, str)
 
 	buf.Write(rStrBytes[:64])
 

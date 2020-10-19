@@ -6,8 +6,9 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"net"
+
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 
 	"github.com/fess932/shtrih-m-driver/pkg/logger"
 
@@ -91,19 +92,26 @@ func (p *Printer) FnReadStatus() {
 	)
 }
 
-func (p *Printer) ReadShortStatus() {
+func (p *Printer) ReadShortStatus() byte {
 	p.logger.Debug("Send command ReadShortStatus")
 
-	data, err := p.sendCommand(consts.ReadShortStatus)
+	data, cmdLen := p.createCommandData(consts.ReadShortStatus)
+
+	buf := bytes.NewBuffer(data)
+
+	rFrame, err := p.send(buf.Bytes(), cmdLen)
+
 	if err != nil {
-		p.logger.Error(err)
-		return
+		p.logger.Fatal(err)
 	}
 
-	in := bufio.NewReader(bytes.NewReader(data))
+	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+		p.logger.Fatal(err)
+	}
 
-	cmdBin, _ := in.ReadBytes(0) // чтение байтов команды и null
-	println(hex.Dump(cmdBin))
+	p.logger.Debug("frame in: \n", hex.Dump(rFrame.bytes()))
+
+	in := bufio.NewReader(bytes.NewReader(rFrame.DATA))
 
 	operatorNumber, _ := in.ReadByte()
 
@@ -117,17 +125,28 @@ func (p *Printer) ReadShortStatus() {
 	//double batteryVoltage = (double)batteryState / 255.0D * 100.0D * 5.0D / 100.0D;
 	//double powerVoltage = (double)powerState * 24.0D / 216.0D * 100.0D / 100.0D;
 	powerState, _ := in.ReadByte()
-	FMResultCode, _ := in.ReadByte()
-	EJResultCode, _ := in.ReadByte()
 	receiptOperationsHi, _ := in.ReadByte()
+	reserved1, _ := in.ReadByte()
+	reserved2, _ := in.ReadByte()
+	reserved3, _ := in.ReadByte()
+	lastResult, _ := in.ReadByte()
 
 	//int receiptOperations = receiptOperationsLo + (receiptOperationsHi << 8);
 	str := fmt.Sprintf("\noperator number: %v\nflags: %v\nmode: %v\nsubMode: %v\n"+
 		"receiptOperationsLo: %v\nbatteryState: %v\npowerState: %v\n"+
-		"FMResultCode: %v\nEJResultCode: %v\nreceiptOperationsHi: %v", operatorNumber, flags, mode, subMode,
-		receiptOperationsLo, batteryState, powerState, FMResultCode, EJResultCode, receiptOperationsHi)
+		"receiptOperationsHi: %v\nreserved1: %v\nreserved2: %v\nreserved3: %v\nlastResult: %v", operatorNumber, flags, mode, subMode,
+		receiptOperationsLo, batteryState, powerState, receiptOperationsHi, reserved1, reserved2, reserved3, lastResult)
 
 	p.logger.Debug(str)
+
+	return mode
+}
+
+func (p *Printer) CheckStatus() bool {
+	if p.ReadShortStatus() == 2 {
+		return true
+	}
+	return false
 }
 
 func (p *Printer) PrintReportWithoutClearing() {
@@ -168,21 +187,3 @@ func (p *Printer) ReadFieldInfo(table, field byte) {
 
 	p.logger.Debug("Field info\n", hex.Dump(rFrame.DATA))
 }
-
-/**
- * Write cashier name *
- */
-//public static final int SMFPTR_DIO_WRITE_CASHIER_NAME = 0x2C;
-
-//func writeAdminName(String name) throws Exception {
-//	ReadShortStatus command = new ReadShortStatus(sysPassword);
-//	execute(command);
-//	int operator = command.getStatus().getOperatorNumber();
-//	writeTable(SMFP_TABLE_CASHIER, operator, 2, name);
-//}
-//
-//String[] lines = (String[]) object;
-//DIOUtils.checkObjectMinLength(lines, 1);
-//String cashierName = lines[0];
-//getPrinter().writeAdminName(cashierName);
-//getPrinter().writeCasierName(cashierName);
