@@ -11,20 +11,20 @@ import (
 )
 
 type CheckPackage struct {
-	Operations []Operation // список операций в чеке
-	Cash       int64       // сумма оплаты наличными
-	Casheless  int64       // сумма оплаты безналичными
-	TaxSystem  byte        // система налогообложения
-	BottomLine string      // нижняя часть чека
+	Operations []Operation `json:"operations"`  // список операций в чеке
+	Cash       int64       `json:"cash"`        // сумма оплаты наличными
+	Casheless  int64       `json:"casheless"`   // сумма оплаты безналичными
+	TaxSystem  byte        `json:"tax_system"`  // система налогообложения
+	BottomLine string      `json:"bottom_line"` // нижняя часть чека
 }
 
 type Operation struct {
-	Type    byte   // тип операции
-	Amount  int64  // количество товара
-	Price   int64  // цена в копейках
-	Sum     int64  // 	сумма товар * цену
-	Subject byte   // Предмет рассчета
-	Name    string // Наименование продукта
+	Type    byte   `json:"type"`    // тип операции
+	Amount  int64  `json:"amount"`  // количество товара
+	Price   int64  `json:"price"`   // цена в копейках
+	Sum     int64  `json:"sum"`     // 	сумма товар * цену
+	Subject byte   `json:"subject"` // Предмет рассчета
+	Name    string `json:"name"`    // Наименование продукта
 }
 
 ////////////////////////////////////// Операция v2
