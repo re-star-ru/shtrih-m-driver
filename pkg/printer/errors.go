@@ -1,4 +1,4 @@
-package shtrih
+package printer
 
 import (
 	"errors"

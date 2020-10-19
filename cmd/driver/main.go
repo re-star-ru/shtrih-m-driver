@@ -4,8 +4,8 @@ import (
 	"encoding/binary"
 	"log"
 
-	"github.com/fess932/shtrih-m-driver/internal/shtrih/TLV"
 	"github.com/fess932/shtrih-m-driver/pkg/printer"
+	"github.com/fess932/shtrih-m-driver/pkg/printer/TLV"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
