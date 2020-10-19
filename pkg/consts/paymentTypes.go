@@ -1,4 +1,4 @@
-package check
+package consts
 
 // Признак способа рассчета
 const (

@@ -1,4 +1,4 @@
-package check
+package consts
 
 const (
 	Income        = 1

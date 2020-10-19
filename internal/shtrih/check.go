@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 
-	"github.com/fess932/shtrih-m-driver/internal/shtrih/check"
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 
 	"golang.org/x/text/encoding/charmap"
 
@@ -159,14 +159,14 @@ type BarcodeString struct {
 ////////////////////////////////////// Продажа
 
 func (p *Printer) SellOperationV2() {
-	data, cmdLen := p.createCommandData(OperationV2)
+	data, cmdLen := p.createCommandData(consts.OperationV2)
 	buf := bytes.NewBuffer(data)
 	// Запись типа операции
-	buf.WriteByte(check.Income) // Тип операции
+	buf.WriteByte(consts.Income) // Тип операции
 
 	// Запись количества товара
 	// Количество записывается в миллиграммах
-	amount, err := intToBytesWithLen(2*check.Milligram, 6)
+	amount, err := intToBytesWithLen(2*consts.Milligram, 6)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -199,20 +199,19 @@ func (p *Printer) SellOperationV2() {
 	const ff = 0xff
 	buf.Write([]byte{ff, ff, ff, ff, ff}) // если нет налога надо отправлять 0xff
 	// Запись налоговой ставки
-	buf.WriteByte(check.VAT0)
+	buf.WriteByte(consts.VAT0)
 	// Запись номера отдела
 	buf.WriteByte(1)
 
 	// Запись признака способа рассчета
-	buf.WriteByte(check.FullPayment)
+	buf.WriteByte(consts.FullPayment)
 
 	// Запись признака предмета рассчета
-	buf.WriteByte(check.Service)
+	buf.WriteByte(consts.Service)
 
 	// Запись название товара 0 - 128 байт строка
+	// кодировка win1251
 	str, err := charmap.Windows1251.NewEncoder().String("Товар 1 charmap1251")
-	//str := "Товар 1"
-	//charmap.Windows1251.NewEncoder().String()
 	if err != nil {
 		p.logger.Fatal(err)
 	}
@@ -242,7 +241,7 @@ func (p *Printer) SellOperationV2() {
 ///////////////////////////////////// Закрытие чека
 
 func (p *Printer) CloseCheckV2() {
-	data, cmdLen := p.createCommandData(CloseCheckV2)
+	data, cmdLen := p.createCommandData(consts.CloseCheckV2)
 	buf := bytes.NewBuffer(data)
 	p.logger.Debug("cmdlen:", cmdLen)
 
@@ -272,7 +271,7 @@ func (p *Printer) CloseCheckV2() {
 	buf.Write(casheless) // налог 5
 	buf.Write(casheless) // налог 6
 
-	buf.WriteByte(check.ENVD) //система налогоообложения, биты а не байт
+	buf.WriteByte(consts.ENVD) //система налогоообложения, биты а не байт
 
 	// Запись название товара 0 - 128 байт строка
 	str, err := charmap.Windows1251.NewEncoder().String("нижняя часть чека 64 байта")

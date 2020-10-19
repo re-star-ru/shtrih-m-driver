@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"net"
 )
 
@@ -74,7 +75,7 @@ func (p *Printer) send(date []byte, cmdLen int) (*frame, error) {
 }
 
 func (p *Printer) WriteTable(tableNumber byte, rowNumber uint16, fieldNumber byte, fieldValue string) {
-	data, cmdLen := p.createCommandData(WriteTable)
+	data, cmdLen := p.createCommandData(consts.WriteTable)
 
 	buf := bytes.NewBuffer(data)
 
@@ -102,7 +103,7 @@ func (p *Printer) WriteTable(tableNumber byte, rowNumber uint16, fieldNumber byt
 
 // Запись в TLV структуру фискального накопителя
 func (p *Printer) FNWriteTLV(tlv []byte) {
-	data, _ := p.createCommandData(FnWriteTLV)
+	data, _ := p.createCommandData(consts.FnWriteTLV)
 	dataBuf := bytes.NewBuffer(data)
 	dataBuf.Write(tlv)
 }

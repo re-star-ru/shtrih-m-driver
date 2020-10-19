@@ -1,4 +1,4 @@
-package shtrih
+package consts
 
 const (
 	// команды принтера

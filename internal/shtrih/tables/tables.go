@@ -7,4 +7,5 @@ package tables
 const (
 	TableCashier     byte = 2  // Кассиры
 	RegionalSettings byte = 17 // Региональные настройки
+	FiscalStorage    byte = 18 // настройки фискального накопителя
 )

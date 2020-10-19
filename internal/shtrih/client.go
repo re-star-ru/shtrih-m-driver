@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"net"
 
 	"github.com/fess932/shtrih-m-driver/internal/logger"
@@ -23,23 +24,23 @@ func newClient(logger logger.Logger, host string) *client {
 func (c *client) ping(rw *bufio.ReadWriter, con net.Conn) {
 	//rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 	c.logger.Debug("-> send ENQ")
-	rw.WriteByte(ENQ)
+	rw.WriteByte(consts.ENQ)
 	rw.Flush()
 
 	b, _ := rw.ReadByte()
 	c.logger.Debug("<- recive control byte:", b)
 
 	switch b {
-	case ACK:
+	case consts.ACK:
 		c.logger.Debug("OK, ACK, wait for recive now")
-		rw.WriteByte(ACK)
+		rw.WriteByte(consts.ACK)
 		rw.Flush()
-	case NAK:
+	case consts.NAK:
 		c.logger.Debug("OK, NAK, wait for cmd now")
-		rw.WriteByte(ACK)
+		rw.WriteByte(consts.ACK)
 		rw.Flush()
 	default:
-		rw.WriteByte(ACK)
+		rw.WriteByte(consts.ACK)
 		rw.Flush()
 		c.logger.Fatal("ERR, ping byte:", b)
 	}
@@ -78,9 +79,9 @@ func (c *client) sendFrame(frame []byte, con net.Conn, rw *bufio.ReadWriter) err
 		return err
 	}
 	switch b {
-	case ACK:
+	case consts.ACK:
 		return nil
-	case NAK:
+	case consts.NAK:
 		return errors.New("Ошибка интерфейса либо неверная контрольная сумма")
 	default:
 		return errors.New("Сообщение не принято либо не верные данные")
@@ -92,7 +93,7 @@ func (c *client) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) (
 
 	//rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 	defer func() {
-		rw.WriteByte(ACK)
+		rw.WriteByte(consts.ACK)
 		rw.Flush()
 	}()
 

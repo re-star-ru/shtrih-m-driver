@@ -6,6 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"net"
 
 	"github.com/fess932/shtrih-m-driver/internal/logger"
@@ -40,7 +41,7 @@ func NewPrinter(logger logger.Logger, host string, password uint32) *Printer {
 func (p *Printer) FnReadStatus() {
 	p.logger.Debug("Send command FnReadStatus")
 
-	data, err := p.sendCommand(FnReadStatus)
+	data, err := p.sendCommand(consts.FnReadStatus)
 	if err != nil {
 		p.logger.Error(err)
 		return
@@ -93,7 +94,7 @@ func (p *Printer) FnReadStatus() {
 func (p *Printer) ReadShortStatus() {
 	p.logger.Debug("Send command ReadShortStatus")
 
-	data, err := p.sendCommand(ReadShortStatus)
+	data, err := p.sendCommand(consts.ReadShortStatus)
 	if err != nil {
 		p.logger.Error(err)
 		return
@@ -132,7 +133,7 @@ func (p *Printer) ReadShortStatus() {
 func (p *Printer) PrintReportWithoutClearing() {
 	p.logger.Debug("Send command PrintReportWithoutClearing")
 
-	_, err := p.sendCommand(PrintReportWithoutClearing)
+	_, err := p.sendCommand(consts.PrintReportWithoutClearing)
 	if err != nil {
 		p.logger.Error(err)
 		return
@@ -140,7 +141,7 @@ func (p *Printer) PrintReportWithoutClearing() {
 }
 
 func (p *Printer) ReadFieldInfo(table, field byte) {
-	cmdBinary, cmdLen := p.createCommandData(ReadFieldInfo)
+	cmdBinary, cmdLen := p.createCommandData(consts.ReadFieldInfo)
 	buf := bytes.NewBuffer(cmdBinary)
 	buf.WriteByte(table)
 	buf.WriteByte(field)
