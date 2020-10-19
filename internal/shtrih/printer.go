@@ -9,7 +9,7 @@ import (
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"net"
 
-	"github.com/fess932/shtrih-m-driver/internal/logger"
+	"github.com/fess932/shtrih-m-driver/pkg/logger"
 
 	"golang.org/x/text/encoding/charmap"
 
