@@ -6,3 +6,6 @@ type Logger interface {
 	Fatal(args ...interface{})
 	Error(args ...interface{})
 }
+
+type ASDaDSAS struct {
+}
