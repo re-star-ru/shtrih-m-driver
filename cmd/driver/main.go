@@ -1,12 +1,9 @@
 package main
 
 import (
-	"encoding/binary"
 	"log"
 
 	"github.com/fess932/shtrih-m-driver/pkg/printer"
-	"github.com/fess932/shtrih-m-driver/pkg/printer/TLV"
-
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -36,9 +33,14 @@ func main() {
 
 	p := printer.NewPrinter(logger, host, password)
 	//printer.SellOperationV2()
+
+	if err := p.TLVWriteCashierINN("263209745357"); err != nil {
+		logger.Fatal(err)
+	}
+
 	//printer.CloseCheckV2()
 
-	p.ReadShortStatus()
+	//p.ReadShortStatus()
 	//
 	//printer.FnReadStatus()
 
@@ -56,11 +58,12 @@ func main() {
 
 	//testTLV(logger)
 }
-func testTLV(log *zap.SugaredLogger) {
-	data := TLV.New(TLV.FNNumber, 15)
-	log.Debug(data)
 
-	log.Debug(binary.LittleEndian.Uint16(data[:2]))
-	log.Debug(binary.LittleEndian.Uint16(data[2:4]))
-
-}
+//func testTLV(log *zap.SugaredLogger) {
+//	data := printer.New(consts.FNNumber, 15)
+//	log.Debug(data)
+//
+//	log.Debug(binary.LittleEndian.Uint16(data[:2]))
+//	log.Debug(binary.LittleEndian.Uint16(data[2:4]))
+//
+//}

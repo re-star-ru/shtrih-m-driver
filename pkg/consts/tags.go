@@ -1,4 +1,21 @@
-package TLV
+package consts
+
+type TLVTag struct {
+	Name   string // наименование тега
+	Type   string // тип тега
+	Code   uint16 // код тега
+	Length uint16 // длинна тега
+}
+
+var (
+	CashierINN = TLVTag{
+		Name:   "ИНН Кассира",
+		Type:   "String",
+		Code:   1203,
+		Length: 12,
+	} // Инн кассира
+
+)
 
 const (
 	DocumentName        = 1000 // наименование документа
@@ -21,7 +38,6 @@ const (
 	AgentSign           = 1057 // признак агента
 	KKTSerialNumber     = 1013 // заводской номер ККТ
 	CashierName         = 1021 // Кассир (имя?)
-	CashierINN          = 1203 // Инн кассира
 	BillingAddress      = 1009 // Рассчетный адрес
 	BillingSpace        = 1187 // Место рассчетов
 	FNSSiteAdress       = 1060 // Адрес ФНС
