@@ -1,10 +1,12 @@
 package printer
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
+	"net"
 	"unicode/utf8"
 
 	"golang.org/x/text/encoding/charmap"
@@ -13,7 +15,7 @@ import (
 )
 
 func (p *Printer) TLVWriteCashierINN(INN string) error {
-	cmdBinary, _ := p.createCommandData(consts.SendTLVToOp)
+	cmdBinary, cmdLen := p.createCommandData(consts.SendTLVToOp)
 	buf := bytes.NewBuffer(cmdBinary)
 	p.logger.Debug(buf)
 
@@ -41,30 +43,28 @@ func (p *Printer) TLVWriteCashierINN(INN string) error {
 
 	p.logger.Debug("Команда с тлв структурой\n", hex.Dump(buf.Bytes()))
 
-	return nil
+	frame := p.client.createFrame(cmdBinary)
 
-	//cmdBinary = buf.Bytes()
+	con, _ := net.Dial("tcp", p.client.host)
+	defer con.Close()
+	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 	//
-	//frame := p.client.createFrame(cmdBinary)
+	if err := p.client.sendFrame(frame, con, rw); err != nil {
+		p.logger.Fatal(err)
+	}
 	//
-	//con, _ := net.Dial("tcp", p.client.host)
-	//defer con.Close()
-	//rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
+	rFrame, err := p.client.receiveFrame(con, byte(cmdLen), rw)
+	if err != nil {
+		p.logger.Fatal(err)
+	}
 	//
-	//if err := p.client.sendFrame(frame, con, rw); err != nil {
-	//	p.logger.Fatal(err)
-	//}
-	//
-	//rFrame, err := p.client.receiveFrame(con, byte(cmdLen), rw)
-	//if err != nil {
-	//	p.logger.Fatal(err)
-	//}
-	//
-	//if err := checkOnPrinterError(rFrame.ERR); err != nil {
-	//	p.logger.Fatal(err)
-	//}
-	//
-	//p.logger.Debug("Field info\n", hex.Dump(rFrame.DATA))
+	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+		return err
+	}
+
+	p.logger.Debug("Field info\n", hex.Dump(rFrame.DATA))
+
+	return nil
 }
 
 type TLV struct {
