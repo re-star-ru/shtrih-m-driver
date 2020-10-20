@@ -1,12 +1,10 @@
 package printer
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
 	"errors"
-	"net"
 	"unicode/utf8"
 
 	"golang.org/x/text/encoding/charmap"
@@ -40,29 +38,20 @@ func (p *Printer) TLVWriteCashierINN(INN string) error {
 	buf.Write(tlv.Value)
 
 	p.logger.Debug("Код, длинна, значение:", tlv.Tag, tlv.Len, tlv.Value)
-
 	p.logger.Debug("Команда с тлв структурой\n", hex.Dump(buf.Bytes()))
 
-	frame := p.client.createFrame(cmdBinary)
+	rFrame, err := p.send(buf.Bytes(), cmdLen)
 
-	con, _ := net.Dial("tcp", p.client.host)
-	defer con.Close()
-	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
-	//
-	if err := p.client.sendFrame(frame, con, rw); err != nil {
-		p.logger.Fatal(err)
-	}
-	//
-	rFrame, err := p.client.receiveFrame(con, byte(cmdLen), rw)
 	if err != nil {
 		p.logger.Fatal(err)
 	}
+
+	p.logger.Debug("frame in: \n", hex.Dump(rFrame.bytes()))
+
 	//
 	if err := checkOnPrinterError(rFrame.ERR); err != nil {
 		return err
 	}
-
-	p.logger.Debug("Field info\n", hex.Dump(rFrame.DATA))
 
 	return nil
 }
@@ -91,6 +80,7 @@ func newTLV(Tag, Len uint16, value []byte) (TLV, error) {
 	return tlv, nil
 }
 
+//ff 4d 1e 00 00 00 b3 04  0c 00 32 36 33 32 30 39 37 34 35 33 35 37
 //type Writer struct {
 //	buf bufio.Writer
 //}
