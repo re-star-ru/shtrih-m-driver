@@ -1,35 +1,37 @@
-package printer
+package driver
 
 import (
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
 
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
+
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
 
 	"golang.org/x/text/encoding/charmap"
 )
 
-type CheckPackage struct {
-	Operations []Operation `json:"operations"`  // список операций в чеке
-	Cash       int64       `json:"cash"`        // сумма оплаты наличными
-	Casheless  int64       `json:"casheless"`   // сумма оплаты безналичными
-	TaxSystem  byte        `json:"tax_system"`  // система налогообложения
-	BottomLine string      `json:"bottom_line"` // нижняя часть чека
-}
-
-type Operation struct {
-	Type    byte   `json:"type"`    // тип операции
-	Amount  int64  `json:"amount"`  // количество товара
-	Price   int64  `json:"price"`   // цена в копейках
-	Sum     int64  `json:"sum"`     // 	сумма товар * цену
-	Subject byte   `json:"subject"` // Предмет рассчета
-	Name    string `json:"name"`    // Наименование продукта
-}
+//type CheckPackage struct {
+//	Operations []Operation `json:"operations"`  // список операций в чеке
+//	Cash       int64       `json:"cash"`        // сумма оплаты наличными
+//	Casheless  int64       `json:"casheless"`   // сумма оплаты безналичными
+//	TaxSystem  byte        `json:"tax_system"`  // система налогообложения
+//	BottomLine string      `json:"bottom_line"` // нижняя часть чека
+//}
+//
+//type Operation struct {
+//	Type    byte   `json:"type"`    // тип операции
+//	Amount  int64  `json:"amount"`  // количество товара
+//	Price   int64  `json:"price"`   // цена в копейках
+//	Sum     int64  `json:"sum"`     // 	сумма товар * цену
+//	Subject byte   `json:"subject"` // Предмет рассчета
+//	Name    string `json:"name"`    // Наименование продукта
+//}
 
 ////////////////////////////////////// Операция v2
 
-func (p *Printer) SellOperationV2(op Operation) {
+func (p *Printer) SellOperationV2(op models.Operation) {
 	data, cmdLen := p.createCommandData(consts.OperationV2)
 	buf := bytes.NewBuffer(data)
 
@@ -112,7 +114,7 @@ func (p *Printer) SellOperationV2(op Operation) {
 
 ///////////////////////////////////// Закрытие чека
 
-func (p *Printer) CloseCheckV2(chk CheckPackage) {
+func (p *Printer) CloseCheckV2(chk models.CheckPackage) {
 	data, cmdLen := p.createCommandData(consts.CloseCheckV2)
 	buf := bytes.NewBuffer(data)
 	p.logger.Debug("cmdlen:", cmdLen)

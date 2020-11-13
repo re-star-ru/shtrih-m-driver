@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/fess932/shtrih-m-driver/pkg/printer"
+	"github.com/fess932/shtrih-m-driver/pkg/driver"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -31,36 +31,36 @@ func main() {
 	host := "10.51.0.71:7778"
 	password := uint32(30)
 
-	p := printer.NewPrinter(logger, host, password)
-	//printer.SellOperationV2()
+	p := driver.NewPrinter(logger, host, password)
+	//driver.SellOperationV2()
 
 	if err := p.TLVWriteCashierINN("263209745357"); err != nil {
 		logger.Fatal(err)
 	}
 
-	//printer.CloseCheckV2()
+	//driver.CloseCheckV2()
 
 	//p.ReadShortStatus()
 	//
-	//printer.FnReadStatus()
+	//driver.FnReadStatus()
 
-	//printer.OpenCheck()
-	//printer.AddSale(2000, 100)
-	//printer.CloseCheck()
+	//driver.OpenCheck()
+	//driver.AddSale(2000, 100)
+	//driver.CloseCheck()
 	//
-	//printer.ReadShortStatus()
+	//driver.ReadShortStatus()
 
-	//printer.PrintReportWithoutClearing()
-	//printer.PrintCheck()
+	//driver.PrintReportWithoutClearing()
+	//driver.PrintCheck()
 
-	//printer.WriteTable(tables.TableCashier, 14, 2, "Оператор14")
-	//printer.ReadFieldInfo(shtrih.SmfpTableCashier, 1)
+	//driver.WriteTable(tables.TableCashier, 14, 2, "Оператор14")
+	//driver.ReadFieldInfo(shtrih.SmfpTableCashier, 1)
 
 	//testTLV(logger)
 }
 
 //func testTLV(log *zap.SugaredLogger) {
-//	data := printer.New(consts.FNNumber, 15)
+//	data := driver.New(consts.FNNumber, 15)
 //	log.Debug(data)
 //
 //	log.Debug(binary.LittleEndian.Uint16(data[:2]))

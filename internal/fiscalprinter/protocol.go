@@ -11,7 +11,7 @@ import (
 )
 
 func NewPrinterProtocol(logger logger.Logger) *PrinterProtocol {
-	// константы из printer protocol
+	// константы из driver protocol
 
 	//p.byteTimeout = 100
 	//STX := byte(2);
