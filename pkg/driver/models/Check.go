@@ -14,7 +14,7 @@ type Operation struct {
 	Type    byte   `json:"type"`    // тип операции
 	Amount  int64  `json:"amount"`  // количество товара
 	Price   int64  `json:"price"`   // цена в копейках
-	Sum     int64  `json:"sum"`     // 	сумма товар * цену
+	Sum     int64  `json:"sum"`     // сумма товар * цену
 	Subject byte   `json:"subject"` // Предмет рассчета
 	Name    string `json:"name"`    // Наименование продукта
 }

@@ -1,4 +1,4 @@
-package driver
+package deprecated
 
 import (
 	"bufio"
@@ -7,6 +7,8 @@ import (
 	"encoding/hex"
 	"fmt"
 	"net"
+
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
 
@@ -105,11 +107,11 @@ func (p *Printer) ReadShortStatus() byte {
 		p.logger.Fatal(err)
 	}
 
-	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
 		p.logger.Fatal(err)
 	}
 
-	p.logger.Debug("frame in: \n", hex.Dump(rFrame.bytes()))
+	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
 
 	in := bufio.NewReader(bytes.NewReader(rFrame.DATA))
 
@@ -181,7 +183,7 @@ func (p *Printer) ReadFieldInfo(table, field byte) {
 		p.logger.Fatal(err)
 	}
 
-	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
 		p.logger.Fatal(err)
 	}
 

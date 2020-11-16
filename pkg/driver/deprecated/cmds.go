@@ -1,12 +1,15 @@
-package driver
+package deprecated
 
 import (
 	"bufio"
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"net"
+
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
+
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 )
 
 func (p *Printer) createCommandData(command uint16) (data []byte, cmdLen int) {
@@ -42,7 +45,7 @@ func (p *Printer) sendCommand(command uint16) ([]byte, error) {
 		p.logger.Fatal(err)
 	}
 
-	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
 		return nil, err
 	}
 
@@ -61,7 +64,7 @@ func (p *Printer) sendCommand(command uint16) ([]byte, error) {
 	//return nil, nil
 }
 
-func (p *Printer) send(date []byte, cmdLen int) (*frame, error) {
+func (p *Printer) send(date []byte, cmdLen int) (*models.Frame, error) {
 	con, _ := net.Dial("tcp", p.client.host)
 	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 
@@ -96,7 +99,7 @@ func (p *Printer) WriteTable(tableNumber byte, rowNumber uint16, fieldNumber byt
 		p.logger.Fatal(err)
 	}
 
-	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
 		p.logger.Fatal(err)
 	}
 }
@@ -107,21 +110,3 @@ func (p *Printer) FNWriteTLV(tlv []byte) {
 	dataBuf := bytes.NewBuffer(data)
 	dataBuf.Write(tlv)
 }
-
-//0000   02 07 2e 1e 00 00 00 02 01 34
-//c++
-//0000   02 07 2e 1e 00 00 00 02 01 34
-
-//0000   02 | 49 | 1e | 1e 00 00 00 | 02 | 0f 00 | 02 | ce ef e5 f0 e0   .I..............
-//0010   f2 ee 31 35 00 00 00 00 00 00 00 00 00 00 00 00   ..15............
-//0020   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
-//0030   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00   ................
-//0040   00 00 00 00 00 00 00 00 00 00 00 | 8a               ............
-
-//      5        5
-//02 | 05 | 10 1e 00 00 00 | 0b
-//            2         4
-//02 | 06 | ff 01 | 1e 00 00 00 | e6
-//     29   1          5             10               15             20                25               29
-//02 | 1d | 80 | 1e 00 00 00 | 02 00 00 00 00 | 05 00 00 00 00 | 00 00 00 00 00 | cf f0 e8 ec e5 | f0 20 31 00 | bb
-//							   02 00 00 00 00

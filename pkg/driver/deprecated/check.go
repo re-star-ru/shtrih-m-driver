@@ -1,4 +1,4 @@
-package driver
+package deprecated
 
 import (
 	"bytes"
@@ -104,11 +104,11 @@ func (p *Printer) SellOperationV2(op models.Operation) {
 		p.logger.Fatal(err)
 	}
 
-	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
 		p.logger.Fatal(err)
 	}
 
-	p.logger.Debug("frame in: \n", hex.Dump(rFrame.bytes()))
+	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
 
 }
 
@@ -170,11 +170,11 @@ func (p *Printer) CloseCheckV2(chk models.CheckPackage) {
 		p.logger.Fatal(err)
 	}
 
-	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
 		p.logger.Fatal(err)
 	}
 
-	p.logger.Debug("frame in: \n", hex.Dump(rFrame.bytes()))
+	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
 }
 
 func intToBytesWithLen(val int64, bytesLen int64) ([]byte, error) {

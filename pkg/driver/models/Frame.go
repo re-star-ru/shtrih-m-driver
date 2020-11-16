@@ -1,13 +1,11 @@
-package driver
+package models
 
 import (
 	"bytes"
 	"errors"
 )
 
-const errLen = 1
-
-type frame struct {
+type Frame struct {
 	STX  byte
 	DLEN byte
 	CMD  []byte
@@ -16,7 +14,7 @@ type frame struct {
 	CRC  byte
 }
 
-func (f *frame) bytes() []byte {
+func (f *Frame) Bytes() []byte {
 	buf := bytes.NewBuffer([]byte{})
 	buf.WriteByte(f.STX)
 	buf.WriteByte(f.DLEN)
@@ -28,7 +26,7 @@ func (f *frame) bytes() []byte {
 	return buf.Bytes()
 }
 
-func (f *frame) checkCRC() error {
+func (f *Frame) CheckCRC() error {
 
 	buf := bytes.NewBuffer([]byte{})
 	buf.Write(f.CMD)

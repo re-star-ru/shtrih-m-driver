@@ -3,7 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/fess932/shtrih-m-driver/pkg/driver"
+	"github.com/fess932/shtrih-m-driver/pkg/driver/client/usecase/tcp"
+
+	printerUsecase "github.com/fess932/shtrih-m-driver/pkg/driver/printer/usecase"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -24,46 +27,48 @@ func createLogger() *zap.SugaredLogger {
 }
 
 func main() {
-
 	logger := createLogger()
 	logger.Info("Shtrih driver starting")
 
-	host := "10.51.0.71:7778"
-	password := uint32(30)
+	//host := "10.51.0.71:7778"
+	//password := uint32(30)
 
-	p := driver.NewPrinter(logger, host, password)
-	//driver.SellOperationV2()
+	host := "fake"
+	password := uint32(0000)
 
-	if err := p.TLVWriteCashierINN("263209745357"); err != nil {
-		logger.Fatal(err)
-	}
-
-	//driver.CloseCheckV2()
-
+	//c := emulator.NewClientUsecase(host, logger)
+	//p := printerUsecase.NewPrinterUsecase(logger, c, password)
 	//p.ReadShortStatus()
+
+	host = "10.51.0.71:7778"
+	password = uint32(30)
+
+	c := tcp.NewClientUsecase(host, logger)
+	p := printerUsecase.NewPrinterUsecase(logger, c, password)
+	p.ReadShortStatus()
+
+	//p.AddOperationToCheck(models.Operation{
+	//	Type:    0,
+	//	Amount:  0,
+	//	Price:   0,
+	//	Sum:     0,
+	//	Subject: 0,
+	//	Name:    "",
+	//})
 	//
-	//driver.FnReadStatus()
+	//p.CloseCheck(models.CheckPackage{
+	//	Cash:       0,
+	//	Casheless:  0,
+	//	TaxSystem:  0,
+	//	BottomLine: "",
+	//})
 
-	//driver.OpenCheck()
-	//driver.AddSale(2000, 100)
-	//driver.CloseCheck()
+	//app := iris.New()
+	//party := app.Party("/printer")
+
+	//http.NewPrinterHandler(party, p, host, password)
 	//
-	//driver.ReadShortStatus()
-
-	//driver.PrintReportWithoutClearing()
-	//driver.PrintCheck()
-
-	//driver.WriteTable(tables.TableCashier, 14, 2, "Оператор14")
-	//driver.ReadFieldInfo(shtrih.SmfpTableCashier, 1)
-
-	//testTLV(logger)
+	//if err := app.Listen(":8080"); err != nil {
+	//	logger.Error(err)
+	//}
 }
-
-//func testTLV(log *zap.SugaredLogger) {
-//	data := driver.New(consts.FNNumber, 15)
-//	log.Debug(data)
-//
-//	log.Debug(binary.LittleEndian.Uint16(data[:2]))
-//	log.Debug(binary.LittleEndian.Uint16(data[2:4]))
-//
-//}

@@ -1,4 +1,4 @@
-package driver
+package deprecated
 
 import (
 	"bufio"
@@ -6,8 +6,11 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"net"
+
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
+
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 
 	"github.com/fess932/shtrih-m-driver/pkg/logger"
 )
@@ -88,7 +91,7 @@ func (c *client) sendFrame(frame []byte, con net.Conn, rw *bufio.ReadWriter) err
 	}
 }
 
-func (c *client) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) (*frame, error) {
+func (c *client) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) (*models.Frame, error) {
 	c.logger.Debug("<- Receive frame")
 
 	//rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
@@ -97,7 +100,7 @@ func (c *client) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) (
 		rw.Flush()
 	}()
 
-	var FRM frame
+	var FRM models.Frame
 	var err error
 
 	FRM.STX, err = rw.ReadByte() // read byte STX (0x02) err need
@@ -112,20 +115,20 @@ func (c *client) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) (
 
 	FRM.ERR, _ = rw.ReadByte() // read err byte
 
-	FRM.DATA = make([]byte, FRM.DLEN-cmdLen-errLen)
+	FRM.DATA = make([]byte, FRM.DLEN-cmdLen-models.ErrLen)
 	rw.Read(FRM.DATA) // read data bytes
 
 	FRM.CRC, _ = rw.ReadByte() // read crc byte
 
 	c.logger.Debug("<- recive frame: \n",
 		fmt.Sprintf("stx: %v, dlen: %v, crc: %v  \n", FRM.STX, FRM.DLEN, FRM.CRC),
-		hex.Dump(FRM.bytes()))
+		hex.Dump(FRM.Bytes()))
 
 	dataCheck := bytes.NewBuffer([]byte{})
 	dataCheck.Write(FRM.CMD)
 	dataCheck.WriteByte(FRM.ERR)
 	dataCheck.Write(FRM.DATA)
-	if err := FRM.checkCRC(); err != nil {
+	if err := FRM.CheckCRC(); err != nil {
 		return nil, err
 	}
 

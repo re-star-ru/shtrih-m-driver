@@ -1,10 +1,12 @@
-package driver
+package models
 
 import (
 	"errors"
 	"fmt"
 	"strings"
 )
+
+const ErrLen = 1 // длинна кода ошибки
 
 var (
 	FSPrinterError01 = PrinterError{msg: "ФН: Неизвестная команда, неверный формат посылки или неизвестные параметры", num: 1} //FSPrinterError01 = ФН: Неизвестная команда, неверный формат посылки или неизвестные параметры
@@ -71,7 +73,7 @@ func (err PrinterError) Is(target error) bool {
 	return ts == err.msg || strings.HasPrefix(ts, err.msg+": ")
 }
 
-func checkOnPrinterError(err byte) error {
+func CheckOnPrinterError(err byte) error {
 	if err == 0 {
 		return nil
 	}

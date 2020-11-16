@@ -1,4 +1,4 @@
-package driver
+package deprecated
 
 import (
 	"bytes"
@@ -6,6 +6,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"unicode/utf8"
+
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
 	"golang.org/x/text/encoding/charmap"
 
@@ -46,10 +48,10 @@ func (p *Printer) TLVWriteCashierINN(INN string) error {
 		p.logger.Fatal(err)
 	}
 
-	p.logger.Debug("frame in: \n", hex.Dump(rFrame.bytes()))
+	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
 
 	//
-	if err := checkOnPrinterError(rFrame.ERR); err != nil {
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
 		return err
 	}
 
