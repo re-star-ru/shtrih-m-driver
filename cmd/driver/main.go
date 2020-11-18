@@ -110,13 +110,13 @@ func main() {
 	//	Name:    "Ремонт стартера тест",
 	//})
 	//
-	//p.CloseCheck(models.CheckPackage{
-	//	Operations: nil,
-	//	Cash:       0,
-	//	Casheless:  0,
-	//	TaxSystem:  consts.ENVD,
-	//	BottomLine: "bottom line sample",
-	//})
+	p.CloseCheck(models.CheckPackage{
+		Operations: nil,
+		Cash:       0,
+		Casheless:  0,
+		TaxSystem:  consts.ENVD,
+		BottomLine: "bottom line sample",
+	})
 
 	//p.CancellationOpenedCheck()
 
