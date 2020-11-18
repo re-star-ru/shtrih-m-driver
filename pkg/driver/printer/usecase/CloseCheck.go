@@ -3,13 +3,14 @@ package printerUsecase
 import (
 	"encoding/hex"
 
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 	"golang.org/x/text/encoding/charmap"
 )
 
 func (p *printerUsecase) CloseCheck(chk models.CheckPackage) {
-	buf, cmdLen := p.createCommandBuffer(consts.CloseCheckV2, p.password)
+	p.logger.Debug("Send command CloseCheck")
+
+	buf, cmdLen := p.createCommandBuffer(models.CloseCheckV2, p.password)
 	p.logger.Debug("cmdlen:", cmdLen)
 
 	// запись суммы наличных - типа оплаты 1
@@ -54,7 +55,7 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage) {
 
 	p.logger.Debug("len: ", buf.Len())
 
-	rFrame, err := p.client.Send(buf.Bytes(), cmdLen)
+	rFrame, err := p.send(buf.Bytes(), cmdLen)
 
 	if err != nil {
 		p.logger.Error(err)

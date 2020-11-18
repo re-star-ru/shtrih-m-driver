@@ -9,11 +9,19 @@ import (
 )
 
 func (p *printerUsecase) AddOperationToCheck(op models.Operation) {
-	//data, cmdLen := p.createCommandData(consts.OperationV2)
-	//byes :=
-	//p.client.Send(bytes)
+	p.logger.Debug("Send command AddOperationToCheck")
 
-	buf, cmdLen := p.createCommandBuffer(consts.OperationV2, p.password)
+	switch status := p.ReadShortStatus(); status {
+	case models.OpenedShift,
+		models.OpenedCheckIncome, models.OpenedCheckExpense, models.OpenedCheckReturnIncome,
+		models.OpenedCheckReturnExpence, models.OpenedCheckNonFiscal:
+		p.logger.Info("статус: ", status)
+	default:
+		p.logger.Info("Нельзя добавлять, статус-", status)
+		return
+	}
+
+	buf, cmdLen := p.createCommandBuffer(models.OperationV2, p.password)
 
 	// Запись типа операции
 	buf.WriteByte(op.Type)
@@ -25,7 +33,7 @@ func (p *printerUsecase) AddOperationToCheck(op models.Operation) {
 		p.logger.Error(err)
 		return
 	}
-	p.logger.Debug("amount:\n", hex.Dump(amount))
+	//p.logger.Debug("amount:\n", hex.Dump(amount))
 	buf.Write(amount)
 
 	// запись цены товара
@@ -82,15 +90,17 @@ func (p *printerUsecase) AddOperationToCheck(op models.Operation) {
 	p.logger.Debug("длинна сообщения в байтах: ", buf.Len())
 	p.logger.Debug("\n", hex.Dump(buf.Bytes()))
 
-	p.logger.Debug("cmdlen", cmdLen)
-	rFrame, err := p.client.Send(buf.Bytes(), cmdLen)
+	p.logger.Debug("cmdlen: ", cmdLen)
+	rFrame, err := p.send(buf.Bytes(), cmdLen)
 
 	if err != nil {
 		p.logger.Error(err)
+		return
 	}
 
 	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
 		p.logger.Error(err)
+		return
 	}
 
 	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))

@@ -3,18 +3,15 @@ package printerUsecase
 import (
 	"bufio"
 	"bytes"
-	"encoding/hex"
 	"fmt"
 
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
-
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
 )
 
 func (p *printerUsecase) ReadShortStatus() byte {
 	p.logger.Debug("Send command ReadShortStatus")
 
-	buf, cmdLen := p.createCommandBuffer(consts.ReadShortStatus, p.password)
+	buf, cmdLen := p.createCommandBuffer(models.ReadShortStatus, p.password)
 
 	rFrame, err := p.send(buf.Bytes(), cmdLen)
 
@@ -28,8 +25,6 @@ func (p *printerUsecase) ReadShortStatus() byte {
 		return 0
 	}
 
-	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
-
 	in := bufio.NewReader(bytes.NewReader(rFrame.DATA))
 
 	operatorNumber, _ := in.ReadByte()
@@ -37,7 +32,7 @@ func (p *printerUsecase) ReadShortStatus() byte {
 	flags := make([]byte, 2)
 	in.Read(flags)
 
-	mode, _ := in.ReadByte() // & 15; ? wft
+	mode, _ := in.ReadByte() // & 15; ? wft режим ккт
 	subMode, _ := in.ReadByte()
 	receiptOperationsLo, _ := in.ReadByte()
 	batteryState, _ := in.ReadByte()

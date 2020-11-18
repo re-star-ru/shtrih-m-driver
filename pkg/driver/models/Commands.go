@@ -1,4 +1,6 @@
-package consts
+package models
+
+import "time"
 
 const (
 	// команды принтера
@@ -15,8 +17,11 @@ const (
 
 	OpenCheck = 141 // Открытие чека
 
-	PrintSale  = 128 // Добавление операции продажи в чек
+	PrintSale = 128 // Добавление операции продажи в чек
+
 	CloseCheck = 133 // Закрытие чека
+
+	CancellationCheck = 136 // Отмена текущего чека
 
 	// команды фискального накопителя
 	FnReadStatus = 65281 // чтение статуса фискального накопителя
@@ -42,4 +47,9 @@ const (
 	ENQ = 0x05 // enquire «Прошу подтверждения!»
 	ACK = 0x06 // acknowledgement «Подтверждаю!»
 	NAK = 0x15 // negative acknowledgment «Не подтверждаю!»
+)
+
+const (
+	DefaultAttemptTimeout = 1000 * time.Millisecond
+	MaxENQAttempts        = 3
 )

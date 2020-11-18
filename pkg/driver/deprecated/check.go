@@ -90,7 +90,7 @@ func (p *Printer) SellOperationV2(op models.Operation) {
 		p.logger.Fatal(err)
 	}
 	rStrBytes := make([]byte, 128)
-	copy(rStrBytes, []byte(str))
+	copy(rStrBytes, str)
 
 	buf.Write(rStrBytes[:128])
 

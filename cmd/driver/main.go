@@ -3,6 +3,9 @@ package main
 import (
 	"log"
 
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
+
 	"github.com/fess932/shtrih-m-driver/pkg/driver/client/usecase/tcp"
 
 	printerUsecase "github.com/fess932/shtrih-m-driver/pkg/driver/printer/usecase"
@@ -45,16 +48,78 @@ func main() {
 
 	c := tcp.NewClientUsecase(host, logger)
 	p := printerUsecase.NewPrinterUsecase(logger, c, password)
-	p.ReadShortStatus()
 
 	//p.AddOperationToCheck(models.Operation{
-	//	Type:    0,
-	//	Amount:  0,
-	//	Price:   0,
+	//	Type:    consts.Income,
+	//	Amount:  1,
+	//	Price:   1,
 	//	Sum:     0,
-	//	Subject: 0,
-	//	Name:    "",
+	//	Subject: consts.Service,
+	//	Name:    "Ремонт стартера тест",
 	//})
+	//
+	//p.AddOperationToCheck(models.Operation{
+	//	Type:    consts.Income,
+	//	Amount:  1,
+	//	Price:   1,
+	//	Sum:     0,
+	//	Subject: consts.Service,
+	//	Name:    "Ремонт стартера тест",
+	//})
+	//
+	//p.CloseCheck(models.CheckPackage{
+	//	Operations: nil,
+	//	Cash:       0,
+	//	Casheless:  0,
+	//	TaxSystem:  consts.ENVD,
+	//	BottomLine: "bottom line sample",
+	//})
+
+	// возврат прихода
+	p.AddOperationToCheck(models.Operation{
+		Type:    consts.ReturnIncome,
+		Amount:  1,
+		Price:   1,
+		Sum:     0,
+		Subject: consts.Service,
+		Name:    "Ремонт стартера тест",
+	})
+
+	// возврат прихода
+	p.AddOperationToCheck(models.Operation{
+		Type:    consts.ReturnIncome,
+		Amount:  1,
+		Price:   1,
+		Sum:     0,
+		Subject: consts.Service,
+		Name:    "Ремонт стартера тест",
+	})
+
+	logger.Debug(p.ReadShortStatus())
+
+	p.CancellationOpenedCheck()
+
+	logger.Debug(p.ReadShortStatus())
+
+	//p.AddOperationToCheck(models.Operation{
+	//	Type:    consts.ReturnIncome,
+	//	Amount:  1,
+	//	Price:   1,
+	//	Sum:     0,
+	//	Subject: consts.Service,
+	//	Name:    "Ремонт стартера тест",
+	//})
+	//
+	//p.CloseCheck(models.CheckPackage{
+	//	Operations: nil,
+	//	Cash:       0,
+	//	Casheless:  0,
+	//	TaxSystem:  consts.ENVD,
+	//	BottomLine: "bottom line sample",
+	//})
+
+	//p.CancellationOpenedCheck()
+
 	//
 	//p.CloseCheck(models.CheckPackage{
 	//	Cash:       0,

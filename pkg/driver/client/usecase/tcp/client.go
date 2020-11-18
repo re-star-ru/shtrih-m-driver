@@ -7,8 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
-
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
+	"time"
 
 	"github.com/fess932/shtrih-m-driver/pkg/driver/client"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
@@ -34,16 +33,22 @@ func (u *Usecase) Send(frameToSend []byte, cmdLen int) (*models.Frame, error) {
 		}
 	}()
 
-	if err := u.sendFrame(frameToSend, con, rw); err != nil {
-		return &models.Frame{}, err
+	// проверяем статус онлайн кассы, если нет ошибки отправляем фрейм с командой
+	if err := u.checkPortStatus(rw); err != nil {
+		u.logger.Error(err)
+		return nil, err
 	}
 
-	// TODO: send close connection
-	return u.receiveFrame(con, byte(cmdLen), rw)
+	// отправляем фрейм с командой
+	if err := u.sendFrame(frameToSend, rw); err != nil {
+		return nil, err
+	}
+
+	return u.receiveFrame(byte(cmdLen), rw)
 }
 
-func (u *Usecase) sendFrame(frame []byte, con net.Conn, rw *bufio.ReadWriter) error {
-	u.ping(rw, con)
+func (u *Usecase) sendFrame(frame []byte, rw *bufio.ReadWriter) error {
+	u.logger.Debug("-> send frame: \n", hex.Dump(frame))
 
 	if _, err := rw.Write(frame); err != nil {
 		u.logger.Error(err)
@@ -51,8 +56,6 @@ func (u *Usecase) sendFrame(frame []byte, con net.Conn, rw *bufio.ReadWriter) er
 	if err := rw.Flush(); err != nil {
 		u.logger.Error(err)
 	}
-
-	u.logger.Debug("-> send frame: \n", hex.Dump(frame))
 
 	b, err := rw.ReadByte() // read control byte
 	u.logger.Debug("<- recive control byte:", b)
@@ -62,19 +65,61 @@ func (u *Usecase) sendFrame(frame []byte, con net.Conn, rw *bufio.ReadWriter) er
 	}
 
 	switch b {
-	case consts.ACK:
+	case models.ACK:
 		return nil
-	case consts.NAK:
+	case models.NAK:
 		return errors.New("ошибка интерфейса либо неверная контрольная сумма")
 	default:
 		return errors.New("сообщение не принято либо не верные данные")
 	}
 }
 
-func (u *Usecase) ping(rw *bufio.ReadWriter, con net.Conn) {
+func (u *Usecase) checkPortStatus(rw *bufio.ReadWriter) error {
+
+	u.logger.Debug("-> send ENQ, check port status")
+	currentAttempt := 0
+
+	for currentAttempt < models.MaxENQAttempts {
+		currentAttempt++
+
+		if err := rw.WriteByte(models.ENQ); err != nil {
+			return err
+		}
+
+		if err := rw.Flush(); err != nil {
+			return err
+		}
+
+		b, err := rw.ReadByte()
+		if err != nil {
+			return err
+		}
+
+		u.logger.Debug("<- recive control byte:", b)
+
+		switch b {
+		case models.ACK:
+			u.logger.Debug("ACK, wait and retry ENQ")
+			time.Sleep(models.DefaultAttemptTimeout)
+			continue
+
+		case models.NAK:
+			u.logger.Debug("NAK, send cmd")
+			return nil
+
+		default:
+			u.logger.Error("ERR, ping byte:", b)
+			return errors.New(fmt.Sprintln("ERR, ping byte:", b))
+		}
+	}
+
+	return errors.New("no answer")
+}
+
+func (u *Usecase) ping(rw *bufio.ReadWriter) {
 	u.logger.Debug("-> send ENQ")
 
-	if err := rw.WriteByte(consts.ENQ); err != nil {
+	if err := rw.WriteByte(models.ENQ); err != nil {
 		u.logger.Error(err)
 	}
 
@@ -86,26 +131,26 @@ func (u *Usecase) ping(rw *bufio.ReadWriter, con net.Conn) {
 	u.logger.Debug("<- recive control byte:", b)
 
 	switch b {
-	case consts.ACK:
+	case models.ACK:
 		u.logger.Debug("OK, ACK, wait for recive now")
-		rw.WriteByte(consts.ACK)
+		rw.WriteByte(models.ACK)
 		rw.Flush()
-	case consts.NAK:
+	case models.NAK:
 		u.logger.Debug("OK, NAK, wait for cmd now")
-		rw.WriteByte(consts.ACK)
+		rw.WriteByte(models.ACK)
 		rw.Flush()
 	default:
-		rw.WriteByte(consts.ACK)
+		rw.WriteByte(models.ACK)
 		rw.Flush()
 		u.logger.Fatal("ERR, ping byte:", b)
 	}
 }
 
-func (u *Usecase) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) (*models.Frame, error) {
-	u.logger.Debug("<- Receive frame")
+func (u *Usecase) receiveFrame(cmdLen byte, rw *bufio.ReadWriter) (*models.Frame, error) {
+	u.logger.Debug("<- start receive frame")
 
 	defer func() {
-		rw.WriteByte(consts.ACK)
+		rw.WriteByte(models.ACK)
 		rw.Flush()
 	}()
 
@@ -114,7 +159,8 @@ func (u *Usecase) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) 
 
 	FRM.STX, err = rw.ReadByte() // read byte STX (0x02) err need
 	if err != nil {
-		u.logger.Fatal(err)
+		u.logger.Error(err)
+		return nil, err
 	}
 
 	FRM.DLEN, err = rw.ReadByte() // read byte dataLen
@@ -129,7 +175,7 @@ func (u *Usecase) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) 
 
 	FRM.CRC, _ = rw.ReadByte() // read crc byte
 
-	u.logger.Debug("<- recive frame: \n",
+	u.logger.Debug("<- end recive frame: \n",
 		fmt.Sprintf("stx: %v, dlen: %v, crc: %v  \n", FRM.STX, FRM.DLEN, FRM.CRC),
 		hex.Dump(FRM.Bytes()))
 
