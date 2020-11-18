@@ -15,7 +15,7 @@ import (
 )
 
 func (p *Printer) TLVWriteCashierINN(INN string) error {
-	cmdBinary, cmdLen := p.createCommandData(consts.FnWriteTLV)
+	cmdBinary, cmdLen := p.createCommandData(models.FnWriteTLV)
 	buf := bytes.NewBuffer(cmdBinary)
 	p.logger.Debug(buf)
 

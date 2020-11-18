@@ -32,7 +32,7 @@ import (
 ////////////////////////////////////// Операция v2
 
 func (p *Printer) SellOperationV2(op models.Operation) {
-	data, cmdLen := p.createCommandData(consts.OperationV2)
+	data, cmdLen := p.createCommandData(models.OperationV2)
 	buf := bytes.NewBuffer(data)
 
 	// Запись типа операции
@@ -115,7 +115,7 @@ func (p *Printer) SellOperationV2(op models.Operation) {
 ///////////////////////////////////// Закрытие чека
 
 func (p *Printer) CloseCheckV2(chk models.CheckPackage) {
-	data, cmdLen := p.createCommandData(consts.CloseCheckV2)
+	data, cmdLen := p.createCommandData(models.CloseCheckV2)
 	buf := bytes.NewBuffer(data)
 	p.logger.Debug("cmdlen:", cmdLen)
 

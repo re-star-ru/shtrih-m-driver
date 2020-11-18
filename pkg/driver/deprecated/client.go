@@ -10,8 +10,6 @@ import (
 
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
-
 	"github.com/fess932/shtrih-m-driver/pkg/logger"
 )
 
@@ -27,23 +25,23 @@ func newClient(logger logger.Logger, host string) *client {
 func (c *client) ping(rw *bufio.ReadWriter, con net.Conn) {
 	//rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 	c.logger.Debug("-> send ENQ")
-	rw.WriteByte(consts.ENQ)
+	rw.WriteByte(models.ENQ)
 	rw.Flush()
 
 	b, _ := rw.ReadByte()
 	c.logger.Debug("<- recive control byte:", b)
 
 	switch b {
-	case consts.ACK:
+	case models.ACK:
 		c.logger.Debug("OK, ACK, wait for recive now")
-		rw.WriteByte(consts.ACK)
+		rw.WriteByte(models.ACK)
 		rw.Flush()
-	case consts.NAK:
+	case models.NAK:
 		c.logger.Debug("OK, NAK, wait for cmd now")
-		rw.WriteByte(consts.ACK)
+		rw.WriteByte(models.ACK)
 		rw.Flush()
 	default:
-		rw.WriteByte(consts.ACK)
+		rw.WriteByte(models.ACK)
 		rw.Flush()
 		c.logger.Fatal("ERR, ping byte:", b)
 	}
@@ -82,12 +80,12 @@ func (c *client) sendFrame(frame []byte, con net.Conn, rw *bufio.ReadWriter) err
 		return err
 	}
 	switch b {
-	case consts.ACK:
+	case models.ACK:
 		return nil
-	case consts.NAK:
-		return errors.New("Ошибка интерфейса либо неверная контрольная сумма")
+	case models.NAK:
+		return errors.New("ошибка интерфейса либо неверная контрольная сумма")
 	default:
-		return errors.New("Сообщение не принято либо не верные данные")
+		return errors.New("сообщение не принято либо не верные данные")
 	}
 }
 
@@ -96,7 +94,7 @@ func (c *client) receiveFrame(con net.Conn, cmdLen byte, rw *bufio.ReadWriter) (
 
 	//rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 	defer func() {
-		rw.WriteByte(consts.ACK)
+		rw.WriteByte(models.ACK)
 		rw.Flush()
 	}()
 

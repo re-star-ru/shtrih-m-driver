@@ -10,8 +10,6 @@ import (
 
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
-
 	"github.com/fess932/shtrih-m-driver/pkg/logger"
 
 	"golang.org/x/text/encoding/charmap"
@@ -44,7 +42,7 @@ func NewPrinter(logger logger.Logger, host string, password uint32) *Printer {
 func (p *Printer) FnReadStatus() {
 	p.logger.Debug("Send command FnReadStatus")
 
-	data, err := p.sendCommand(consts.FnReadStatus)
+	data, err := p.sendCommand(models.FnReadStatus)
 	if err != nil {
 		p.logger.Error(err)
 		return
@@ -97,7 +95,7 @@ func (p *Printer) FnReadStatus() {
 func (p *Printer) ReadShortStatus() byte {
 	p.logger.Debug("Send command ReadShortStatus")
 
-	data, cmdLen := p.createCommandData(consts.ReadShortStatus)
+	data, cmdLen := p.createCommandData(models.ReadShortStatus)
 
 	buf := bytes.NewBuffer(data)
 
@@ -154,7 +152,7 @@ func (p *Printer) CheckStatus() bool {
 func (p *Printer) PrintReportWithoutClearing() {
 	p.logger.Debug("Send command PrintReportWithoutClearing")
 
-	_, err := p.sendCommand(consts.PrintReportWithoutClearing)
+	_, err := p.sendCommand(models.PrintReportWithoutClearing)
 	if err != nil {
 		p.logger.Error(err)
 		return
@@ -162,7 +160,7 @@ func (p *Printer) PrintReportWithoutClearing() {
 }
 
 func (p *Printer) ReadFieldInfo(table, field byte) {
-	cmdBinary, cmdLen := p.createCommandData(consts.ReadFieldInfo)
+	cmdBinary, cmdLen := p.createCommandData(models.ReadFieldInfo)
 	buf := bytes.NewBuffer(cmdBinary)
 	buf.WriteByte(table)
 	buf.WriteByte(field)
