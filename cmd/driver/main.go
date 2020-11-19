@@ -72,24 +72,12 @@ func main() {
 	})
 	//
 
-	if err := p.WriteCashierINN("263209745357"); err != nil {
-		logger.Error(err)
-	}
-
-	p.CloseCheck(models.CheckPackage{
-		Operations: nil,
-		Cash:       2,
-		Casheless:  0,
-		TaxSystem:  8,
-		BottomLine: "Нижняя линия чека",
-	}, true)
-
-	// возврат прихода
+	////возврат прихода
 	//p.AddOperationToCheck(models.Operation{
 	//	Type:    consts.ReturnIncome,
 	//	Amount:  1,
 	//	Price:   1,
-	//	Sum:     0,
+	//	Sum:     1,
 	//	Subject: consts.Service,
 	//	Name:    "Ремонт стартера тест",
 	//})
@@ -99,50 +87,20 @@ func main() {
 	//	Type:    consts.ReturnIncome,
 	//	Amount:  1,
 	//	Price:   1,
-	//	Sum:     0,
+	//	Sum:     1,
 	//	Subject: consts.Service,
 	//	Name:    "Ремонт стартера тест",
 	//})
-	//
-	//logger.Debug(p.ReadShortStatus())
-	//
-	//p.CancellationOpenedCheck()
-	//
-	//logger.Debug(p.ReadShortStatus())
 
-	//p.AddOperationToCheck(models.Operation{
-	//	Type:    consts.ReturnIncome,
-	//	Amount:  1,
-	//	Price:   1,
-	//	Sum:     0,
-	//	Subject: consts.Service,
-	//	Name:    "Ремонт стартера тест",
-	//})
-	//
-	//p.CloseCheck(models.CheckPackage{
-	//	Operations: nil,
-	//	Cash:       0,
-	//	Casheless:  0,
-	//	TaxSystem:  consts.ENVD,
-	//	BottomLine: "bottom line sample",
-	//})
+	if err := p.WriteCashierINN("263209745357"); err != nil {
+		logger.Error(err)
+	}
 
-	//p.CancellationOpenedCheck()
-
-	//
-	//p.CloseCheck(models.CheckPackage{
-	//	Cash:       0,
-	//	Casheless:  0,
-	//	TaxSystem:  0,
-	//	BottomLine: "",
-	//})
-
-	//app := iris.New()
-	//party := app.Party("/printer")
-
-	//http.NewPrinterHandler(party, p, host, password)
-	//
-	//if err := app.Listen(":8080"); err != nil {
-	//	logger.Error(err)
-	//}
+	p.CloseCheck(models.CheckPackage{
+		Operations: nil,
+		Cash:       2,
+		Casheless:  0,
+		TaxSystem:  consts.ENVD,
+		BottomLine: "Нижняя линия чека",
+	}, true)
 }
