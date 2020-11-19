@@ -14,10 +14,15 @@ type Usecase interface {
 
 	ReadShortStatus() byte // Прочитать короткий статус, получить статус
 
-	AddOperationToCheck(op models.Operation) // Добавть операцию в чек
-	CloseCheck(chk models.CheckPackage)      // Закрыть чек
+	AddOperationToCheck(op models.Operation)            // Добавть операцию в чек
+	CloseCheck(chk models.CheckPackage, dontPrint bool) // Закрыть чек
 
 	CancellationOpenedCheck() // Аннулирование открытого чека
+
+	DontPrintOneCheck()               // пропуск печати одного чека
+	WriteCashierINN(INN string) error // Запись Инн кассира
 }
 
 //SellOperationV2(op models.Operation)
+
+// printer.writeTable(17, 1, 7, "1") таблица 17 ряд 1 поле 7 значение 1 - не печатать один чек

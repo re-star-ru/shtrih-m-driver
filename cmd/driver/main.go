@@ -49,8 +49,44 @@ func main() {
 	c := tcp.NewClientUsecase(host, logger)
 	p := printerUsecase.NewPrinterUsecase(logger, c, password)
 
+	// TODO:  передача инн кассира перед первой операцией
+	// 1021, кассир
+	// printer.writeCashierName(params.Parameters.CashierName);
+
+	p.AddOperationToCheck(models.Operation{
+		Type:    consts.Income,
+		Amount:  1,
+		Price:   1,
+		Sum:     1,
+		Subject: consts.Service,
+		Name:    "Ремонт стартера тест",
+	})
+
+	p.AddOperationToCheck(models.Operation{
+		Type:    consts.Income,
+		Amount:  1,
+		Price:   1,
+		Sum:     1,
+		Subject: consts.Service,
+		Name:    "Ремонт стартера тест",
+	})
+	//
+
+	if err := p.WriteCashierINN("263209745357"); err != nil {
+		logger.Error(err)
+	}
+
+	p.CloseCheck(models.CheckPackage{
+		Operations: nil,
+		Cash:       2,
+		Casheless:  0,
+		TaxSystem:  8,
+		BottomLine: "Нижняя линия чека",
+	}, true)
+
+	// возврат прихода
 	//p.AddOperationToCheck(models.Operation{
-	//	Type:    consts.Income,
+	//	Type:    consts.ReturnIncome,
 	//	Amount:  1,
 	//	Price:   1,
 	//	Sum:     0,
@@ -58,8 +94,24 @@ func main() {
 	//	Name:    "Ремонт стартера тест",
 	//})
 	//
+	//// возврат прихода
 	//p.AddOperationToCheck(models.Operation{
-	//	Type:    consts.Income,
+	//	Type:    consts.ReturnIncome,
+	//	Amount:  1,
+	//	Price:   1,
+	//	Sum:     0,
+	//	Subject: consts.Service,
+	//	Name:    "Ремонт стартера тест",
+	//})
+	//
+	//logger.Debug(p.ReadShortStatus())
+	//
+	//p.CancellationOpenedCheck()
+	//
+	//logger.Debug(p.ReadShortStatus())
+
+	//p.AddOperationToCheck(models.Operation{
+	//	Type:    consts.ReturnIncome,
 	//	Amount:  1,
 	//	Price:   1,
 	//	Sum:     0,
@@ -74,49 +126,6 @@ func main() {
 	//	TaxSystem:  consts.ENVD,
 	//	BottomLine: "bottom line sample",
 	//})
-
-	// возврат прихода
-	p.AddOperationToCheck(models.Operation{
-		Type:    consts.ReturnIncome,
-		Amount:  1,
-		Price:   1,
-		Sum:     0,
-		Subject: consts.Service,
-		Name:    "Ремонт стартера тест",
-	})
-
-	// возврат прихода
-	p.AddOperationToCheck(models.Operation{
-		Type:    consts.ReturnIncome,
-		Amount:  1,
-		Price:   1,
-		Sum:     0,
-		Subject: consts.Service,
-		Name:    "Ремонт стартера тест",
-	})
-
-	logger.Debug(p.ReadShortStatus())
-
-	p.CancellationOpenedCheck()
-
-	logger.Debug(p.ReadShortStatus())
-
-	//p.AddOperationToCheck(models.Operation{
-	//	Type:    consts.ReturnIncome,
-	//	Amount:  1,
-	//	Price:   1,
-	//	Sum:     0,
-	//	Subject: consts.Service,
-	//	Name:    "Ремонт стартера тест",
-	//})
-	//
-	p.CloseCheck(models.CheckPackage{
-		Operations: nil,
-		Cash:       0,
-		Casheless:  0,
-		TaxSystem:  consts.ENVD,
-		BottomLine: "bottom line sample",
-	})
 
 	//p.CancellationOpenedCheck()
 

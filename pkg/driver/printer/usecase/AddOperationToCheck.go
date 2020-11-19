@@ -11,6 +11,9 @@ import (
 func (p *printerUsecase) AddOperationToCheck(op models.Operation) {
 	p.logger.Debug("Send command AddOperationToCheck")
 
+	// TODO: Проверка на на открытую смену перед началом чека, так как происходит
+	// автоматическое отрытие смены без передачи инн кассира
+
 	switch status := p.ReadShortStatus(); status {
 	case models.OpenedShift,
 		models.OpenedCheckIncome, models.OpenedCheckExpense, models.OpenedCheckReturnIncome,

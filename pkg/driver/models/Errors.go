@@ -17,9 +17,15 @@ var (
 	FSPrinterError06 = PrinterError{msg: "ФН: Архив ФН переполнен", num: 6}                                                    //FSPrinterError06 = ФН: Архив ФН переполнен
 
 	PrinterError33 = PrinterError{msg: "Некорректные параметры в команде", num: 51} // PrinterError33 = Некорректные параметры в команде
-	PrinterError40 = PrinterError{msg: "Переполнение диапазона скидок", num: 64}    // PrinterError40 = Переполнение диапазона скидок
+
+	PrinterError36 = PrinterError{msg: "Некорректные параметры в команде для данной реализации", num: 54} //
+
+	PrinterError40 = PrinterError{msg: "Переполнение диапазона скидок", num: 64} // PrinterError40 = Переполнение диапазона скидок
 	PrinterError4F = PrinterError{msg: "Неверный пароль", num: 79}
 	PrinterError50 = PrinterError{msg: "Идет печать предыдущей команды", num: 80} // PrinterError50 = Идет печать предыдущей команды
+
+	PrinterError54 = PrinterError{msg: "Переполнение накоплений по типу оплаты 4 в смене", num: 84} // переполнение накоплений по типу оплаты 4 в смене
+
 	PrinterError69 = PrinterError{msg: "Переполнение денег по обороту налогов", num: 105}
 	PrinterError73 = PrinterError{msg: "Команда не поддерживается в данном режиме", num: 115} // Команда не поддерживается в данном режиме
 	PrinterError7E = PrinterError{msg: "Неверное значение в поле длины", num: 126}            //
@@ -31,6 +37,7 @@ var (
 )
 
 var printerErrors = []PrinterError{
+	PrinterError36,
 	PrinterError45,
 	PrinterError69,
 	PrinterError73,
@@ -45,6 +52,7 @@ var printerErrors = []PrinterError{
 	PrinterError7E,
 	PrinterError33,
 	PrinterError50,
+	PrinterError54,
 	PrinterError4F,
 	PrinterErrorUnknown,
 }
