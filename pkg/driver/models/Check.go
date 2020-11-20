@@ -2,6 +2,7 @@ package models
 
 // Пакет чека
 type CheckPackage struct {
+	CashierINN string      `json:"cashier_inn"`
 	Operations []Operation `json:"operations"`  // список операций в чеке
 	Cash       int64       `json:"cash"`        // сумма оплаты наличными
 	Casheless  int64       `json:"casheless"`   // сумма оплаты безналичными

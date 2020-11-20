@@ -92,11 +92,8 @@ func main() {
 	//	Name:    "Ремонт стартера тест",
 	//})
 
-	if err := p.WriteCashierINN("263209745357"); err != nil {
-		logger.Error(err)
-	}
-
 	p.CloseCheck(models.CheckPackage{
+		CashierINN: "263209745357",
 		Operations: nil,
 		Cash:       2,
 		Casheless:  0,

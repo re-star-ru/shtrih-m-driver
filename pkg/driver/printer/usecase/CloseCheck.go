@@ -22,7 +22,13 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage, dontPrint bool) {
 	}
 
 	if dontPrint {
-		p.DontPrintOneCheck()
+		p.DontPrintOneCheck() // не печатать чек если передан флаг dont print
+	}
+
+	if err := p.WriteCashierINN(chk.CashierINN); err != nil {
+		// запись inn кассира после записи операций но до закрытия чека
+		p.logger.Error(err)
+		return
 	}
 
 	buf, cmdLen := p.createCommandBuffer(models.CloseCheckV2, p.password)
