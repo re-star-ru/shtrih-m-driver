@@ -15,15 +15,22 @@ import (
 )
 
 type Usecase struct {
-	host   string
-	logger logger.Logger
+	host    string
+	timeout time.Duration
+	logger  logger.Logger
 }
 
 func (u *Usecase) Send(frameToSend []byte, cmdLen int) (*models.Frame, error) {
 	con, err := net.Dial("tcp", u.host)
+
 	if err != nil {
 		return nil, err
 	}
+
+	if err := con.SetDeadline(time.Now().Add(u.timeout)); err != nil {
+		return nil, err
+	}
+
 	rw := bufio.NewReadWriter(bufio.NewReader(con), bufio.NewWriter(con))
 
 	defer func() {
@@ -190,6 +197,6 @@ func (u *Usecase) receiveFrame(cmdLen byte, rw *bufio.ReadWriter) (*models.Frame
 	return &FRM, nil
 }
 
-func NewClientUsecase(host string, logger logger.Logger) client.Usecase {
-	return &Usecase{host: host, logger: logger}
+func NewClientUsecase(host string, timeout time.Duration, logger logger.Logger) client.Usecase {
+	return &Usecase{host: host, timeout: timeout, logger: logger}
 }

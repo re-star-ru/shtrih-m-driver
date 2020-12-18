@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
@@ -46,7 +47,7 @@ func main() {
 	host = "10.51.0.73:7778"
 	password = uint32(30)
 
-	c := tcp.NewClientUsecase(host, logger)
+	c := tcp.NewClientUsecase(host, time.Millisecond*3000, logger)
 
 	p := printerUsecase.NewPrinterUsecase(logger, c, password)
 
@@ -74,7 +75,7 @@ func main() {
 		Casheless:  0,
 		TaxSystem:  consts.ENVD,
 		BottomLine: "Нижняя линия чека",
-		Electronic: false,
+		Electronic: true,
 	}
 
 	if err := p.Print(chk); err != nil {
