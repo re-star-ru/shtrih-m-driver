@@ -8,6 +8,8 @@ type CheckPackage struct {
 	Casheless  int64       `json:"casheless"`   // сумма оплаты безналичными
 	TaxSystem  byte        `json:"tax_system"`  // система налогообложения
 	BottomLine string      `json:"bottom_line"` // нижняя часть чека
+
+	Electronic bool `json:"electronic"` // не печатать чек на бумаге
 }
 
 // Операции в чеке

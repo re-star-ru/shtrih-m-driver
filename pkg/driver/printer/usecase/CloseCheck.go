@@ -9,7 +9,7 @@ import (
 	"golang.org/x/text/encoding/charmap"
 )
 
-func (p *printerUsecase) CloseCheck(chk models.CheckPackage, dontPrint bool) {
+func (p *printerUsecase) CloseCheck(chk models.CheckPackage) error {
 	p.logger.Debug("Send command CloseCheck")
 
 	switch status := p.ReadShortStatus(); status {
@@ -17,18 +17,18 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage, dontPrint bool) {
 		models.OpenedCheckReturnExpence, models.OpenedCheckNonFiscal:
 		p.logger.Info("статус: ", status)
 	default:
-		p.logger.Debug("Нет чека для закрытия")
-		return
+		p.logger.Debug("нет чека для закрытия")
+		return errors.New("нет чека для закрытия")
 	}
 
-	if dontPrint {
+	if chk.Electronic {
 		p.DontPrintOneCheck() // не печатать чек если передан флаг dont print
 	}
 
 	if err := p.WriteCashierINN(chk.CashierINN); err != nil {
 		// запись inn кассира после записи операций но до закрытия чека
 		p.logger.Error(err)
-		return
+		return err
 	}
 
 	buf, cmdLen := p.createCommandBuffer(models.CloseCheckV2, p.password)
@@ -39,7 +39,7 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage, dontPrint bool) {
 	p.logger.Debug(len(cash), " длинна кеша")
 	if err != nil {
 		p.logger.Error(err)
-		return
+		return err
 	}
 	buf.Write(cash)
 
@@ -47,7 +47,7 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage, dontPrint bool) {
 	casheless, err := p.intToBytesWithLen(chk.Casheless, 5)
 	if err != nil {
 		p.logger.Error(err)
-		return
+		return err
 	}
 	buf.Write(casheless)
 
@@ -64,7 +64,7 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage, dontPrint bool) {
 	str, err := charmap.Windows1251.NewEncoder().String(chk.BottomLine)
 	if err != nil {
 		p.logger.Error(err)
-		return
+		return err
 	}
 	rStrBytes := make([]byte, 64)
 	copy(rStrBytes, str)
@@ -74,7 +74,6 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage, dontPrint bool) {
 	p.logger.Debug("len: ", buf.Len())
 
 	rFrame, err := p.send(buf.Bytes(), cmdLen)
-
 	if err != nil {
 		p.logger.Error(err)
 	}
@@ -84,6 +83,8 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage, dontPrint bool) {
 	}
 
 	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
+
+	return nil
 }
 
 type TLV struct {

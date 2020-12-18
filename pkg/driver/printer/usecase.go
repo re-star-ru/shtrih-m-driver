@@ -7,20 +7,16 @@ import (
 // const PrinterTimeout = 9900 // Дефолтный таймаут ожидания ККТ
 
 type Usecase interface {
+	OpenShift()                          // Открыть смену
+	Print(chk models.CheckPackage) error // Печать чека
+	CloseShift()                         // Закрыть смену
 
-	// TODO: OpenShift, CloseShift
-	OpenShift()  // Открыть смену
-	CloseShift() // Закрыть смену
-
-	ReadShortStatus() byte // Прочитать короткий статус, получить статус
-
-	AddOperationToCheck(op models.Operation)            // Добавть операцию в чек
-	CloseCheck(chk models.CheckPackage, dontPrint bool) // Закрыть чек
-
-	CancellationOpenedCheck() // Аннулирование открытого чека
-
-	DontPrintOneCheck()               // пропуск печати одного чека
-	WriteCashierINN(INN string) error // Запись Инн кассира
+	CancellationOpenedCheck()                      // Аннулирование открытого чека // todo: сделать приватным
+	ReadShortStatus() byte                         // Прочитать короткий статус, получить статус // todo: сделать приватным
+	AddOperationToCheck(op models.Operation) error // Добавть операцию в чек // todo: сделать приватным
+	CloseCheck(chk models.CheckPackage) error      // Закрыть чек // todo: сделать приватным
+	DontPrintOneCheck()                            // пропуск печати одного чека // todo: сделать приватным
+	WriteCashierINN(INN string) error              // Запись Инн кассира // todo: сделать приватным
 }
 
 //SellOperationV2(op models.Operation)

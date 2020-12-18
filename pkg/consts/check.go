@@ -1,6 +1,7 @@
 package consts
 
 // Типы чеков, FiscalReceiptType
+//goland:noinspection GoSnakeCaseUsage
 const (
 	SMFPTR_RT_SALE    = 100 // приход
 	SMFPTR_RT_BUY     = 101 // расход

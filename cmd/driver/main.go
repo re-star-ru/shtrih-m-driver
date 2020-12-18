@@ -43,61 +43,41 @@ func main() {
 	//p := printerUsecase.NewPrinterUsecase(logger, c, password)
 	//p.ReadShortStatus()
 
-	host = "10.51.0.71:7778"
+	host = "10.51.0.73:7778"
 	password = uint32(30)
 
 	c := tcp.NewClientUsecase(host, logger)
+
 	p := printerUsecase.NewPrinterUsecase(logger, c, password)
 
-	// TODO:  передача инн кассира перед первой операцией
-	// 1021, кассир
-	// printer.writeCashierName(params.Parameters.CashierName);
-
-	p.AddOperationToCheck(models.Operation{
-		Type:    consts.Income,
-		Amount:  1,
-		Price:   1,
-		Sum:     1,
-		Subject: consts.Service,
-		Name:    "Ремонт стартера тест",
-	})
-
-	p.AddOperationToCheck(models.Operation{
-		Type:    consts.Income,
-		Amount:  1,
-		Price:   1,
-		Sum:     1,
-		Subject: consts.Service,
-		Name:    "Ремонт стартера тест",
-	})
-	//
-
-	////возврат прихода
-	//p.AddOperationToCheck(models.Operation{
-	//	Type:    consts.ReturnIncome,
-	//	Amount:  1,
-	//	Price:   1,
-	//	Sum:     1,
-	//	Subject: consts.Service,
-	//	Name:    "Ремонт стартера тест",
-	//})
-	//
-	//// возврат прихода
-	//p.AddOperationToCheck(models.Operation{
-	//	Type:    consts.ReturnIncome,
-	//	Amount:  1,
-	//	Price:   1,
-	//	Sum:     1,
-	//	Subject: consts.Service,
-	//	Name:    "Ремонт стартера тест",
-	//})
-
-	p.CloseCheck(models.CheckPackage{
+	chk := models.CheckPackage{
 		CashierINN: "263209745357",
-		Operations: nil,
+		Operations: []models.Operation{
+			{
+				Type:    consts.Income,
+				Amount:  1,
+				Price:   1,
+				Sum:     1,
+				Subject: consts.Service,
+				Name:    "Ремонт стартера тест",
+			},
+			{
+				Type:    consts.Income,
+				Amount:  1,
+				Price:   1,
+				Sum:     1,
+				Subject: consts.Service,
+				Name:    "Ремонт стартера тест",
+			},
+		},
 		Cash:       2,
 		Casheless:  0,
 		TaxSystem:  consts.ENVD,
 		BottomLine: "Нижняя линия чека",
-	}, true)
+		Electronic: false,
+	}
+
+	if err := p.Print(chk); err != nil {
+		logger.Error(err)
+	}
 }
