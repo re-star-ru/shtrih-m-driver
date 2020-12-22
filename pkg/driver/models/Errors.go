@@ -20,11 +20,15 @@ var (
 
 	PrinterError36 = PrinterError{msg: "Некорректные параметры в команде для данной реализации", num: 54} //
 
+	PrinterError37 = PrinterError{msg: "Команда не поддерживается в данной реализации", num: 55} //
+
 	PrinterError40 = PrinterError{msg: "Переполнение диапазона скидок", num: 64} // PrinterError40 = Переполнение диапазона скидок
 	PrinterError4F = PrinterError{msg: "Неверный пароль", num: 79}
 	PrinterError50 = PrinterError{msg: "Идет печать предыдущей команды", num: 80} // PrinterError50 = Идет печать предыдущей команды
 
 	PrinterError54 = PrinterError{msg: "Переполнение накоплений по типу оплаты 4 в смене", num: 84} // переполнение накоплений по типу оплаты 4 в смене
+
+	PrinterError5E = PrinterError{msg: "Некорректная операция", num: 94}
 
 	PrinterError69 = PrinterError{msg: "Переполнение денег по обороту налогов", num: 105}
 	PrinterError73 = PrinterError{msg: "Команда не поддерживается в данном режиме", num: 115} // Команда не поддерживается в данном режиме
@@ -38,6 +42,7 @@ var (
 
 var printerErrors = []PrinterError{
 	PrinterError36,
+	PrinterError37,
 	PrinterError45,
 	PrinterError69,
 	PrinterError73,
@@ -54,6 +59,7 @@ var printerErrors = []PrinterError{
 	PrinterError50,
 	PrinterError54,
 	PrinterError4F,
+	PrinterError5E,
 	PrinterErrorUnknown,
 }
 
@@ -157,7 +163,6 @@ func CheckOnPrinterError(err byte) error {
 //PrinterError34 = Нет данных
 //PrinterError35 = Некорректный параметр при данных настройках
 //PrinterError36 = Некорректные параметры в команде для данной реализации
-//PrinterError37 = Команда не поддерживается в данной реализации
 //PrinterError38 = Ошибка в ПЗУ
 //PrinterError39 = Внутренняя ошибка ПО
 //PrinterError3A = Переполнение накопления по надбавкам в смене

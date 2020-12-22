@@ -4,7 +4,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
 	"github.com/fess932/shtrih-m-driver/pkg/driver/client/usecase/tcp"
@@ -47,38 +46,49 @@ func main() {
 	host = "10.51.0.73:7778"
 	password = uint32(30)
 
-	c := tcp.NewClientUsecase(host, time.Millisecond*3000, logger)
-
+	c := tcp.NewClientUsecase(host, time.Millisecond*5000, logger)
 	p := printerUsecase.NewPrinterUsecase(logger, c, password)
 
-	chk := models.CheckPackage{
-		CashierINN: "263209745357",
-		Operations: []models.Operation{
-			{
-				Type:    consts.Income,
-				Amount:  1,
-				Price:   1,
-				Sum:     1,
-				Subject: consts.Service,
-				Name:    "Ремонт стартера тест",
-			},
-			{
-				Type:    consts.Income,
-				Amount:  1,
-				Price:   1,
-				Sum:     1,
-				Subject: consts.Service,
-				Name:    "Ремонт стартера тест",
-			},
-		},
-		Cash:       2,
-		Casheless:  0,
-		TaxSystem:  consts.ENVD,
-		BottomLine: "Нижняя линия чека",
-		Electronic: true,
-	}
-
-	if err := p.Print(chk); err != nil {
+	if err := p.OpenShift(models.Cashier{
+		Name: "Волков Е.И.",
+		INN:  "263209745357",
+	}); err != nil {
 		logger.Error(err)
 	}
+
+	if err := p.CloseShift(); err != nil {
+		logger.Error(err)
+	}
+
+	//
+	//chk := models.CheckPackage{
+	//	CashierINN: "263209745357",
+	//	Operations: []models.Operation{
+	//		{
+	//			Type:    consts.Income,
+	//			Amount:  1,
+	//			Price:   1,
+	//			Sum:     1,
+	//			Subject: consts.Service,
+	//			Name:    "Ремонт стартера тест",
+	//		},
+	//		{
+	//			Type:    consts.Income,
+	//			Amount:  1,
+	//			Price:   1,
+	//			Sum:     1,
+	//			Subject: consts.Service,
+	//			Name:    "Ремонт стартера тест",
+	//		},
+	//	},
+	//	Cash:       2,
+	//	Casheless:  0,
+	//	TaxSystem:  consts.ENVD,
+	//	BottomLine: "Нижняя линия чека",
+	//	Electronic: true,
+	//}
+	//
+	//if err := p.Print(chk); err != nil {
+	//	logger.Error(err)
+	//}
 }

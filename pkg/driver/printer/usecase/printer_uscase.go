@@ -17,14 +17,6 @@ type printerUsecase struct {
 	password uint32
 }
 
-func (p *printerUsecase) OpenShift() {
-	panic("implement me")
-}
-
-func (p *printerUsecase) CloseShift() {
-	panic("implement me")
-}
-
 func (p *printerUsecase) send(cmd []byte, cmdLen int) (*models.Frame, error) {
 
 	frameToSend := p.createFrame(cmd)

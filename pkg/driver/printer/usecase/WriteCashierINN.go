@@ -10,7 +10,11 @@ import (
 	"golang.org/x/text/encoding/charmap"
 )
 
-func (p *printerUsecase) WriteCashierINN(INN string) error {
+func (p *printerUsecase) writeCashierName(name string) error {
+	return nil
+}
+
+func (p *printerUsecase) writeCashierINN(INN string) error {
 	buf, cmdLen := p.createCommandBuffer(models.FnWriteTLV, p.password)
 
 	if utf8.RuneCountInString(INN) > int(consts.CashierINN.Length) {

@@ -25,7 +25,7 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage) error {
 		p.DontPrintOneCheck() // не печатать чек если передан флаг dont print
 	}
 
-	if err := p.WriteCashierINN(chk.CashierINN); err != nil {
+	if err := p.writeCashierINN(chk.CashierINN); err != nil {
 		// запись inn кассира после записи операций но до закрытия чека
 		p.logger.Error(err)
 		return err
