@@ -6,6 +6,27 @@ import (
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 )
 
+// cancellation
+
+func (p *printerUsecase) FNOpenedDocumentCancel() error {
+	p.logger.Debug("Send command FNCancelCurrentDocument")
+
+	buf, cmdLen := p.createCommandBuffer(models.FNCancelCurrentDocument, p.password)
+
+	rFrame, err := p.send(buf.Bytes(), cmdLen)
+	if err != nil {
+		p.logger.Debug(err)
+		return err
+	}
+
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
+		p.logger.Debug(err)
+		return err
+	}
+
+	return nil
+}
+
 // shift open
 
 func (p *printerUsecase) OpenShift(c models.Cashier) error {

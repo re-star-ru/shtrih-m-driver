@@ -4,8 +4,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
-
 	"github.com/fess932/shtrih-m-driver/pkg/driver/client/usecase/tcp"
 
 	printerUsecase "github.com/fess932/shtrih-m-driver/pkg/driver/printer/usecase"
@@ -49,20 +47,24 @@ func main() {
 	c := tcp.NewClientUsecase(host, time.Millisecond*5000, logger)
 	p := printerUsecase.NewPrinterUsecase(logger, c, password)
 
-	cashier := models.Cashier{
-		Name: "Волков Е.И.",
-		INN:  "263209745357",
-	}
-
-	if err := p.OpenShift(cashier); err != nil {
+	if err := p.FNOpenedDocumentCancel(); err != nil {
 		logger.Error(err)
 	}
 
-	time.Sleep(time.Second * 5)
-
-	if err := p.CloseShift(cashier); err != nil {
-		logger.Error(err)
-	}
+	//cashier := models.Cashier{
+	//	Name: "Волков Е.И.",
+	//	INN:  "263209745357",
+	//}
+	//
+	//if err := p.OpenShift(cashier); err != nil {
+	//	logger.Error(err)
+	//}
+	//
+	//time.Sleep(time.Second * 5)
+	//
+	//if err := p.CloseShift(cashier); err != nil {
+	//	logger.Error(err)
+	//}
 
 	//
 	//chk := models.CheckPackage{
