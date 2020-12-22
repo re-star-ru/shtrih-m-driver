@@ -49,14 +49,18 @@ func main() {
 	c := tcp.NewClientUsecase(host, time.Millisecond*5000, logger)
 	p := printerUsecase.NewPrinterUsecase(logger, c, password)
 
-	if err := p.OpenShift(models.Cashier{
+	cashier := models.Cashier{
 		Name: "Волков Е.И.",
 		INN:  "263209745357",
-	}); err != nil {
+	}
+
+	if err := p.OpenShift(cashier); err != nil {
 		logger.Error(err)
 	}
 
-	if err := p.CloseShift(); err != nil {
+	time.Sleep(time.Second * 5)
+
+	if err := p.CloseShift(cashier); err != nil {
 		logger.Error(err)
 	}
 

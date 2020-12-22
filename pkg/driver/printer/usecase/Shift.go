@@ -78,14 +78,44 @@ func (p *printerUsecase) shiftOpening() error {
 
 // shift close
 
-func (p *printerUsecase) CloseShift() error {
+func (p *printerUsecase) CloseShift(c models.Cashier) error {
 	// проверка статуса
 	// если статус смена не открыта то вернуть ошибку
 	if status := p.ReadShortStatus(); status != models.OpenedShift {
 		return errors.New("смена не открыта")
 	}
 
+	// начать закрытие смены
+	if err := p.startingShiftClosing(); err != nil {
+		return err
+	}
+
+	// записать инн кассира
+	if err := p.writeCashierINN(c.INN); err != nil {
+		return err
+	}
+
+	// закрыть смену z-отчетом
 	if err := p.closingShift(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *printerUsecase) startingShiftClosing() error {
+	p.logger.Debug("Send command startingShiftClosing")
+
+	buf, cmdLen := p.createCommandBuffer(models.StartCloseShift, p.password)
+
+	rFrame, err := p.send(buf.Bytes(), cmdLen)
+	if err != nil {
+		p.logger.Debug(err)
+		return err
+	}
+
+	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
+		p.logger.Debug(err)
 		return err
 	}
 

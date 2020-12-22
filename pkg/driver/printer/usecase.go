@@ -7,9 +7,10 @@ import (
 // const PrinterTimeout = 9900 // Дефолтный таймаут ожидания ККТ
 
 type Usecase interface {
-	OpenShift(c models.Cashier) error    // Открыть смену
+	OpenShift(c models.Cashier) error  // Открыть смену
+	CloseShift(c models.Cashier) error // Закрыть смену
+
 	Print(chk models.CheckPackage) error // Печать чека
-	CloseShift() error                   // Закрыть смену
 	ReadShortStatus() byte               // Прочитать короткий статус, получить статус
 
 	// need private \|/
