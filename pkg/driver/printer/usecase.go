@@ -13,10 +13,10 @@ type Usecase interface {
 	Print(chk models.CheckPackage) error // Печать чека
 	ReadShortStatus() byte               // Прочитать короткий статус, получить статус
 
-	FNOpenedDocumentCancel() error // отменить текущий документ в фн
+	FNOpenedDocumentCancel() error  // отменить текущий документ в фн
+	CancellationOpenedCheck() error // Аннулирование открытого чека
 
 	// need private \|/
-	// CancellationOpenedCheck()                      // Аннулирование открытого чека // todo: сделать приватным
 	// AddOperationToCheck(op models.Operation) error // Добавть операцию в чек // todo: сделать приватным
 	// CloseCheck(chk models.CheckPackage) error      // Закрыть чек // todo: сделать приватным
 	// DontPrintOneCheck() // пропуск печати одного чека // todo: сделать приватным
