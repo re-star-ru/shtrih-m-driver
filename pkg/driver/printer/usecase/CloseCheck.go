@@ -53,7 +53,7 @@ func (p *printerUsecase) CloseCheck(chk models.CheckPackage) error {
 
 	// запись остальных с 3 по 16 видоов оплаты, длинна вида 5 байт, итого 70 байт
 	buf.Write(make([]byte, 70))
-	buf.WriteByte(0) // округление до рубля
+	buf.WriteByte(chk.Rounding) // округление до рубля, не больше 99 коп, проверить
 
 	// запись налогов 6 * 5, итого 30 байт
 	buf.Write(make([]byte, 30))

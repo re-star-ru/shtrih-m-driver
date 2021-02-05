@@ -41,8 +41,8 @@ func main() {
 	//p := printerUsecase.NewPrinterUsecase(logger, c, password)
 	//p.ReadShortStatus()
 
-	host = "10.51.0.73:7778"
-	password = uint32(30)
+	//host = "10.51.0.73:7778"
+	//password = uint32(30)
 
 	c := tcp.NewClientUsecase(host, time.Millisecond*5000, logger)
 	p := printerUsecase.NewPrinterUsecase(logger, c, password)
