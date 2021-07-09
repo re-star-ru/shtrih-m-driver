@@ -6,11 +6,11 @@ import (
 )
 
 type Frame struct {
+	DATA []byte
+	CMD  []byte
 	STX  byte
 	DLEN byte
-	CMD  []byte
 	ERR  byte
-	DATA []byte
 	CRC  byte
 }
 
@@ -27,16 +27,16 @@ func (f *Frame) Bytes() []byte {
 }
 
 func (f *Frame) CheckCRC() error {
-
 	buf := bytes.NewBuffer([]byte{})
+
 	buf.Write(f.CMD)
 	buf.WriteByte(f.ERR)
 	buf.Write(f.DATA)
+
 	dataForCheck := buf.Bytes()
-
 	dlen := len(dataForCheck)
-
 	crc := byte(dlen)
+
 	for i := 0; i < dlen; i++ {
 		crc ^= dataForCheck[i]
 	}

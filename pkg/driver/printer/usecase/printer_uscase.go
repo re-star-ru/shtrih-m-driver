@@ -18,17 +18,17 @@ type printerUsecase struct {
 }
 
 func (p *printerUsecase) send(cmd []byte, cmdLen int) (*models.Frame, error) {
-
 	frameToSend := p.createFrame(cmd)
-
 	return p.client.Send(frameToSend, cmdLen)
 }
 
 func (p *printerUsecase) createFrame(data []byte) []byte {
 	frameBuf := bytes.NewBuffer([]byte{})
+
 	frameBuf.WriteByte(0x02) // write start
 
 	dl := len(data)
+
 	frameBuf.WriteByte(byte(dl)) // write data len
 	frameBuf.Write(data)         // write data
 
@@ -44,14 +44,16 @@ func (p *printerUsecase) createFrame(data []byte) []byte {
 
 func (p *printerUsecase) createCommandBuffer(command uint16, password uint32) (data *bytes.Buffer, cmdLen int) {
 	dataBuffer := bytes.NewBuffer([]byte{})
-
 	cb := make([]byte, 2)
+
 	binary.BigEndian.PutUint16(cb, command)
+
 	cb = bytes.TrimPrefix(cb, []byte{0})
 
 	dataBuffer.Write(cb) // write command
 
 	passwordBinary := make([]byte, 4)
+
 	binary.LittleEndian.PutUint32(passwordBinary, password)
 
 	dataBuffer.Write(passwordBinary) // write password
