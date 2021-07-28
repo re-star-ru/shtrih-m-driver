@@ -10,14 +10,25 @@ import (
 	"time"
 
 	"github.com/fess932/shtrih-m-driver/pkg/driver/client"
+
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
-	"github.com/fess932/shtrih-m-driver/pkg/logger"
 )
 
 type Usecase struct {
 	host    string
 	timeout time.Duration
-	logger  logger.Logger
+	logger  Logger
+}
+
+type Logger interface {
+	Info(args ...interface{})
+	Debug(args ...interface{})
+	Fatal(args ...interface{})
+	Error(args ...interface{})
+}
+
+func NewClientUsecase(host string, timeout time.Duration, logger Logger) client.Usecase {
+	return &Usecase{host: host, timeout: timeout, logger: logger}
 }
 
 func (u *Usecase) Send(frameToSend []byte, cmdLen int) (*models.Frame, error) {
@@ -195,8 +206,4 @@ func (u *Usecase) receiveFrame(cmdLen byte, rw *bufio.ReadWriter) (*models.Frame
 	}
 
 	return &FRM, nil
-}
-
-func NewClientUsecase(host string, timeout time.Duration, logger logger.Logger) client.Usecase {
-	return &Usecase{host: host, timeout: timeout, logger: logger}
 }

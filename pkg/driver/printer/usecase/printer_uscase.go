@@ -8,11 +8,17 @@ import (
 
 	"github.com/fess932/shtrih-m-driver/pkg/driver/client"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/printer"
-	"github.com/fess932/shtrih-m-driver/pkg/logger"
 )
 
+type Logger interface {
+	Info(args ...interface{})
+	Debug(args ...interface{})
+	Fatal(args ...interface{})
+	Error(args ...interface{})
+}
+
 type printerUsecase struct {
-	logger   logger.Logger
+	logger   Logger
 	client   client.Usecase
 	password uint32
 }
@@ -71,6 +77,6 @@ func (p *printerUsecase) intToBytesWithLen(val int64, bytesLen int64) ([]byte, e
 	return buf.Bytes()[:bytesLen], nil
 }
 
-func NewPrinterUsecase(logger logger.Logger, usecase client.Usecase, password uint32) printer.Usecase {
+func NewPrinterUsecase(logger Logger, usecase client.Usecase, password uint32) printer.Usecase {
 	return &printerUsecase{logger: logger, client: usecase, password: password}
 }

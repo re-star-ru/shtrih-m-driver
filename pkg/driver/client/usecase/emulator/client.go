@@ -3,15 +3,21 @@ package emulator
 import (
 	"github.com/fess932/shtrih-m-driver/pkg/driver/client"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
-	"github.com/fess932/shtrih-m-driver/pkg/logger"
 )
+
+type Logger interface {
+	Info(args ...interface{})
+	Debug(args ...interface{})
+	Fatal(args ...interface{})
+	Error(args ...interface{})
+}
 
 type Usecase struct {
 	host   string
-	logger logger.Logger
+	logger Logger
 }
 
-func NewClientUsecase(host string, logger logger.Logger) client.Usecase {
+func NewClientUsecase(host string, logger Logger) client.Usecase {
 	return &Usecase{host: host, logger: logger}
 }
 
