@@ -3,6 +3,7 @@ module github.com/fess932/shtrih-m-driver
 go 1.17
 
 require (
+	github.com/looplab/fsm v0.2.0
 	go.uber.org/zap v1.18.1
 	golang.org/x/text v0.3.6
 )

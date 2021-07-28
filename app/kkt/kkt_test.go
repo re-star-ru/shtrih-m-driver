@@ -19,7 +19,7 @@ func TestKKT_PrintCheck(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			kkt := &KKT{
-				state: tt.fields.state,
+				//state: tt.fields.state,
 			}
 			kkt.PrintCheck()
 		})

@@ -1,11 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/fess932/shtrih-m-driver/pkg/driver/client/usecase/emulator"
-
-	printerUsecase "github.com/fess932/shtrih-m-driver/pkg/driver/printer/usecase"
+	"github.com/fess932/shtrih-m-driver/app/kkt"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -29,20 +28,33 @@ func main() {
 	logger := createLogger()
 	logger.Info("Shtrih driver starting")
 
-	host := "fake"
-	password := uint32(0000)
+	k := kkt.New("13")
 
-	c := emulator.NewClientUsecase(host, logger)
-	//p := printerUsecase.NewPrinterUsecase(logger, c, password)
-	//p.ReadShortStatus()
-
-	//host = "10.51.0.73:7778"
-	//password = uint32(30)
-
-	//c := tcp.NewClientUsecase(host, time.Millisecond*5000, logger)
-	p := printerUsecase.NewPrinterUsecase(logger, c, password)
-
-	if err := p.FNOpenedDocumentCancel(); err != nil {
-		logger.Error(err)
+	if err := k.FSM.Event("open"); err != nil {
+		log.Println(err)
 	}
+
+	if err := k.FSM.Event("close"); err != nil {
+		fmt.Println(err)
+	}
+
+	//
+	//host := "fake"
+	//password := uint32(0000)
+	//
+	//
+	//
+	//c := emulator.NewClientUsecase(host, logger)
+	////p := printerUsecase.NewPrinterUsecase(logger, c, password)
+	////p.ReadShortStatus()
+	//
+	////host = "10.51.0.73:7778"
+	////password = uint32(30)
+	//
+	////c := tcp.NewClientUsecase(host, time.Millisecond*5000, logger)
+	//p := printerUsecase.NewPrinterUsecase(logger, c, password)
+	//
+	//if err := p.FNOpenedDocumentCancel(); err != nil {
+	//	logger.Error(err)
+	//}
 }

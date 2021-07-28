@@ -1,6 +1,10 @@
 package kkt
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/looplab/fsm"
+)
 
 // states ---------------------------------------------------------------------
 
@@ -37,32 +41,47 @@ func (a *ShiftCloseAction) Execute() EventType {
 	return NoOp
 }
 
-
-func NewKKTFSM() *
-
 // -------------------------------------------------------------------------------
 
 type KKT struct {
-	state int
+	Addr string
+	FSM  *fsm.FSM
 }
 
-func New() *KKT {
-	return &KKT{}
+func New(addr string) *KKT {
+	k := &KKT{Addr: addr}
+
+	k.FSM = fsm.NewFSM(
+		"closed",
+		fsm.Events{
+			{Name: "open", Src: []string{"closed"}, Dst: "open"},
+			{Name: "close", Src: []string{"open"}, Dst: "closed"},
+		},
+		fsm.Callbacks{
+			"enter_state": func(e *fsm.Event) { k.enterState(e) },
+		},
+	)
+
+	return k
 }
 
-func (kkt *KKT) Exec(cmd interface{ Exec() }) {
-	var s PrintCheckCommand
-
-	switch kkt.state {
-	case ShiftOpened:
-
-	}
-
-	s = func() {
-
-	}
-
+func (kkt KKT) enterState(e *fsm.Event) {
+	fmt.Printf("the kkt with addr %s is %s\n", kkt.Addr, e.Dst)
 }
+
+//func (kkt *KKT) Exec(cmd interface{ Exec() }) {
+//	var s PrintCheckCommand
+//
+//	switch kkt.state {
+//	case ShiftOpened:
+//
+//	}
+//
+//	s = func() {
+//
+//	}
+//
+//}
 
 type PrintCheckCommand func()
 
