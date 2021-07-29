@@ -1,0 +1,8 @@
+### open shift
+GET http://localhost:8080/open
+
+### close shift
+GET http://localhost:8080/close
+
+### print check
+GET http://localhost:8080/printCheck

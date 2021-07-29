@@ -1,10 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/fess932/shtrih-m-driver/app/kkt"
+
+	"github.com/go-chi/chi/v5"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -26,17 +28,31 @@ func createLogger() *zap.SugaredLogger {
 
 func main() {
 	logger := createLogger()
+
 	logger.Info("Shtrih driver starting")
 
+	r := chi.NewRouter()
+	confRouter(r)
+
+	log.Fatal(http.ListenAndServe(":8080", r))
+}
+
+func confRouter(r *chi.Mux) {
 	k := kkt.New("13")
 
-	if err := k.FSM.Event("open"); err != nil {
-		log.Println(err)
-	}
+	r.Get("/open", func(w http.ResponseWriter, r *http.Request) {
+		if err := k.OpenShift(); err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	})
 
-	if err := k.FSM.Event("close"); err != nil {
-		fmt.Println(err)
-	}
+	r.Get("/close", func(w http.ResponseWriter, r *http.Request) {
+		if err := k.CloseShift(); err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
+	})
 
 	if err := k.FSM.Event("close"); err != nil {
 		fmt.Println(err)
