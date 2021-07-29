@@ -38,6 +38,10 @@ func main() {
 		fmt.Println(err)
 	}
 
+	if err := k.FSM.Event("close"); err != nil {
+		fmt.Println(err)
+	}
+
 	//
 	//host := "fake"
 	//password := uint32(0000)
