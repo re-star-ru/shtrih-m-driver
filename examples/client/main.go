@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -34,13 +33,21 @@ func main() {
 	kkt := newKKT("10.51.0.71:7778", time.Second*5)
 	msg := createMessage(SHORT_STATUS, []byte{0x1E, 0x00, 0x00, 0x00})
 
-	resp, err := kkt.SendRequest(msg)
-	if err != nil {
-		log.Println("error while send message:", err)
-		return
-	}
+	for {
+		time.Sleep(time.Second * 5)
 
-	log.Println("responded message:", hex.Dump(resp))
+		t := time.Now()
+		resp, err := kkt.SendRequest(msg)
+		if err != nil {
+			log.Println("error while send message:", err)
+			continue
+		}
+		log.Println("cmd time:", time.Since(t))
+
+		if err := parseCmd(resp); err != nil {
+			log.Println("error while parsing response command:", err)
+		}
+	}
 }
 
 type KKT struct {
@@ -178,18 +185,16 @@ func (kkt *KKT) prepareRequest() (err error) {
 		}
 
 		// ////// write
-		n, err := kkt.conn.Write([]byte{ENQ})
+		_, err := kkt.conn.Write([]byte{ENQ})
 		if err != nil {
 			continue
 		}
-		log.Println("bytes writed to conn:", n)
 
 		// ////// read
-		n, err = kkt.conn.Read(kkt.ctrlByte)
+		_, err = kkt.conn.Read(kkt.ctrlByte)
 		if err != nil {
 			continue
 		}
-		log.Println("bytes readed from conn:", n)
 
 		switch kkt.ctrlByte[0] {
 		case ACK:
@@ -213,9 +218,9 @@ func (kkt *KKT) sendACK() error {
 }
 
 func (kkt *KKT) receiveMessage() (message []byte, err error) {
-	err = kkt.readNAK()
+	err = kkt.readACK()
 	if err != nil {
-		err = fmt.Errorf("err while read NAK: %w", err)
+		err = fmt.Errorf("err while read ACK: %w", err)
 		return
 	}
 
@@ -241,12 +246,12 @@ func (kkt *KKT) receiveMessage() (message []byte, err error) {
 	return msg, nil
 }
 
-func (kkt *KKT) readNAK() error {
+func (kkt *KKT) readACK() error {
 	if _, err := kkt.conn.Read(kkt.ctrlByte); err != nil {
 		return err
 	}
-	if kkt.ctrlByte[0] != NAK {
-		return fmt.Errorf("got wrong control byte: %v, expect: %v", kkt.ctrlByte[0], NAK)
+	if kkt.ctrlByte[0] != ACK {
+		return fmt.Errorf("got wrong control byte: %v, expect: %v", kkt.ctrlByte[0], ACK)
 	}
 
 	return nil
@@ -303,55 +308,21 @@ func (kkt *KKT) readLRC() (byte, error) {
 	return kkt.ctrlByte[0], nil
 }
 
-// Служебное сообщение
-func ping(conn net.Conn) (bool, error) {
-	if err := conn.SetDeadline(time.Now().Add(pingDeadline)); err != nil {
-		log.Fatal(err)
-	}
-
-	n, err := conn.Write([]byte{ENQ})
-	// write enq for req message
-	if err != nil {
-		return false, nil
-	}
-	log.Println("bytes writed to conn:", n)
-
-	b := make([]byte, 1)
-	n, err = conn.Read(b)
-	if err != nil {
-		return false, err
-	}
-
-	log.Println("readed bytes from buf:", n)
-
-	switch b[0] {
-	case NAK:
-		return true, nil
-	case ACK:
-		return false, fmt.Errorf("kkt busy")
-	default:
-		return false, fmt.Errorf("wrong byte for ENQ")
-	}
-}
-
 func createMessage(cmdID byte, cmdData []byte) []byte {
-	l := byte(len(cmdData)) // may be panic if overflow?
+	l := byte(len(cmdData) + 1) // may be panic if overflow? cmd data + cmd id(1)
 	m := []byte{STX, l, cmdID}
 
 	m = append(m, cmdData...)
 	m = append(m, computeLRC(m[1:]))
 
-	log.Println(len(m))
-
 	return m
 }
 
 func sendMessage(w io.Writer, message []byte) error {
-	n, err := w.Write(message)
+	_, err := w.Write(message)
 	if err != nil {
 		return err
 	}
-	log.Println("bytes writed:", n)
 
 	return nil
 }
