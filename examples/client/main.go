@@ -109,6 +109,7 @@ func newState() *fsm.FSM {
 			{Name: printCheck, Src: []string{"shiftOpen"}, Dst: "shiftOpen"},
 			{Name: shiftOpen, Src: []string{"shiftClosed"}, Dst: "shiftOpen"},
 			{Name: shiftClose, Src: []string{"shiftOpen"}, Dst: "shiftClosed"},
+			{Name: shiftReopen, Src: []string{"shiftExpired"}, Dst: "shiftClosed"},
 		},
 		fsm.Callbacks{},
 	)
