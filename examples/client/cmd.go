@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 )
 
-func parseCmd(cmd []byte) error {
+func (kkt *KKT) parseCmd(cmd []byte) error {
 	if cmd[0] == 0xFF {
 		return parseFNcmd(cmd[1:])
 	}
@@ -18,26 +17,46 @@ func parseCmd(cmd []byte) error {
 		return fmt.Errorf("not found cmd handler for: %v", cmd[0])
 	}
 
-	f(cmd[2:])
+	f(cmd[2:], kkt)
 
 	return nil
 }
 
-var routes = map[byte]func(cmd []byte){
-	0x10: status,
+var routes = map[byte]func(cmd []byte, kkt *KKT){
+	0x10: updateState,
 }
 
-func status(cmd []byte) {
-	log.Println("status:", cmd)
+func updateState(cmd []byte, kkt *KKT) {
+	st := status(cmd)
 
-	kktFlags := cmd[1:3]
-	kktMode := cmd[4]
-	kktSubMode := cmd[5]
-	positionsInCheck := cmd[6] + cmd[9]
-	voltageBattarey := cmd[7]
-	voltage := cmd[8]
-	lastPrintStatus := cmd[13]
+	// main state
+	switch st.state {
+	case 2:
+		kkt.state.SetState("shiftOpen")
+	default:
+		kkt.state.SetState("wrong state")
+	}
 
-	str := fmt.Sprintf("kktMode: %v", kktMode)
+	// substate
+	switch st.substate {
+	case 0:
+		kkt.substate.SetState("paperLoaded")
+	default:
+		kkt.substate.SetState("wrong substate")
+	}
+}
 
+type state struct {
+	state    byte
+	substate byte
+}
+
+func status(cmd []byte) state {
+	kktMode := cmd[3]
+	kktSubMode := cmd[4]
+
+	return state{
+		state:    kktMode,
+		substate: kktSubMode,
+	}
 }

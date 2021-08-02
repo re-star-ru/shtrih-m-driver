@@ -22,7 +22,6 @@ func main() {
 const STX byte = 0x02
 
 func sendMessage(cmdID byte, cmdData []byte) {
-
 	N := byte(len(cmdData) + 1) // may be panic if overflow?
 	m := []byte{STX, N, cmdID}
 

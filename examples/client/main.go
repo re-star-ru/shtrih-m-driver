@@ -6,8 +6,13 @@ import (
 	"io"
 	"log"
 	"net"
+	"net/http"
 	"sync"
 	"time"
+
+	"github.com/go-chi/chi/v5"
+
+	"github.com/looplab/fsm"
 )
 
 // Control bytes
@@ -18,36 +23,49 @@ const (
 	NAK byte = 0x15 // 21
 )
 
+const pingDeadline = time.Millisecond * 500
 const (
-	SHORT_STATUS byte = 0x10
+	ShortStatus byte = 0x10
 )
 
-const pingDeadline = time.Millisecond * 500
-
-var ErrChecksum error = errors.New("checksum does not match")
+var defaultPassword = []byte{0x1E, 0x00, 0x00, 0x00}
+var errChecksum = errors.New("checksum does not match")
 
 func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 	log.Println("dial to kkt")
 
 	kkt := newKKT("10.51.0.71:7778", time.Second*5)
-	msg := createMessage(SHORT_STATUS, []byte{0x1E, 0x00, 0x00, 0x00})
+	msg := createMessage(ShortStatus, defaultPassword)
 
-	for {
-		time.Sleep(time.Second * 5)
+	go func() {
+		for {
+			time.Sleep(time.Second * 5)
 
-		t := time.Now()
-		resp, err := kkt.SendRequest(msg)
-		if err != nil {
-			log.Println("error while send message:", err)
-			continue
+			t := time.Now()
+			resp, err := kkt.SendRequest(msg)
+			if err != nil {
+				log.Println("error while send message:", err)
+				continue
+			}
+			log.Println("cmd time:", time.Since(t))
+
+			if err := kkt.parseCmd(resp); err != nil {
+				log.Println("error while parsing response command:", err)
+			}
 		}
-		log.Println("cmd time:", time.Since(t))
+	}()
 
-		if err := parseCmd(resp); err != nil {
-			log.Println("error while parsing response command:", err)
-		}
-	}
+	r := chi.NewRouter()
+	r.Get("/status", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "status kkt: %v", kkt.state.Current())
+	})
+
+	r.Get("/print", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "kkt can print: %v", kkt.printCheck())
+	})
+
+	http.ListenAndServe(":8080", r)
 }
 
 type KKT struct {
@@ -57,6 +75,12 @@ type KKT struct {
 	sync.Mutex
 
 	ctrlByte []byte
+	state    *fsm.FSM
+	substate *fsm.FSM
+}
+
+func (kkt *KKT) printCheck() bool {
+	return kkt.state.Can(printCheck) && kkt.substate.Can(printCheck)
 }
 
 func newKKT(addr string, connTimeout time.Duration) (kkt *KKT) {
@@ -64,61 +88,41 @@ func newKKT(addr string, connTimeout time.Duration) (kkt *KKT) {
 	kkt.addr = addr
 	kkt.d.Timeout = connTimeout
 	kkt.ctrlByte = make([]byte, 1)
+	kkt.state = newState()
+	kkt.substate = newSubstate()
 
 	return
 }
 
-//func (kkt *KKT) connect() {
-//	kkt.Lock()
-//	defer kkt.Unlock()
-//
-//	var err error
-//
-//	msg := createMessage(SHORT_STATUS, []byte{0x1E, 0x00, 0x00, 0x00}) // short status message
-//
-//	if err := kkt.SendMessage(msg); err != nil {
-//		log.Println("err while send message: ")
-//	}
-//
-//	kkt.conn, err = kkt.d.Dial("tcp", kkt.addr)
-//	if err != nil {
-//		log.Println("err dial dial:", err)
-//		return
-//	}
-//	defer func() {
-//		if err := kkt.conn.Close(); err != nil {
-//			log.Println("Error while closing conn in defer", err)
-//		}
-//	}()
-//	log.Println("dial ok")
-//	canSendCmd, err := ping(kkt.conn)
-//	if err != nil {
-//		log.Println("No connection:", err)
-//		log.Println("Retry...")
-//		return
-//	}
-//	log.Println("Can send cmd conn to kkt:", canSendCmd)
-//
-//	// if you get error continue, if ok break
-//	defaultTries := 5
-//	for i := 0; i < defaultTries; i++ {
-//		if err := sendMessage(kkt.conn, msg); err != nil {
-//			log.Println("err on try", i, "err:", err)
-//			continue
-//		}
-//
-//		if kkt.awaitACK() {
-//			log.Println("ack recived, ok")
-//		}
-//
-//		break
-//	}
-//
-//	if err != nil {
-//		log.Println("err while send cmd:", err)
-//		return
-//	}
-//}
+// Events
+const (
+	printCheck  = "printCheck"
+	shiftOpen   = "shiftOpen"
+	shiftClose  = "shiftClose"
+	shiftReopen = "shiftReopen"
+)
+
+func newState() *fsm.FSM {
+	return fsm.NewFSM(
+		"",
+		fsm.Events{
+			{Name: printCheck, Src: []string{"shiftOpen"}, Dst: "shiftOpen"},
+			{Name: shiftOpen, Src: []string{"shiftClosed"}, Dst: "shiftOpen"},
+			{Name: shiftClose, Src: []string{"shiftOpen"}, Dst: "shiftClosed"},
+		},
+		fsm.Callbacks{},
+	)
+}
+
+func newSubstate() *fsm.FSM {
+	return fsm.NewFSM(
+		"",
+		fsm.Events{{
+			Name: printCheck, Src: []string{"paperLoaded"}, Dst: "paperLoaded",
+		}},
+		fsm.Callbacks{},
+	)
+}
 
 func (kkt *KKT) SendRequest(req []byte) (resp []byte, err error) {
 	kkt.Lock()
@@ -294,7 +298,7 @@ func (kkt *KKT) readMessage(messageLen byte) ([]byte, error) {
 	lrc := computeLRC(resp)
 
 	if lrc != rLrc {
-		return nil, ErrChecksum
+		return nil, errChecksum
 	}
 
 	return msg, nil
