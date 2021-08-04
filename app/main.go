@@ -54,9 +54,9 @@ func confRouter(r *chi.Mux) {
 		}
 	})
 
-	if err := k.FSM.Event("close"); err != nil {
-		fmt.Println(err)
-	}
+	// if err := k.Event("close"); err != nil {
+	// 	fmt.Println(err)
+	// }
 
 	//
 	//host := "fake"

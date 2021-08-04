@@ -1,10 +1,8 @@
 package consts
 
 const (
-	Income        byte = 1
-	ReturnIncome  byte = 2
-	Expense       byte = 3
-	ReturnExpense byte = 4
+	Income       byte = 1
+	ReturnIncome byte = 2
 )
 
 // Применятьт только если целое число! шт или рубль

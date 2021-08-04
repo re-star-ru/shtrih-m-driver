@@ -63,7 +63,10 @@ type Operation struct {
 }
 
 func (o Operation) Validate() error {
-	o.Type
+	if (o.Type < 1) || (o.Type > 2) {
+		return errors.New("wrong operation type")
+	}
+
 	return nil
 }
 
@@ -119,6 +122,10 @@ func CreateFNOperationV2(o Operation) (cmdData []byte, err error) {
 		}
 	}
 	buf.Write(b)
+
+	if buf.Len() != 160 {
+		return nil, errors.New("wrong len of cmd addOperationV2")
+	}
 
 	return buf.Bytes(), nil
 }

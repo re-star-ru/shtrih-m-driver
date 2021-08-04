@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/fess932/shtrih-m-driver/examples/client/commands"
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 
 	"github.com/go-chi/chi/v5"
 
@@ -84,7 +85,7 @@ type KKT struct {
 func printCheckHandler(kkt *KKT) (err error) {
 	// validate input data
 	o := commands.Operation{
-		Type:    0,
+		Type:    consts.Income,
 		Subject: 0,
 		Amount:  0,
 		Price:   0,
