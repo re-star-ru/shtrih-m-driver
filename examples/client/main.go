@@ -39,7 +39,7 @@ func main() {
 	kkt := newKKT("10.51.0.73:7778", time.Second*5, true)
 
 	if err := kkt.Do(printCheckHandler); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	{ // http handler
@@ -51,20 +51,11 @@ func main() {
 			}
 		})
 		r.Get("/print", func(w http.ResponseWriter, r *http.Request) {
-			if _, err := fmt.Fprintf(w, "kkt can print: %v", kkt.canPrintCheck()); err != nil {
-				log.Println(err)
-				return
-			}
-
-			if !kkt.canPrintCheck() { // check state
-				err := fmt.Errorf("cant print check, wrong kkt state %v", kkt.state.Current())
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-
-			if err := printCheckHandler(kkt); err != nil {
+			if err := kkt.Do(printCheckHandler); err != nil {
 				log.Println(err)
 				http.Error(w, err.Error(), http.StatusBadRequest)
+
+				return
 			}
 		})
 		log.Fatal(http.ListenAndServe(":8080", r))
@@ -83,6 +74,11 @@ type KKT struct {
 }
 
 func printCheckHandler(kkt *KKT) (err error) {
+	if !kkt.canPrintCheck() { // check state
+		err = fmt.Errorf("cant print check, wrong kkt state %v", kkt.state.Current())
+		return
+	}
+
 	// validate input data
 	o := commands.Operation{
 		Type:    consts.Income,
@@ -104,11 +100,29 @@ func printCheckHandler(kkt *KKT) (err error) {
 	log.Println("Cmd len ", len(data))
 	log.Println("Data cmd create fn \n", hex.Dump(data))
 
+	msg := createMessage(data)
+
+	if err = sendMessage(kkt.conn, msg); err != nil {
+		err = fmt.Errorf("kkt %s: send operation message error: %w", kkt.addr, err)
+		return
+	}
+
+	resp, err := kkt.receiveMessage()
+	if err != nil {
+		err = fmt.Errorf("kkt %s: revice operation message error: %w", kkt.addr, err)
+		return
+	}
+
+	if err = kkt.parseCmd(resp); err != nil {
+		err = fmt.Errorf("kkt %s: parce recive operation message error: %w", kkt.addr, err)
+		return
+	}
+
 	return nil
 }
 
 func healhCheck(kkt *KKT) (err error) {
-	msg := createMessagev2(commands.CreateShortStatus())
+	msg := createMessage(commands.CreateShortStatus())
 
 	if err = sendMessage(kkt.conn, msg); err != nil {
 		err = fmt.Errorf("kkt %s : send message error: %w", kkt.addr, err)
@@ -145,7 +159,6 @@ func newKKT(addr string, connTimeout time.Duration, healthCheck bool) (kkt *KKT)
 		go func() {
 			for {
 				t := time.Now()
-
 				if err := kkt.Do(healhCheck); err != nil {
 					log.Println(err)
 				}
@@ -363,17 +376,7 @@ func (kkt *KKT) readLRC() (byte, error) {
 	return kkt.ctrlByte[0], nil
 }
 
-func createMessage(cmdID byte, cmdData []byte) []byte {
-	l := byte(len(cmdData) + 1) // may be panic if overflow? cmd data + cmd id(1)
-	m := []byte{STX, l, cmdID}
-
-	m = append(m, cmdData...)
-	m = append(m, computeLRC(m[1:]))
-
-	return m
-}
-
-func createMessagev2(cmdData []byte) []byte {
+func createMessage(cmdData []byte) []byte {
 	l := byte(len(cmdData)) // may be panic if overflowed? cannot be more than 255
 	m := []byte{STX, l}
 	m = append(m, cmdData...)

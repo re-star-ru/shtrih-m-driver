@@ -15,6 +15,8 @@ import (
 const (
 	ShortStatus byte = 0x10
 	ZReport     byte = 0x41
+	// сброс состояния сделать или
+	// отмена чека
 )
 
 // Fn Commands Start with FF

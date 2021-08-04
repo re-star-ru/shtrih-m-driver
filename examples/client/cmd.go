@@ -34,7 +34,7 @@ func updateState(cmd []byte, kkt *KKT) {
 	case 2:
 		kkt.state.SetState("shiftOpen")
 	default:
-		kkt.state.SetState("wrong state")
+		kkt.state.SetState("wrongState")
 	}
 
 	// substate
@@ -42,7 +42,7 @@ func updateState(cmd []byte, kkt *KKT) {
 	case 0:
 		kkt.substate.SetState("paperLoaded")
 	default:
-		kkt.substate.SetState("wrong substate")
+		kkt.substate.SetState("wrongSubstate")
 	}
 }
 
