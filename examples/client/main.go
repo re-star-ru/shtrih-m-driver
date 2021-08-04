@@ -3,13 +3,14 @@ package main
 import (
 	"errors"
 	"fmt"
-	"github.com/fess932/shtrih-m-driver/examples/client/commands"
 	"io"
 	"log"
 	"net"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/fess932/shtrih-m-driver/examples/client/commands"
 
 	"github.com/go-chi/chi/v5"
 
@@ -35,22 +36,32 @@ func main() {
 	// client code
 	kkt := newKKT("10.51.0.71:7778", time.Second*5)
 	go func() {
-		if err := kkt.healhCheck(); err != nil {
-			log.Println(err)
+		for {
+			t := time.Now()
+
+			if err := kkt.Do(healhCheck); err != nil {
+				log.Println(err)
+			}
+
+			log.Println("cmd time:", time.Since(t))
+			time.Sleep(time.Second * 5)
 		}
-		time.Sleep(time.Second * 5)
 	}() // run healthcheck
 
 	{ // http handler
 		r := chi.NewRouter()
 
 		r.Get("/status", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "status kkt: %v", kkt.state.Current())
+			if _, err := fmt.Fprintf(w, "status kkt: %v", kkt.state.Current()); err != nil {
+				log.Println(err)
+			}
 		})
 		r.Get("/print", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "kkt can print: %v", kkt.printCheck())
+			if _, err := fmt.Fprintf(w, "kkt can print: %v", kkt.printCheck()); err != nil {
+				log.Println(err)
+			}
 		})
-		http.ListenAndServe(":8080", r)
+		log.Fatal(http.ListenAndServe(":8080", r))
 	}
 }
 
@@ -65,23 +76,23 @@ type KKT struct {
 	substate *fsm.FSM
 }
 
-func (kkt *KKT) healhCheck() error {
+func healhCheck(kkt *KKT) (err error) {
 	msg := createMessage(commands.CreateShortStatus())
-	kkt.Lock()
-	defer kkt.Unlock()
 
-	t := time.Now()
-	resp, err := kkt.Do(msg)
-	if err != nil {
-		log.Println("error while send message:", err)
-		return err
+	if err = sendMessage(kkt.conn, msg); err != nil {
+		err = fmt.Errorf("kkt %s : send message error: %w", kkt.addr, err)
+		return
 	}
 
-	log.Println("cmd time:", time.Since(t))
+	resp, err := kkt.receiveMessage()
+	if err != nil {
+		err = fmt.Errorf("kkt %s : receive message error: %w", kkt.addr, err)
+		return
+	}
 
-	if err := kkt.parseCmd(resp); err != nil {
+	if err = kkt.parseCmd(resp); err != nil {
 		log.Println("error while parsing response command:", err)
-		return err
+		return
 	}
 
 	return nil
@@ -133,24 +144,10 @@ func newSubstate() *fsm.FSM {
 	)
 }
 
-// client code
-
-func (kkt *KKT) clientHandler() ([]byte, error) {
-	return kkt.sampleDo(clientHandlerSample)
-}
-
-func clientHandlerSample() ([]byte, error) {
-
-	return nil, nil
-}
-
-// default connector
-
-func (kkt *KKT) sampleDo(cb func() (resp []byte, err error)) (resp []byte, err error) {
+func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 	kkt.Lock()
 	defer kkt.Unlock()
 
-	/// create conn
 	if err = kkt.dial(); err != nil {
 		err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.addr, err)
 		return
@@ -160,51 +157,13 @@ func (kkt *KKT) sampleDo(cb func() (resp []byte, err error)) (resp []byte, err e
 			log.Println("deferred closing error:", err)
 		}
 	}()
-	/// end conn
 
 	if err = kkt.prepareRequest(); err != nil {
 		err = fmt.Errorf("kkt %s : prepare request error: %w", kkt.addr, err)
 		return
 	}
 
-	return cb()
-}
-
-func (kkt *KKT) Do(req []byte) (resp []byte, err error) {
-	kkt.Lock()
-	defer kkt.Unlock()
-
-	// retry for message?
-
-	// dial conn
-	if err = kkt.dial(); err != nil {
-		err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.addr, err)
-		return
-	}
-	defer func() {
-		if err := kkt.conn.Close(); err != nil {
-			log.Println("deferred closing error:", err)
-		}
-	}()
-	// end dial
-
-	if err = kkt.prepareRequest(); err != nil {
-		err = fmt.Errorf("kkt %s : prepare request error: %w", kkt.addr, err)
-		return
-	}
-
-	if err = sendMessage(kkt.conn, req); err != nil {
-		err = fmt.Errorf("kkt %s : send message error: %w", kkt.addr, err)
-		return
-	}
-
-	resp, err = kkt.receiveMessage()
-	if err != nil {
-		err = fmt.Errorf("kkt %s : receive message error: %w", kkt.addr, err)
-		return
-	}
-
-	return
+	return cb(kkt)
 }
 
 func (kkt *KKT) dial() (err error) {
