@@ -4,6 +4,7 @@ import "time"
 
 const (
 	// команды принтера
+
 	ReadShortStatus            = 16 // короткий статус принтера
 	PrintReportWithoutClearing = 64 // Снять отчет без гашения
 	WriteTable                 = 30 // запись в таблицу
@@ -21,6 +22,7 @@ const (
 	CancellationCheck = 136 // Отмена текущего чека
 
 	// команды фискального накопителя
+
 	FnReadStatus = 65281 // чтение статуса фискального накопителя
 
 	WideRequest = 247 // расширенный запрос
