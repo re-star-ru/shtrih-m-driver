@@ -8,8 +8,6 @@ import (
 	"io"
 	"log"
 
-	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
-
 	"golang.org/x/text/encoding/charmap"
 
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
@@ -141,20 +139,28 @@ func CreateFNOperationV2(o Operation) (cmdData []byte, err error) {
 	return buf.Bytes(), nil
 }
 
-func CreateFNCloseCheck(chk models.CheckPackage) (cmdData []byte, err error) {
+type CloseCheckPackage struct {
+	Cash       int64
+	Casheless  int64
+	BottomLine string
+	Rounding   byte
+	TaxSystem  byte
+}
+
+func CreateFNCloseCheck(m CloseCheckPackage) (cmdData []byte, err error) {
 	// writeCashierINN in check composition before create fn close check
 	buf := newBufWithDefaultPassword(FnCloseCheckV2, true)
-	cash, err := intToBytesWithLen(chk.Cash, 5)
+	cash, err := intToBytesWithLen(m.Cash, 5)
 	if err != nil {
 		return nil, err
 	}
 
-	casheless, err := intToBytesWithLen(chk.Casheless, 5)
+	casheless, err := intToBytesWithLen(m.Casheless, 5)
 	if err != nil {
 		return nil, err
 	}
 
-	str, err := charmap.Windows1251.NewEncoder().String(chk.BottomLine)
+	str, err := charmap.Windows1251.NewEncoder().String(m.BottomLine)
 	if err != nil {
 		return nil, err
 	}
@@ -166,17 +172,17 @@ func CreateFNCloseCheck(chk models.CheckPackage) (cmdData []byte, err error) {
 		}
 	}
 
-	if chk.Rounding > 99 {
-		return nil, fmt.Errorf("round penni biggest than 99: %v", chk.Rounding)
+	if m.Rounding > 99 {
+		return nil, fmt.Errorf("round penni biggest than 99: %v", m.Rounding)
 	}
 
-	buf.Write(cash)              // 5 байт сумма наличных
-	buf.Write(casheless)         // 5 байт сумма безналичных
-	buf.Write(make([]byte, 70))  // 5 * 14 = 70 байт остальные пустые суммы
-	buf.WriteByte(chk.Rounding)  // округление до рубля в копейках, макс 99коп
-	buf.Write(make([]byte, 30))  // 5 * 6 = 30 байт налогов
-	buf.WriteByte(chk.TaxSystem) // биты систем налогообложения
-	buf.Write(b)                 // нижняя строка чека, 64 байта win1251 текста
+	buf.Write(cash)             // 5 байт сумма наличных
+	buf.Write(casheless)        // 5 байт сумма безналичных
+	buf.Write(make([]byte, 70)) // 5 * 14 = 70 байт остальные пустые суммы
+	buf.WriteByte(m.Rounding)   // округление до рубля в копейках, макс 99коп
+	buf.Write(make([]byte, 30)) // 5 * 6 = 30 байт налогов
+	buf.WriteByte(m.TaxSystem)  // биты систем налогообложения
+	buf.Write(b)                // нижняя строка чека, 64 байта win1251 текста
 
 	log.Println("buf len:", buf.Len())
 

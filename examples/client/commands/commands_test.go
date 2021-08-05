@@ -12,6 +12,7 @@ func TestCreateFNCloseCheck(t *testing.T) {
 	type args struct {
 		chk models.CheckPackage
 	}
+
 	tests := []struct {
 		name        string
 		args        args
@@ -19,7 +20,7 @@ func TestCreateFNCloseCheck(t *testing.T) {
 		wantErr     bool
 	}{
 		{
-			name: "first check",
+			name: "rounding > 99",
 			args: args{chk: models.CheckPackage{
 				CashierINN: "",
 				Operations: nil,
@@ -34,7 +35,7 @@ func TestCreateFNCloseCheck(t *testing.T) {
 			wantErr:     true,
 		},
 		{
-			name: "второй check",
+			name: "wrong inn",
 			args: args{chk: models.CheckPackage{
 				CashierINN: "",
 				Operations: nil,
@@ -46,9 +47,25 @@ func TestCreateFNCloseCheck(t *testing.T) {
 				Electronic: false,
 			}},
 			wantCmdData: nil,
-			wantErr:     false,
+			wantErr:     true,
+		},
+		{
+			name: "wrong inn",
+			args: args{chk: models.CheckPackage{
+				CashierINN: "",
+				Operations: nil,
+				Cash:       0,
+				Casheless:  0,
+				BottomLine: "",
+				Rounding:   0,
+				TaxSystem:  0,
+				Electronic: false,
+			}},
+			wantCmdData: nil,
+			wantErr:     true,
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotCmdData, err := CreateFNCloseCheck(tt.args.chk)
@@ -57,6 +74,7 @@ func TestCreateFNCloseCheck(t *testing.T) {
 				if assert.Error(t, err) {
 					assert.Nil(t, gotCmdData)
 				}
+				return
 			}
 
 			assert.Len(t, gotCmdData, 182)
