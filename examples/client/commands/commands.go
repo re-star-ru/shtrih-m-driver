@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
@@ -147,6 +148,7 @@ func CreateFNCloseCheck(chk models.CheckPackage) (cmdData []byte, err error) {
 	if err != nil {
 		return nil, err
 	}
+
 	casheless, err := intToBytesWithLen(chk.Casheless, 5)
 	if err != nil {
 		return nil, err
@@ -156,6 +158,7 @@ func CreateFNCloseCheck(chk models.CheckPackage) (cmdData []byte, err error) {
 	if err != nil {
 		return nil, err
 	}
+
 	b := make([]byte, 64)
 	if _, err := bytes.NewBufferString(str).Read(b); err != nil {
 		if !errors.Is(err, io.EOF) {
@@ -174,6 +177,8 @@ func CreateFNCloseCheck(chk models.CheckPackage) (cmdData []byte, err error) {
 	buf.Write(make([]byte, 30))  // 5 * 6 = 30 байт налогов
 	buf.WriteByte(chk.TaxSystem) // биты систем налогообложения
 	buf.Write(b)                 // нижняя строка чека, 64 байта win1251 текста
+
+	log.Println("buf len:", buf.Len())
 
 	if buf.Len() != 182 {
 		return nil, fmt.Errorf("wrong FNCloseCheck len command: %v", buf.Len())

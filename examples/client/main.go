@@ -38,9 +38,9 @@ func main() {
 	// client code
 	kkt := newKKT("10.51.0.73:7778", time.Second*5, true)
 
-	if err := kkt.Do(printCheckHandler); err != nil {
-		log.Println(err)
-	}
+	// if err := kkt.Do(printCheckHandler); err != nil {
+	// 	log.Println(err)
+	// }
 
 	{ // http handler
 		r := chi.NewRouter()
