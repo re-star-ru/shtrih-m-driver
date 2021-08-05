@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 )
 
 func (kkt *KKT) parseCmd(cmd []byte) error {
@@ -28,11 +29,19 @@ var routes = map[byte]func(cmd []byte, kkt *KKT){
 
 func updateState(cmd []byte, kkt *KKT) {
 	st := status(cmd)
+	log.Println("cmd:", st)
 
 	// main state
 	switch st.state {
 	case 2:
 		kkt.state.SetState("shiftOpen")
+	case 3:
+		kkt.state.SetState("shiftExpired")
+	case 4:
+		kkt.state.SetState("shiftClosed")
+	case 8:
+		kkt.state.SetState("checkOpen")
+
 	default:
 		kkt.state.SetState("wrongState")
 	}

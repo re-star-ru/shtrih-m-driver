@@ -46,10 +46,13 @@ func main() {
 		r := chi.NewRouter()
 
 		r.Get("/status", func(w http.ResponseWriter, r *http.Request) {
-			if _, err := fmt.Fprintf(w, "status kkt: %v", kkt.state.Current()); err != nil {
+			if _, err := fmt.Fprintf(w,
+				"state kkt: %v, substate: %v\ncan print: %v\n",
+				kkt.state.Current(), kkt.substate.Current(), kkt.canPrintCheck()); err != nil {
 				log.Println(err)
 			}
 		})
+
 		r.Get("/print", func(w http.ResponseWriter, r *http.Request) {
 			if err := kkt.Do(printCheckHandler); err != nil {
 				log.Println(err)
