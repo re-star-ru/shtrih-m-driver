@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
+
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
 	"golang.org/x/text/encoding/charmap"
 
@@ -47,11 +50,15 @@ func newBufWithDefaultPassword(cmdID byte, isFnCmd bool) (buf *bytes.Buffer) {
 	return
 }
 
-func CreateShortStatus() (cmdData []byte) {
+func CreateShortStatus() []byte {
 	return newBufWithDefaultPassword(ShortStatus, false).Bytes()
 }
 
-func CreateCloseSession() (cmdData []byte) {
+func CreateCancelCheck() []byte {
+	return newBufWithDefaultPassword(CancelCheck, false).Bytes()
+}
+
+func CreateCloseSession() []byte {
 	return newBufWithDefaultPassword(ZReport, false).Bytes()
 }
 
@@ -128,6 +135,48 @@ func CreateFNOperationV2(o Operation) (cmdData []byte, err error) {
 
 	if buf.Len() != 160 {
 		return nil, errors.New("wrong len of cmd addOperationV2")
+	}
+
+	return buf.Bytes(), nil
+}
+
+func CreateFNCloseCheck(chk models.CheckPackage) (cmdData []byte, err error) {
+	// writeCashierINN in check composition before create fn close check
+	buf := newBufWithDefaultPassword(FnCloseCheckV2, true)
+	cash, err := intToBytesWithLen(chk.Cash, 5)
+	if err != nil {
+		return nil, err
+	}
+	casheless, err := intToBytesWithLen(chk.Casheless, 5)
+	if err != nil {
+		return nil, err
+	}
+
+	str, err := charmap.Windows1251.NewEncoder().String(chk.BottomLine)
+	if err != nil {
+		return nil, err
+	}
+	b := make([]byte, 64)
+	if _, err := bytes.NewBufferString(str).Read(b); err != nil {
+		if !errors.Is(err, io.EOF) {
+			return nil, err
+		}
+	}
+
+	if chk.Rounding > 99 {
+		return nil, fmt.Errorf("round penni biggest than 99: %v", chk.Rounding)
+	}
+
+	buf.Write(cash)              // 5 байт сумма наличных
+	buf.Write(casheless)         // 5 байт сумма безналичных
+	buf.Write(make([]byte, 70))  // 5 * 14 = 70 байт остальные пустые суммы
+	buf.WriteByte(chk.Rounding)  // округление до рубля в копейках, макс 99коп
+	buf.Write(make([]byte, 30))  // 5 * 6 = 30 байт налогов
+	buf.WriteByte(chk.TaxSystem) // биты систем налогообложения
+	buf.Write(b)                 // нижняя строка чека, 64 байта win1251 текста
+
+	if buf.Len() != 182 {
+		return nil, fmt.Errorf("wrong FNCloseCheck len command: %v", buf.Len())
 	}
 
 	return buf.Bytes(), nil

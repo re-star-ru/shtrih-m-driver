@@ -1,23 +1,24 @@
 package models
 
 // Пакет чека
+
 type CheckPackage struct {
 	CashierINN string      `json:"cashierINN"`
-	Operations []Operation `json:"operations"` // список операций в чеке
-	Cash       int64       `json:"cash"`       // сумма оплаты наличными
-	Casheless  int64       `json:"casheless"`  // сумма оплаты безналичными
-	BottomLine string      `json:"bottomLine"` // нижняя часть чека
-	Rounding   byte        `json:"rounding"`   // округление до рубля, макс 99 копеек
-	TaxSystem  byte        `json:"taxSystem"`  // система налогообложения
-	Electronic bool        `json:"electronic"` // не печатать чек на бумаге
+	Operations []Operation `json:"operations"` // Список операций в чеке
+	Cash       int64       `json:"cash"`       // Сумма оплаты наличными
+	Casheless  int64       `json:"casheless"`  // Сумма оплаты безналичными
+	BottomLine string      `json:"bottomLine"` // Нижняя часть чека
+	Rounding   byte        `json:"rounding"`   // Округление до рубля, макс 99 копеек
+	TaxSystem  byte        `json:"taxSystem"`  // Система налогообложения
+	Electronic bool        `json:"electronic"` // Не печатать чек на бумаге
 }
 
 // Operation Операции в чеке
 type Operation struct {
-	Type    byte   `json:"type"`    // тип операции
+	Type    byte   `json:"type"`    // Тип операции
 	Subject byte   `json:"subject"` // Предмет рассчета
-	Amount  int64  `json:"amount"`  // количество товара
-	Price   int64  `json:"price"`   // цена в копейках
+	Amount  int64  `json:"amount"`  // Количество товара
+	Price   int64  `json:"price"`   // Цена в копейках
 	Sum     int64  `json:"sum"`     // сумма товар * цену
 	Name    string `json:"name"`    // Наименование продукта
 }
