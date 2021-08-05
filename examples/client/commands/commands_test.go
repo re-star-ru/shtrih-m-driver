@@ -4,13 +4,12 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateFNCloseCheck(t *testing.T) {
 	type args struct {
-		chk models.CheckPackage
+		chk CloseCheckPackage
 	}
 
 	tests := []struct {
@@ -21,45 +20,36 @@ func TestCreateFNCloseCheck(t *testing.T) {
 	}{
 		{
 			name: "rounding > 99",
-			args: args{chk: models.CheckPackage{
-				CashierINN: "",
-				Operations: nil,
+			args: args{chk: CloseCheckPackage{
 				Cash:       0,
 				Casheless:  0,
 				BottomLine: "",
 				Rounding:   100,
 				TaxSystem:  0,
-				Electronic: false,
 			}},
 			wantCmdData: nil,
 			wantErr:     true,
 		},
 		{
 			name: "wrong inn",
-			args: args{chk: models.CheckPackage{
-				CashierINN: "",
-				Operations: nil,
+			args: args{chk: CloseCheckPackage{
 				Cash:       0,
 				Casheless:  0,
 				BottomLine: "",
 				Rounding:   0,
 				TaxSystem:  0,
-				Electronic: false,
 			}},
 			wantCmdData: nil,
 			wantErr:     true,
 		},
 		{
 			name: "wrong inn",
-			args: args{chk: models.CheckPackage{
-				CashierINN: "",
-				Operations: nil,
+			args: args{chk: CloseCheckPackage{
 				Cash:       0,
 				Casheless:  0,
 				BottomLine: "",
 				Rounding:   0,
 				TaxSystem:  0,
-				Electronic: false,
 			}},
 			wantCmdData: nil,
 			wantErr:     true,
