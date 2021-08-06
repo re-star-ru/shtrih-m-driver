@@ -4,8 +4,20 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"github.com/stretchr/testify/assert"
 )
+
+var successData = []byte{
+	255, 69, 30, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+}
 
 func TestCreateFNCloseCheck(t *testing.T) {
 	type args struct {
@@ -19,36 +31,24 @@ func TestCreateFNCloseCheck(t *testing.T) {
 		wantErr     bool
 	}{
 		{
+			name: "success check package",
+			args: args{chk: CloseCheckPackage{
+				Cash:       1,
+				Casheless:  0,
+				BottomLine: "",
+				Rounding:   0,
+				TaxSystem:  consts.PSN,
+			}},
+			wantCmdData: successData,
+			wantErr:     false,
+		},
+		{
 			name: "rounding > 99",
 			args: args{chk: CloseCheckPackage{
 				Cash:       0,
 				Casheless:  0,
 				BottomLine: "",
 				Rounding:   100,
-				TaxSystem:  0,
-			}},
-			wantCmdData: nil,
-			wantErr:     true,
-		},
-		{
-			name: "wrong inn",
-			args: args{chk: CloseCheckPackage{
-				Cash:       0,
-				Casheless:  0,
-				BottomLine: "",
-				Rounding:   0,
-				TaxSystem:  0,
-			}},
-			wantCmdData: nil,
-			wantErr:     true,
-		},
-		{
-			name: "wrong inn",
-			args: args{chk: CloseCheckPackage{
-				Cash:       0,
-				Casheless:  0,
-				BottomLine: "",
-				Rounding:   0,
 				TaxSystem:  0,
 			}},
 			wantCmdData: nil,

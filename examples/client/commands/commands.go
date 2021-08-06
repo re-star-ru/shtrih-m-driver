@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 
 	"golang.org/x/text/encoding/charmap"
 
@@ -183,8 +182,6 @@ func CreateFNCloseCheck(m CloseCheckPackage) (cmdData []byte, err error) {
 	buf.Write(make([]byte, 30)) // 5 * 6 = 30 байт налогов
 	buf.WriteByte(m.TaxSystem)  // биты систем налогообложения
 	buf.Write(b)                // нижняя строка чека, 64 байта win1251 текста
-
-	log.Println("buf len:", buf.Len())
 
 	if buf.Len() != 182 {
 		return nil, fmt.Errorf("wrong FNCloseCheck len command: %v", buf.Len())

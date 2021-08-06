@@ -13,6 +13,7 @@ import (
 
 	"github.com/fess932/shtrih-m-driver/examples/client/commands"
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
 	"github.com/go-chi/chi/v5"
 
@@ -76,52 +77,55 @@ type KKT struct {
 	substate *fsm.FSM
 }
 
-func printCheckHandler(kkt *KKT) (err error) {
-	if !kkt.canPrintCheck() { // check state
-		err = fmt.Errorf("cant print check, wrong kkt state %v", kkt.state.Current())
-		return
+func printCheckHandler(kkt *KKT, check models.CheckPackage) func(kkt *KKT) error {
+	return func(kkt *KKT) (err error) {
+		if !kkt.canPrintCheck() { // check state
+			err = fmt.Errorf("cant print check, wrong kkt state %v", kkt.state.Current())
+			return
+		}
+
+		// validate input data
+		o := commands.Operation{
+			Type:    consts.Income,
+			Subject: 0,
+			Amount:  0,
+			Price:   0,
+			Sum:     0,
+			Name:    "",
+		}
+
+		if err := o.Validate(); err != nil {
+			return err
+		}
+
+		data, err := commands.CreateFNOperationV2(o)
+		if err != nil {
+			return err
+		}
+
+		log.Println("Cmd len ", len(data))
+		log.Println("Data cmd create fn \n", hex.Dump(data))
+
+		msg := createMessage(data)
+
+		if err = sendMessage(kkt.conn, msg); err != nil {
+			err = fmt.Errorf("kkt %s: send operation message error: %w", kkt.addr, err)
+			return
+		}
+
+		resp, err := kkt.receiveMessage()
+		if err != nil {
+			err = fmt.Errorf("kkt %s: revice operation message error: %w", kkt.addr, err)
+			return
+		}
+
+		if err = kkt.parseCmd(resp); err != nil {
+			err = fmt.Errorf("kkt %s: parce recive operation message error: %w", kkt.addr, err)
+			return
+		}
+
+		return nil
 	}
-
-	// validate input data
-	o := commands.Operation{
-		Type:    consts.Income,
-		Subject: 0,
-		Amount:  0,
-		Price:   0,
-		Sum:     0,
-		Name:    "",
-	}
-	if err := o.Validate(); err != nil {
-		return err
-	}
-
-	data, err := commands.CreateFNOperationV2(o)
-	if err != nil {
-		return err
-	}
-
-	log.Println("Cmd len ", len(data))
-	log.Println("Data cmd create fn \n", hex.Dump(data))
-
-	msg := createMessage(data)
-
-	if err = sendMessage(kkt.conn, msg); err != nil {
-		err = fmt.Errorf("kkt %s: send operation message error: %w", kkt.addr, err)
-		return
-	}
-
-	resp, err := kkt.receiveMessage()
-	if err != nil {
-		err = fmt.Errorf("kkt %s: revice operation message error: %w", kkt.addr, err)
-		return
-	}
-
-	if err = kkt.parseCmd(resp); err != nil {
-		err = fmt.Errorf("kkt %s: parce recive operation message error: %w", kkt.addr, err)
-		return
-	}
-
-	return nil
 }
 
 func healhCheck(kkt *KKT) (err error) {

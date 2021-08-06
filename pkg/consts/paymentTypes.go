@@ -8,8 +8,7 @@ const (
 	FullPayment   byte = 4
 )
 
-// признак предмета рассчета/ subject
-
+// Признак предмета рассчета/ subject
 const (
 	Goods       byte = 1 // товар
 	ExciseGoods byte = 2 // акцизный товар
