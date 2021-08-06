@@ -84,6 +84,11 @@ type KKT struct {
 	substate *fsm.FSM
 }
 
+// send printCmd[]
+// if specified send dontPrintOneCheck
+// send writeCashierInn
+// send closeCheck
+
 func printCheckHandler(check *models.CheckPackage) func(kkt *KKT) error {
 	return func(kkt *KKT) (err error) {
 		log.Println("check:", check)
@@ -268,13 +273,13 @@ func (kkt *KKT) prepareRequest() (err error) {
 			continue
 		}
 
-		// ////// write
+		//  write
 		_, err := kkt.conn.Write([]byte{ENQ})
 		if err != nil {
 			continue
 		}
 
-		// ////// read
+		//  read
 		_, err = kkt.conn.Read(kkt.ctrlByte)
 		if err != nil {
 			continue
