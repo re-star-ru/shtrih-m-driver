@@ -16,6 +16,7 @@ import (
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/render"
 
 	"github.com/looplab/fsm"
 )
@@ -55,7 +56,13 @@ func main() {
 		})
 
 		r.Get("/print", func(w http.ResponseWriter, r *http.Request) {
-			if err := kkt.Do(printCheckHandler); err != nil {
+			data := &models.CheckPackage{}
+			if err := render.DecodeJSON(r.Body, data); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+
+			if err := kkt.Do(printCheckHandler(data)); err != nil {
 				log.Println(err)
 				http.Error(w, err.Error(), http.StatusBadRequest)
 
@@ -77,8 +84,10 @@ type KKT struct {
 	substate *fsm.FSM
 }
 
-func printCheckHandler(kkt *KKT, check models.CheckPackage) func(kkt *KKT) error {
+func printCheckHandler(check *models.CheckPackage) func(kkt *KKT) error {
 	return func(kkt *KKT) (err error) {
+		log.Println("check:", check)
+
 		if !kkt.canPrintCheck() { // check state
 			err = fmt.Errorf("cant print check, wrong kkt state %v", kkt.state.Current())
 			return
