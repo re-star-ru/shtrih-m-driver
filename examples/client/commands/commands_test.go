@@ -1,6 +1,8 @@
 package commands
 
 import (
+	"encoding/hex"
+	"log"
 	"reflect"
 	"testing"
 
@@ -8,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var successData = []byte{
+var successCreateCloseCheckData = []byte{
 	255, 69, 30, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -39,7 +41,7 @@ func TestCreateFNCloseCheck(t *testing.T) {
 				Rounding:   0,
 				TaxSystem:  consts.PSN,
 			}},
-			wantCmdData: successData,
+			wantCmdData: successCreateCloseCheckData,
 			wantErr:     false,
 		},
 		{
@@ -71,6 +73,48 @@ func TestCreateFNCloseCheck(t *testing.T) {
 
 			if !reflect.DeepEqual(gotCmdData, tt.wantCmdData) {
 				t.Errorf("CreateFNCloseCheck() gotCmdData = \n%v\nwant\n%v", gotCmdData, tt.wantCmdData)
+			}
+		})
+	}
+}
+
+func TestCreateFNOperationV2(t *testing.T) {
+	type args struct {
+		o Operation
+	}
+	tests := []struct {
+		name        string
+		args        args
+		wantCmdData []byte
+		wantErr     bool
+	}{
+		{
+			name: "first",
+			args: args{
+				o: Operation{
+					Type:    0,
+					Subject: 0,
+					Amount:  0,
+					Price:   0,
+					Sum:     0,
+					Name:    "",
+				},
+			},
+			wantCmdData: successCreateCloseCheckData,
+			wantErr:     false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotCmdData, err := CreateFNOperationV2(tt.args.o)
+			log.Println("got", hex.Dump(gotCmdData))
+
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreateFNOperationV2() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotCmdData, tt.wantCmdData) {
+				t.Errorf("CreateFNOperationV2() gotCmdData = %v, want %v", gotCmdData, tt.wantCmdData)
 			}
 		})
 	}

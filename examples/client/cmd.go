@@ -10,7 +10,7 @@ func (kkt *KKT) parseCmd(cmd []byte) error {
 		return parseFNcmd(cmd[1:])
 	}
 	if cmd[1] != 0x00 {
-		return errCheck()
+		return errCheck(cmd[1])
 	}
 
 	f, ok := routes[cmd[0]]

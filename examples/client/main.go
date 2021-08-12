@@ -2,12 +2,9 @@ package main
 
 import (
 	"encoding/hex"
-	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net"
-	"net/http"
 	"sync"
 	"time"
 
@@ -15,62 +12,18 @@ import (
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/render"
-
 	"github.com/looplab/fsm"
 )
 
-// Control bytes
-const (
-	ENQ byte = 0x05
-	STX byte = 0x02
-	ACK byte = 0x06 // 6
-	NAK byte = 0x15 // 21
-)
-
 const pingDeadline = time.Millisecond * 500
-
-var errChecksum = errors.New("checksum does not match")
 
 func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 	log.Println("dial to kkt")
 
 	// client code
-	kkt := newKKT("10.51.0.73:7778", time.Second*5, true)
-
-	// if err := kkt.Do(printCheckHandler); err != nil {
-	// 	log.Println(err)
-	// }
-
-	{ // http handler
-		r := chi.NewRouter()
-
-		r.Get("/status", func(w http.ResponseWriter, r *http.Request) {
-			if _, err := fmt.Fprintf(w,
-				"state kkt: %v, substate: %v\ncan print: %v\n",
-				kkt.state.Current(), kkt.substate.Current(), kkt.canPrintCheck()); err != nil {
-				log.Println(err)
-			}
-		})
-
-		r.Get("/print", func(w http.ResponseWriter, r *http.Request) {
-			data := &models.CheckPackage{}
-			if err := render.DecodeJSON(r.Body, data); err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-
-			if err := kkt.Do(printCheckHandler(data)); err != nil {
-				log.Println(err)
-				http.Error(w, err.Error(), http.StatusBadRequest)
-
-				return
-			}
-		})
-		log.Fatal(http.ListenAndServe(":8080", r))
-	}
+	kkt := newKKT("10.51.0.71:7778", time.Second*5, true)
+	rest(kkt)
 }
 
 type KKT struct {
@@ -193,37 +146,6 @@ func newKKT(addr string, connTimeout time.Duration, healthCheck bool) (kkt *KKT)
 	return
 }
 
-// Events
-const (
-	printCheck  = "printCheck"
-	shiftOpen   = "shiftOpen"
-	shiftClose  = "shiftClose"
-	shiftReopen = "shiftReopen"
-)
-
-func newState() *fsm.FSM {
-	return fsm.NewFSM(
-		"",
-		fsm.Events{
-			{Name: printCheck, Src: []string{"shiftOpen"}, Dst: "shiftOpen"},
-			{Name: shiftOpen, Src: []string{"shiftClosed"}, Dst: "shiftOpen"},
-			{Name: shiftClose, Src: []string{"shiftOpen"}, Dst: "shiftClosed"},
-			{Name: shiftReopen, Src: []string{"shiftExpired"}, Dst: "shiftClosed"},
-		},
-		fsm.Callbacks{},
-	)
-}
-
-func newSubstate() *fsm.FSM {
-	return fsm.NewFSM(
-		"",
-		fsm.Events{{
-			Name: printCheck, Src: []string{"paperLoaded"}, Dst: "paperLoaded",
-		}},
-		fsm.Callbacks{},
-	)
-}
-
 func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 	kkt.Lock()
 	defer kkt.Unlock()
@@ -244,181 +166,4 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 	}
 
 	return cb(kkt)
-}
-
-func (kkt *KKT) dial() (err error) {
-	const dialRetries = 3
-
-	for i := 0; i < dialRetries; i++ {
-		kkt.conn, err = kkt.d.Dial("tcp", kkt.addr)
-		if err == nil {
-			return
-		}
-
-		time.Sleep(time.Second * 1) // default timeout for retry
-	}
-
-	return
-}
-
-func (kkt *KKT) prepareRequest() (err error) {
-	const pingRetries = 3
-
-	for i := 0; i < pingRetries; i++ {
-		if i != 0 {
-			time.Sleep(time.Second * 1)
-		}
-
-		if err = kkt.conn.SetDeadline(time.Now().Add(pingDeadline)); err != nil {
-			continue
-		}
-
-		//  write
-		_, err := kkt.conn.Write([]byte{ENQ})
-		if err != nil {
-			continue
-		}
-
-		//  read
-		_, err = kkt.conn.Read(kkt.ctrlByte)
-		if err != nil {
-			continue
-		}
-
-		switch kkt.ctrlByte[0] {
-		case ACK:
-			err = kkt.sendACK()
-			if err != nil {
-				continue
-			}
-		case NAK:
-			return nil
-		default:
-			continue
-		}
-	}
-
-	return err
-}
-
-func (kkt *KKT) sendACK() error {
-	_, err := kkt.conn.Write([]byte{ACK})
-	return err
-}
-
-func (kkt *KKT) receiveMessage() (message []byte, err error) {
-	err = kkt.readACK()
-	if err != nil {
-		err = fmt.Errorf("err while read ACK: %w", err)
-		return
-	}
-
-	err = kkt.readSTX()
-	if err != nil {
-		err = fmt.Errorf("err while read STX: %w", err)
-		return
-	}
-
-	var l byte
-	l, err = kkt.readLen()
-	if err != nil {
-		err = fmt.Errorf("err while read len: %w", err)
-		return
-	}
-
-	msg, err := kkt.readMessage(l)
-	if err != nil {
-		err = fmt.Errorf("err while read message: %w", err)
-		return
-	}
-
-	return msg, nil
-}
-
-func (kkt *KKT) readACK() error {
-	if _, err := kkt.conn.Read(kkt.ctrlByte); err != nil {
-		return err
-	}
-	if kkt.ctrlByte[0] != ACK {
-		return fmt.Errorf("got wrong control byte: %v, expect: %v", kkt.ctrlByte[0], ACK)
-	}
-
-	return nil
-}
-
-func (kkt *KKT) readSTX() error {
-	if _, err := kkt.conn.Read(kkt.ctrlByte); err != nil {
-		return err
-	}
-	if kkt.ctrlByte[0] != STX {
-		return fmt.Errorf("got wrong control byte: %v, expect: %v", kkt.ctrlByte[0], STX)
-	}
-
-	return nil
-}
-
-func (kkt *KKT) readLen() (byte, error) {
-	if _, err := kkt.conn.Read(kkt.ctrlByte); err != nil {
-		return 0, err
-	}
-
-	return kkt.ctrlByte[0], nil
-}
-
-func (kkt *KKT) readMessage(messageLen byte) ([]byte, error) {
-	msg := make([]byte, messageLen)
-	if _, err := kkt.conn.Read(msg); err != nil {
-		return nil, err
-	}
-
-	rLrc, err := kkt.readLRC()
-	if err != nil {
-		return nil, err
-	}
-
-	var resp []byte
-	resp = append(resp, messageLen)
-	resp = append(resp, msg...)
-
-	lrc := computeLRC(resp)
-
-	if lrc != rLrc {
-		return nil, errChecksum
-	}
-
-	return msg, nil
-}
-
-func (kkt *KKT) readLRC() (byte, error) {
-	if _, err := kkt.conn.Read(kkt.ctrlByte); err != nil {
-		return 0, err
-	}
-
-	return kkt.ctrlByte[0], nil
-}
-
-func createMessage(cmdData []byte) []byte {
-	l := byte(len(cmdData)) // may be panic if overflowed? cannot be more than 255
-	m := []byte{STX, l}
-	m = append(m, cmdData...)
-	m = append(m, computeLRC(m[1:]))
-
-	return m
-}
-
-func sendMessage(w io.Writer, message []byte) error {
-	_, err := w.Write(message)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func computeLRC(data []byte) (lrc byte) {
-	for _, v := range data {
-		lrc ^= v
-	}
-
-	return
 }
