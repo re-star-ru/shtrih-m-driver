@@ -1,4 +1,4 @@
-package main
+package kkt
 
 import "github.com/looplab/fsm"
 

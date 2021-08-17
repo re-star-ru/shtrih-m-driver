@@ -1,4 +1,4 @@
-package main
+package kkt
 
 import (
 	"fmt"
@@ -31,27 +31,27 @@ func updateState(cmd []byte, kkt *KKT) {
 	st := status(cmd)
 	log.Println("cmd:", st)
 
-	// main state
+	// main State
 	switch st.state {
 	case 2:
-		kkt.state.SetState("shiftOpen")
+		kkt.State.SetState("shiftOpen")
 	case 3:
-		kkt.state.SetState("shiftExpired")
+		kkt.State.SetState("shiftExpired")
 	case 4:
-		kkt.state.SetState("shiftClosed")
+		kkt.State.SetState("shiftClosed")
 	case 8:
-		kkt.state.SetState("checkOpen")
+		kkt.State.SetState("checkOpen")
 
 	default:
-		kkt.state.SetState("wrongState")
+		kkt.State.SetState("wrongState")
 	}
 
-	// substate
+	// Substate
 	switch st.substate {
 	case 0:
-		kkt.substate.SetState("paperLoaded")
+		kkt.Substate.SetState("paperLoaded")
 	default:
-		kkt.substate.SetState("wrongSubstate")
+		kkt.Substate.SetState("wrongSubstate")
 	}
 }
 

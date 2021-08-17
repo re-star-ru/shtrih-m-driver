@@ -1,4 +1,4 @@
-package main
+package kkt
 
 import (
 	"fmt"
@@ -18,7 +18,7 @@ func (kkt *KKT) dial() (err error) {
 	const dialRetries = 3
 
 	for i := 0; i < dialRetries; i++ {
-		kkt.conn, err = kkt.d.Dial("tcp", kkt.addr)
+		kkt.conn, err = kkt.d.Dial("tcp", kkt.Addr)
 		if err == nil {
 			return
 		}
