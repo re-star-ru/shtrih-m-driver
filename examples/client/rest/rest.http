@@ -13,12 +13,11 @@ POST http://localhost:8080/printPackage
 Content-Type: application/json
 
 {
-  "SM": {
-    "place": "N",
+  "SM-N": {
     "cashierINN": "123456789012",
     "operations": [
       {
-        "type": 0,
+        "type": "Income",
         "subject": 0,
         "amount": 0,
         "sum": 0,
@@ -31,8 +30,7 @@ Content-Type: application/json
     "taxSystem": "PSN",
     "notPrint": false
   },
-  "EV": {
-    "place": "N",
+  "EV-N": {
     "cashierINN": "123456789012",
     "operations": [],
     "cash": 0,

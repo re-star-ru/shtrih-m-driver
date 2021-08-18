@@ -14,9 +14,9 @@ func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 	log.Println("dial to kkt")
 
-	kks, err := initKkts([]confKKT{
-		{"EV", "N", "10.51.0.73:7778"},
-		{"SM", "N", "10.51.0.74:7778"},
+	kks, err := initKkts(confKKT{
+		"EV-N": "10.51.0.73:7778",
+		"SM-N": "10.51.0.74:7778",
 	})
 
 	if err != nil {
@@ -28,13 +28,9 @@ func main() {
 	service.Run()
 }
 
-type confKKT struct {
-	Org   string
-	Place string
-	Addr  string
-}
+type confKKT map[string]string
 
-func initKkts(confs []confKKT) (kks []*kkt.KKT, err error) {
+func initKkts(confs confKKT) (kks []*kkt.KKT, err error) {
 	//1
 
 	for _, conf := range confs {

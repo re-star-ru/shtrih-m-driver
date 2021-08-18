@@ -12,7 +12,7 @@ import (
 )
 
 type KKTService struct {
-	ks   []*kkt.KKT
+	ks   map[string]*kkt.KKT
 	addr string
 }
 

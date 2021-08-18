@@ -5,7 +5,7 @@ const (
 	PrePayment100 byte = 1
 	PrePayment    byte = 2
 	Imprest       byte = 3
-	FullPayment   byte = 4
+	FullPayment   byte = 4 // предоплата
 )
 
 // Признак предмета рассчета/ subject

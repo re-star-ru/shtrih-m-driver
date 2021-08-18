@@ -1,5 +1,6 @@
 package consts
 
+// Типы операций в байтовом виде.
 const (
 	Income       byte = 1
 	ReturnIncome byte = 2

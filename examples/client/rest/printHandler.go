@@ -29,8 +29,8 @@ type CheckPackage struct {
 
 // Operation Операции в чеке
 type Operation struct {
-	Type    byte   `json:"type"`    // Тип операции
-	Subject byte   `json:"subject"` // Предмет рассчета
+	Type    string `json:"type"`    // Тип операции
+	Subject string `json:"subject"` // Предмет рассчета
 	Amount  int64  `json:"amount"`  // Количество товара
 	Price   int64  `json:"price"`   // Цена в копейках
 	Sum     int64  `json:"sum"`     // сумма товар * цену
@@ -61,13 +61,13 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 	// concurrent run print cmd
 	var g errgroup.Group
 
-	for organization, chkPkg := range data {
-		o := organization
+	for key, chkPkg := range data {
+		ky := key
 		c := chkPkg
 		g.Go(func() error {
-			kk := k.getPrinterByOrgAndPlace(o, c.Place)
-			if kk == nil {
-				notFoundKKT := fmt.Errorf("не найдена касса для организации: %v, и места: %v", organization, chkPkg.Place)
+			kk, ok := k.ks[ky]
+			if !ok {
+				notFoundKKT := fmt.Errorf("не найдена касса по ключу место-организация: %v", ky)
 				return notFoundKKT
 			}
 
@@ -79,7 +79,7 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 			printCmd := kkt.PrintCheckHandler(chkModelPkg)
 			log.Printf("cmd print : %v\n", printCmd)
 
-			//err = kk.Do(printCmd)
+			err = kk.Do(printCmd)
 			return err
 		})
 	}
@@ -114,6 +114,29 @@ func packageModelFromReq(chk CheckPackage) (cp models.CheckPackage, err error) {
 		return
 	}
 
+	for _, v := range chk.Operations {
+		typ, err := getTypeOperationByte(v.Type)
+		if err != nil {
+			return
+		}
+
+		sub, err := getSubByte(v.Subject)
+		if err != nil {
+			return
+		}
+
+		op := models.Operation{
+			Type:    typ,
+			Subject: sub,
+			Amount:  v.Amount,
+			Price:   v.Price,
+			Sum:     v.Sum,
+			Name:    v.Name,
+		}
+
+		cp.Operations = append(cp.Operations, op)
+	}
+
 	return cp, nil
 }
 
@@ -125,5 +148,28 @@ func getTaxSystemByte(tax string) (byte, error) {
 		return consts.USNIncome, nil
 	default:
 		return 0, fmt.Errorf("неправильная система налогообложения: %v", tax)
+	}
+}
+
+func getTypeOperationByte(typ string) (byte, error) {
+	switch typ {
+	case "income":
+		return consts.Income, nil
+	case "outcome":
+		return consts.ReturnIncome, nil
+	default:
+		return 0, fmt.Errorf("неправильный тип операции: %v", typ)
+	}
+}
+
+func getSubByte(sub string) (byte, error) {
+	switch sub {
+	case "goods":
+		return consts.Goods, nil
+	case "service":
+		return consts.Service, nil
+
+	default:
+		return 0, fmt.Errorf("неправильный признак рассчета %v", sub)
 	}
 }
