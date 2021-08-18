@@ -14,21 +14,31 @@ Content-Type: application/json
 
 {
   "SM": {
+    "place": "N",
     "cashierINN": "123456789012",
-    "operations": [],
+    "operations": [
+      {
+        "type": 0,
+        "subject": 0,
+        "amount": 0,
+        "sum": 0,
+        "name": "product name"
+      }
+    ],
     "cash": 0,
     "digital": 0,
     "rounding": 0,
-    "taxSystem": 32,
+    "taxSystem": "PSN",
     "notPrint": false
   },
   "EV": {
+    "place": "N",
     "cashierINN": "123456789012",
     "operations": [],
     "cash": 0,
     "digital": 0,
     "rounding": 0,
-    "taxSystem": 32,
+    "taxSystem": "PSN",
     "notPrint": false
   }
 }

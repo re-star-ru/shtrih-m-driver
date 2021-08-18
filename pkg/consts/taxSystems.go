@@ -1,5 +1,6 @@
 package consts
 
+// Системы налогообложения в байтовом представлении
 const (
 	OSN                  = 1
 	USNIncome            = 2

@@ -18,9 +18,11 @@ import (
 const pingDeadline = time.Millisecond * 500
 
 type KKT struct {
-	Addr string
-	d    net.Dialer
-	conn net.Conn
+	Organization string
+	Place        string
+	Addr         string
+	d            net.Dialer
+	conn         net.Conn
 	sync.Mutex
 
 	ctrlByte []byte
@@ -33,7 +35,7 @@ type KKT struct {
 // send writeCashierInn
 // send closeCheck
 
-func printCheckHandler(check *models.CheckPackage) func(kkt *KKT) error {
+func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 	return func(kkt *KKT) (err error) {
 		log.Println("check:", check)
 
@@ -112,9 +114,13 @@ func (kkt *KKT) canPrintCheck() bool {
 	return kkt.State.Can(printCheck) && kkt.Substate.Can(printCheck)
 }
 
-func NewKKT(addr string, connTimeout time.Duration, healthCheck bool) (kkt *KKT) {
-	kkt = &KKT{}
-	kkt.Addr = addr
+func NewKKT(org, place, addr string, connTimeout time.Duration, healthCheck bool) (kkt *KKT) {
+	kkt = &KKT{
+		Organization: org,
+		Place:        place,
+		Addr:         addr,
+	}
+
 	kkt.d.Timeout = connTimeout
 	kkt.ctrlByte = make([]byte, 1)
 	kkt.State = newState()
