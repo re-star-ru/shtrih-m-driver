@@ -1,0 +1,641 @@
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "place": "N",
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": 0,
+        "subject": 0,
+        "amount": 0,
+        "sum": 0,
+        "name": "product name"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  },
+  "EV": {
+    "place": "N",
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  }
+}
+
+<> 2021-08-18T132856.200.json
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-18T132852.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-18T132850.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-18T124821.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-18T124816.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-18T124810.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-18T124805.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "place": "N",
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": 0,
+        "subject": 0,
+        "amount": 0,
+        "sum": 0,
+        "name": "product name"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  },
+  "EV": {
+    "place": "N",
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  }
+}
+
+<> 2021-08-18T115852.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "place": "N",
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  },
+  "EV": {
+    "place": "N",
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  }
+}
+
+<> 2021-08-18T112611.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "place": "S",
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  },
+  "EV": {
+    "place": "N",
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  }
+}
+
+<> 2021-08-18T112314.404.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  },
+  "EV": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  }
+}
+
+<> 2021-08-18T103531.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  },
+  "EV": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  }
+}
+
+<> 2021-08-18T103518.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  },
+  "EV": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  }
+}
+
+<> 2021-08-18T103241.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": 32,
+    "notPrint": false
+  },
+  "EV": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": 32,
+    "notPrint": false
+  }
+}
+
+<> 2021-08-17T155245.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": 32,
+    "notPrint": false
+  },
+
+  "EV": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": 32,
+    "notPrint": false
+  },
+
+}
+
+<> 2021-08-17T155231.400.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+[
+  {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": 32,
+    "notPrint": false
+
+  },
+  {}
+]
+
+<> 2021-08-17T154940.400.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+[
+  {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": 32,
+    "notPrint": false
+
+  },
+  {}
+]
+
+<> 2021-08-17T154312.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+[
+  {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": 32,
+    "notPrint": false
+
+  },
+  {}
+]
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+[
+  {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": 0,
+    "notPrint": false
+
+  },
+  {}
+]
+
+<> 2021-08-17T153950.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+[
+  {},
+  {}
+]
+
+<> 2021-08-17T151219-1.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+[
+  {},
+  {}
+]
+
+<> 2021-08-17T151219.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+[]
+
+<> 2021-08-17T151134.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+[]
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{}
+
+<> 2021-08-17T145838.400.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{}
+
+<> 2021-08-17T145708.400.txt
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-17T145702.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-17T145659.200.txt
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-17T145610.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-17T145607.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{}
+
+<> 2021-08-17T145331.400.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{}
+
+<> 2021-08-17T145323.400.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{}
+
+<> 2021-08-17T145311.400.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{}
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{}
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-17T140514.200.txt
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-17T140506.200.txt
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-17T140450.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-17T140441.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-17T135832.200.txt
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-17T135817.200.txt
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-17T120255.200.txt
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-17T120205.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-17T120156.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-17T115705.200.txt
+
+###
+
+GET http://localhost:8080/status?json=1
+Accept: application/json
+
+<> 2021-08-17T115656.200.txt
+
+###
+
+GET http://localhost:8080/status?json=1
+Accept: application/json
+
+<> 2021-08-17T115431.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-17T115157.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-17T115044.200.txt
+
+###
+
+GET http://localhost:8080/status/json
+Accept: application/json
+
+<> 2021-08-17T114945.200.txt
+
+###
+
+GET http://localhost:8080/status/json
+Accept: application/json
+
+<> 2021-08-17T114932.404.txt
+
+###
+

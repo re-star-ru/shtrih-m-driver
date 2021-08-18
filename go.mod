@@ -8,6 +8,7 @@ require (
 	github.com/looplab/fsm v0.2.0
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.18.1
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 	golang.org/x/text v0.3.6
 )
 
