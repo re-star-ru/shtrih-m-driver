@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/fess932/shtrih-m-driver/examples/client/commands"
-	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
 	"github.com/looplab/fsm"
@@ -45,45 +44,34 @@ func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 			return
 		}
 
-		// validate input data
-		o := commands.Operation{
-			Type:    consts.Income,
-			Subject: 0,
-			Amount:  0,
-			Price:   0,
-			Sum:     0,
-			Name:    "",
+		for _, v := range check.Operations {
+			data, err := commands.CreateFNOperationV2(v)
+			if err != nil {
+				return err
+			}
+
+			log.Println("Cmd len ", len(data))
+			log.Println("Data cmd create fn \n", hex.Dump(data))
+
+			msg := createMessage(data)
+			log.Println("msg: ", msg)
 		}
 
-		if err := o.Validate(); err != nil {
-			return err
-		}
-
-		data, err := commands.CreateFNOperationV2(o)
-		if err != nil {
-			return err
-		}
-
-		log.Println("Cmd len ", len(data))
-		log.Println("Data cmd create fn \n", hex.Dump(data))
-
-		msg := createMessage(data)
-
-		if err = sendMessage(kkt.conn, msg); err != nil {
-			err = fmt.Errorf("kkt %s: send operation message error: %w", kkt.Addr, err)
-			return
-		}
-
-		resp, err := kkt.receiveMessage()
-		if err != nil {
-			err = fmt.Errorf("kkt %s: revice operation message error: %w", kkt.Addr, err)
-			return
-		}
-
-		if err = kkt.parseCmd(resp); err != nil {
-			err = fmt.Errorf("kkt %s: parce recive operation message error: %w", kkt.Addr, err)
-			return
-		}
+		//if err = sendMessage(kkt.conn, msg); err != nil {
+		//	err = fmt.Errorf("kkt %s: send operation message error: %w", kkt.Addr, err)
+		//	return
+		//}
+		//
+		//resp, err := kkt.receiveMessage()
+		//if err != nil {
+		//	err = fmt.Errorf("kkt %s: revice operation message error: %w", kkt.Addr, err)
+		//	return
+		//}
+		//
+		//if err = kkt.parseCmd(resp); err != nil {
+		//	err = fmt.Errorf("kkt %s: parce recive operation message error: %w", kkt.Addr, err)
+		//	return
+		//}
 
 		return nil
 	}

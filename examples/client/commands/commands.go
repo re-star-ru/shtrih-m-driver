@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
+
 	"golang.org/x/text/encoding/charmap"
 
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
@@ -60,25 +62,7 @@ func CreateCloseSession() []byte {
 	return newBufWithDefaultPassword(ZReport, false).Bytes()
 }
 
-// Operation Операции в чеке
-type Operation struct {
-	Type    byte   `json:"type"`    // тип операции
-	Subject byte   `json:"subject"` // Предмет рассчета
-	Amount  int64  `json:"amount"`  // количество товара
-	Price   int64  `json:"price"`   // цена в копейках
-	Sum     int64  `json:"sum"`     // сумма товар * цену
-	Name    string `json:"name"`    // Наименование продукта
-}
-
-func (o Operation) Validate() error {
-	if (o.Type < 1) || (o.Type > 2) {
-		return errors.New("wrong operation type")
-	}
-
-	return nil
-}
-
-func CreateFNOperationV2(o Operation) (cmdData []byte, err error) {
+func CreateFNOperationV2(o models.Operation) (cmdData []byte, err error) {
 	buf := newBufWithDefaultPassword(FnOperationV2, true)
 
 	buf.WriteByte(o.Type)

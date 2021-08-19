@@ -17,7 +17,6 @@ import (
 type CheckReq map[string]CheckPackage
 
 type CheckPackage struct {
-	Place      string      `json:"place"`
 	CashierINN string      `json:"cashierINN"`
 	Operations []Operation `json:"operations"` // Список операций в чеке
 	Cash       int64       `json:"cash"`       // Сумма оплаты наличными
@@ -140,6 +139,7 @@ func packageModelFromReq(chk CheckPackage) (cp models.CheckPackage, err error) {
 	return cp, nil
 }
 
+// ///////////////////////////////////////////////////
 func getTaxSystemByte(tax string) (byte, error) {
 	switch tax {
 	case "PSN":

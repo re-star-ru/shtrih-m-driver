@@ -17,8 +17,8 @@ Content-Type: application/json
     "cashierINN": "123456789012",
     "operations": [
       {
-        "type": "Income",
-        "subject": 0,
+        "type": "income",
+        "subject": "goods",
         "amount": 0,
         "sum": 0,
         "name": "product name"
@@ -28,7 +28,7 @@ Content-Type: application/json
     "digital": 0,
     "rounding": 0,
     "taxSystem": "PSN",
-    "notPrint": false
+    "notPrint": true
   },
   "EV-N": {
     "cashierINN": "123456789012",
@@ -37,7 +37,7 @@ Content-Type: application/json
     "digital": 0,
     "rounding": 0,
     "taxSystem": "PSN",
-    "notPrint": false
+    "notPrint": true
   }
 }
 

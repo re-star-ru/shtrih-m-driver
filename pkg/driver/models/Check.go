@@ -1,7 +1,6 @@
 package models
 
-// Пакет чека
-
+// CheckPackage это чек для одной кассы.
 type CheckPackage struct {
 	CashierINN string
 	Operations []Operation // Список операций в чеке
@@ -12,7 +11,7 @@ type CheckPackage struct {
 	NotPrint   bool        // Не печатать чек на бумаге
 }
 
-// Operation Операции в чеке
+// Operation Операции в чеке.
 type Operation struct {
 	Type    byte   // Тип операции
 	Subject byte   // Предмет рассчета
