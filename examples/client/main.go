@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -24,32 +23,22 @@ func main() {
 		return
 	}
 
-	service := rest.New(kks...)
+	service := rest.New(kks)
 	service.Run()
 }
 
 type confKKT map[string]string
 
-func initKkts(confs confKKT) (kks []*kkt.KKT, err error) {
-	//1
+func initKkts(confs confKKT) (kks map[string]*kkt.KKT, err error) {
+	kks = make(map[string]*kkt.KKT)
 
-	for _, conf := range confs {
-		if kktExist(kks, conf.Addr) {
-			return nil, fmt.Errorf("kkt already exist: %v", conf)
+	for key, addr := range confs {
+		kk, err := kkt.NewKKT(key, addr, time.Second*5, true)
+		if err != nil {
+			return nil, err
 		}
-		kk := kkt.NewKKT(conf.Org, conf.Place, conf.Addr, time.Second*5, true)
-		kks = append(kks, kk)
+		kks[key] = kk
 	}
 
 	return
-}
-
-func kktExist(kks []*kkt.KKT, addr string) bool {
-	for _, kk := range kks {
-		if kk.Addr == addr {
-			return true
-		}
-	}
-
-	return false
 }

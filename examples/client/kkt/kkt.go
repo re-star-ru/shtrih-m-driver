@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
 	"sync"
 	"time"
 
@@ -114,10 +115,15 @@ func (kkt *KKT) canPrintCheck() bool {
 	return kkt.State.Can(printCheck) && kkt.Substate.Can(printCheck)
 }
 
-func NewKKT(org, place, addr string, connTimeout time.Duration, healthCheck bool) (kkt *KKT) {
+func NewKKT(key, addr string, connTimeout time.Duration, healthCheck bool) (kkt *KKT, err error) {
+	s := strings.Split(key, "-")
+	if len(s) != 2 {
+		return nil, fmt.Errorf("неправильный ключ для ккт: %v", key)
+	}
+
 	kkt = &KKT{
-		Organization: org,
-		Place:        place,
+		Organization: s[0],
+		Place:        s[1],
 		Addr:         addr,
 	}
 

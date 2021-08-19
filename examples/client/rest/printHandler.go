@@ -117,12 +117,12 @@ func packageModelFromReq(chk CheckPackage) (cp models.CheckPackage, err error) {
 	for _, v := range chk.Operations {
 		typ, err := getTypeOperationByte(v.Type)
 		if err != nil {
-			return
+			return models.CheckPackage{}, err
 		}
 
 		sub, err := getSubByte(v.Subject)
 		if err != nil {
-			return
+			return models.CheckPackage{}, err
 		}
 
 		op := models.Operation{

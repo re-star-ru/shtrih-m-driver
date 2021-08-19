@@ -16,7 +16,7 @@ type KKTService struct {
 	addr string
 }
 
-func New(ks ...*kkt.KKT) *KKTService {
+func New(ks map[string]*kkt.KKT) *KKTService {
 	return &KKTService{
 		ks:   ks,
 		addr: "",
