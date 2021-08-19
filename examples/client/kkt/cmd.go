@@ -3,6 +3,8 @@ package kkt
 import (
 	"fmt"
 	"log"
+
+	"github.com/fess932/shtrih-m-driver/examples/client/commands"
 )
 
 func (kkt *KKT) parseCmd(cmd []byte) error {
@@ -11,6 +13,9 @@ func (kkt *KKT) parseCmd(cmd []byte) error {
 	}
 	if cmd[1] != 0x00 {
 		return errCheck(cmd[1])
+	}
+	if len(cmd) <= 2 { // если длинна команды 2 то это пустая команда не требующая обработки имеющая лишь код ошибки
+		return nil
 	}
 
 	f, ok := routes[cmd[0]]
@@ -24,12 +29,12 @@ func (kkt *KKT) parseCmd(cmd []byte) error {
 }
 
 var routes = map[byte]func(cmd []byte, kkt *KKT){
-	0x10: updateState,
+	commands.ShortStatus: updateState,
 }
 
 func updateState(cmd []byte, kkt *KKT) {
 	st := status(cmd)
-	log.Println("cmd:", st)
+	log.Println("cmd:", st, kkt.Addr)
 
 	// main State
 	switch st.state {

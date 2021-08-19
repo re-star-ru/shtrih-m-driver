@@ -2,7 +2,6 @@ package kkt
 
 import (
 	"fmt"
-	"io"
 	"time"
 )
 
@@ -174,13 +173,13 @@ func createMessage(cmdData []byte) []byte {
 	return m
 }
 
-func sendMessage(w io.Writer, message []byte) error {
-	_, err := w.Write(message)
+func (kkt *KKT) sendMessage(message []byte) (resp []byte, err error) {
+	_, err = kkt.conn.Write(message)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return kkt.receiveMessage()
 }
 
 func computeLRC(data []byte) (lrc byte) {

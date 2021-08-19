@@ -39,5 +39,4 @@ func (p *printerUsecase) writeTable(tableNumber byte, rowNumber uint16, fieldNum
 	}
 
 	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
-
 }

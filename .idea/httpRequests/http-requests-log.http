@@ -30,6 +30,42 @@ Content-Type: application/json
   }
 }
 
+<> 2021-08-19T162404.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "product name"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
 <> 2021-08-19T121417.200.json
 
 ###
@@ -687,13 +723,6 @@ GET http://localhost:8080/status?json=1
 Accept: application/json
 
 <> 2021-08-17T115656.200.txt
-
-###
-
-GET http://localhost:8080/status?json=1
-Accept: application/json
-
-<> 2021-08-17T115431.200.txt
 
 ###
 

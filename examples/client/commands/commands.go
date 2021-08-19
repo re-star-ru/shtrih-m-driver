@@ -19,6 +19,7 @@ const (
 	ShortStatus byte = 0x10
 	ZReport     byte = 0x41
 	CancelCheck byte = 0x88
+	WriteTable  byte = 0x1E
 	// сброс состояния сделать или
 	// отмена чека
 )
@@ -52,6 +53,21 @@ func newBufWithDefaultPassword(cmdID byte, isFnCmd bool) (buf *bytes.Buffer) {
 
 func CreateShortStatus() []byte {
 	return newBufWithDefaultPassword(ShortStatus, false).Bytes()
+}
+
+func CreateNotPrintOneCheck() []byte {
+	buf := newBufWithDefaultPassword(WriteTable, false)
+
+	buf.WriteByte(17) // номер таблицы
+
+	rowNumBin := make([]byte, 2)
+	binary.LittleEndian.PutUint16(rowNumBin, 1)
+	buf.Write(rowNumBin) // номер ряда
+
+	buf.WriteByte(7) // номер поля
+	buf.WriteByte(1) // значение поля
+
+	return buf.Bytes()
 }
 
 func CreateCancelCheck() []byte {
@@ -183,3 +199,29 @@ func intToBytesWithLen(val int64, bytesLen int64) ([]byte, error) {
 
 	return buf.Bytes()[:bytesLen], nil
 }
+
+//func (p *printerUsecase) writeTable(tableNumber byte, rowNumber uint16, fieldNumber byte, fieldValue models.FieldValue) {
+//	buf, cmdLen := p.createCommandBuffer(models.WriteTable, p.password)
+//
+//	buf.WriteByte(tableNumber) // номер таблицы
+//
+//	rowNumBin := make([]byte, 2)
+//	binary.LittleEndian.PutUint16(rowNumBin, rowNumber)
+//	buf.Write(rowNumBin) // номер ряда
+//
+//	buf.WriteByte(fieldNumber) // номер поля
+//
+//	buf.Write(fieldValue.Bytes()) // запись поля
+//
+//	rFrame, err := p.send(buf.Bytes(), cmdLen)
+//	if err != nil {
+//		p.logger.Error(err)
+//		return
+//	}
+//
+//	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
+//		p.logger.Fatal(err)
+//	}
+//
+//	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
+//}

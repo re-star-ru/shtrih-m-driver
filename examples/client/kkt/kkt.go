@@ -30,79 +30,7 @@ type KKT struct {
 	Substate *fsm.FSM
 }
 
-// send printCmd[]
-// if specified send dontPrintOneCheck
-// send writeCashierInn
-// send closeCheck
-
-func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
-	return func(kkt *KKT) (err error) {
-		log.Println("check:", check)
-
-		if !kkt.canPrintCheck() { // check State
-			err = fmt.Errorf("cant print check, wrong kkt State %v", kkt.State.Current())
-			return
-		}
-
-		for _, v := range check.Operations {
-			data, err := commands.CreateFNOperationV2(v)
-			if err != nil {
-				return err
-			}
-
-			log.Println("Cmd len ", len(data))
-			log.Println("Data cmd create fn \n", hex.Dump(data))
-
-			msg := createMessage(data)
-			log.Println("msg: ", msg)
-		}
-
-		//if err = sendMessage(kkt.conn, msg); err != nil {
-		//	err = fmt.Errorf("kkt %s: send operation message error: %w", kkt.Addr, err)
-		//	return
-		//}
-		//
-		//resp, err := kkt.receiveMessage()
-		//if err != nil {
-		//	err = fmt.Errorf("kkt %s: revice operation message error: %w", kkt.Addr, err)
-		//	return
-		//}
-		//
-		//if err = kkt.parseCmd(resp); err != nil {
-		//	err = fmt.Errorf("kkt %s: parce recive operation message error: %w", kkt.Addr, err)
-		//	return
-		//}
-
-		return nil
-	}
-}
-
-func healhCheck(kkt *KKT) (err error) {
-	msg := createMessage(commands.CreateShortStatus())
-
-	if err = sendMessage(kkt.conn, msg); err != nil {
-		err = fmt.Errorf("kkt %s : send message error: %w", kkt.Addr, err)
-		return
-	}
-
-	resp, err := kkt.receiveMessage()
-	if err != nil {
-		err = fmt.Errorf("kkt %s : receive message error: %w", kkt.Addr, err)
-		return
-	}
-
-	if err = kkt.parseCmd(resp); err != nil {
-		log.Println("error while parsing response command:", err)
-		return
-	}
-
-	return nil
-}
-
-func (kkt *KKT) canPrintCheck() bool {
-	return kkt.State.Can(printCheck) && kkt.Substate.Can(printCheck)
-}
-
+// NewKKT init new kkt device
 func NewKKT(key, addr string, connTimeout time.Duration, healthCheck bool) (kkt *KKT, err error) {
 	s := strings.Split(key, "-")
 	if len(s) != 2 {
@@ -137,6 +65,7 @@ func NewKKT(key, addr string, connTimeout time.Duration, healthCheck bool) (kkt 
 	return
 }
 
+// Do is function for starting request, create connection and close after exit
 func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 	kkt.Lock()
 	defer kkt.Unlock()
@@ -146,7 +75,7 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 		return
 	}
 	defer func() {
-		if err := kkt.conn.Close(); err != nil {
+		if err = kkt.conn.Close(); err != nil {
 			log.Println("deferred closing error:", err)
 		}
 	}()
@@ -157,4 +86,91 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 	}
 
 	return cb(kkt)
+}
+
+// send printCmd[]
+// if specified send dontPrintOneCheck
+// send writeCashierInn
+// send closeCheck
+
+func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
+	return func(kkt *KKT) (err error) {
+		log.Println("check:", check)
+
+		if !kkt.canPrintCheck() { // check State
+			err = fmt.Errorf("cant print check, wrong kkt State %v", kkt.State.Current())
+			return
+		}
+
+		if check.NotPrint {
+			if err = notPrintOneCheck(kkt); err != nil {
+				log.Println(err)
+				return
+			}
+		}
+
+		for _, v := range check.Operations {
+			data, err := commands.CreateFNOperationV2(v)
+			if err != nil {
+				return err
+			}
+
+			log.Println("Cmd len ", len(data))
+			log.Println("Data cmd create fn \n", hex.Dump(data))
+
+			msg := createMessage(data)
+			log.Println("msg: ", msg)
+		}
+
+		// if err = sendMessage(kkt.conn, msg); err != nil {
+		//	err = fmt.Errorf("kkt %s: send operation message error: %w", kkt.Addr, err)
+		//	return
+		//}
+		//
+		//resp, err := kkt.receiveMessage()
+		//if err != nil {
+		//	err = fmt.Errorf("kkt %s: revice operation message error: %w", kkt.Addr, err)
+		//	return
+		//}
+		//
+		//if err = kkt.parseCmd(resp); err != nil {
+		//	err = fmt.Errorf("kkt %s: parce recive operation message error: %w", kkt.Addr, err)
+		//	return
+		//}
+
+		return nil
+	}
+}
+
+func healhCheck(kkt *KKT) (err error) {
+	msg := createMessage(commands.CreateShortStatus())
+	resp, err := kkt.sendMessage(msg)
+
+	if err != nil {
+		err = fmt.Errorf("kkt %s : send message error: %w", kkt.Addr, err)
+		return
+	}
+
+	if err = kkt.parseCmd(resp); err != nil {
+		log.Println("error while parsing response command:", err)
+		return
+	}
+
+	return nil
+}
+
+func notPrintOneCheck(kkt *KKT) (err error) {
+	msg := createMessage(commands.CreateNotPrintOneCheck())
+	resp, err := kkt.sendMessage(msg)
+	if err != nil {
+		err = fmt.Errorf("kkt %s : send message error: %w", kkt.Addr, err)
+		return
+	}
+
+	if err = kkt.parseCmd(resp); err != nil {
+		log.Println("error while parsing response command:", err)
+		return
+	}
+
+	return nil
 }

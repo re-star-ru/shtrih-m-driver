@@ -32,3 +32,7 @@ func newSubstate() *fsm.FSM {
 		fsm.Callbacks{},
 	)
 }
+
+func (kkt *KKT) canPrintCheck() bool {
+	return kkt.State.Can(printCheck) && kkt.Substate.Can(printCheck)
+}
