@@ -97,11 +97,13 @@ func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 	return func(kkt *KKT) (err error) {
 		log.Println("check:", check)
 
+		// check state
 		if !kkt.canPrintCheck() { // check State
 			err = fmt.Errorf("cant print check, wrong kkt State %v", kkt.State.Current())
 			return
 		}
 
+		// set state not print one check if specified
 		if check.NotPrint {
 			if err = notPrintOneCheck(kkt); err != nil {
 				log.Println(err)
@@ -109,37 +111,61 @@ func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 			}
 		}
 
+		// add operationV2 to check
 		for _, v := range check.Operations {
-			data, err := commands.CreateFNOperationV2(v)
-			if err != nil {
+			if err := sendOperationsV2(kkt, v); err != nil {
 				return err
 			}
-
-			log.Println("Cmd len ", len(data))
-			log.Println("Data cmd create fn \n", hex.Dump(data))
-
-			msg := createMessage(data)
-			log.Println("msg: ", msg)
 		}
 
-		// if err = sendMessage(kkt.conn, msg); err != nil {
-		//	err = fmt.Errorf("kkt %s: send operation message error: %w", kkt.Addr, err)
-		//	return
-		//}
-		//
-		//resp, err := kkt.receiveMessage()
-		//if err != nil {
-		//	err = fmt.Errorf("kkt %s: revice operation message error: %w", kkt.Addr, err)
-		//	return
-		//}
-		//
-		//if err = kkt.parseCmd(resp); err != nil {
-		//	err = fmt.Errorf("kkt %s: parce recive operation message error: %w", kkt.Addr, err)
-		//	return
-		//}
+		// close check V2
+		data, err := commands.CreateFNCloseCheck(check)
+		if err != nil {
+			return err
+		}
+
+		msg := createMessage(data)
+		log.Println("msg: ", msg)
+
+		resp, err := kkt.sendMessage(msg)
+		if err != nil {
+			err = fmt.Errorf("kkt %s: send operationV2 message error: %w", kkt.Addr, err)
+			return err
+		}
+
+		if err = kkt.parseCmd(resp); err != nil {
+			err = fmt.Errorf("kkt %s: parse recieve closeCheckV2 message error: %w", kkt.Addr, err)
+			return
+		}
 
 		return nil
 	}
+}
+
+func sendOperationsV2(kkt *KKT, o models.Operation) error {
+	data, err := commands.CreateFNOperationV2(o)
+	if err != nil {
+		return err
+	}
+
+	log.Println("Cmd len ", len(data))
+	log.Println("Data cmd create fn \n", hex.Dump(data))
+
+	msg := createMessage(data)
+	log.Println("msg: ", msg)
+
+	resp, err := kkt.sendMessage(msg)
+	if err != nil {
+		err = fmt.Errorf("kkt %s: send operationV2 message error: %w", kkt.Addr, err)
+		return err
+	}
+
+	if err = kkt.parseCmd(resp); err != nil {
+		err = fmt.Errorf("kkt %s: parse recive operationV2 message error: %w", kkt.Addr, err)
+		return err
+	}
+
+	return nil
 }
 
 func healhCheck(kkt *KKT) (err error) {

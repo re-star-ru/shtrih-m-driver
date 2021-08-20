@@ -21,7 +21,7 @@ Content-Type: application/json
         "subject": "goods",
         "amount": 0,
         "sum": 0,
-        "name": "product name"
+        "name": "тест test"
       }
     ],
     "cash": 0,
@@ -32,7 +32,15 @@ Content-Type: application/json
   },
   "EV-N": {
     "cashierINN": "123456789012",
-    "operations": [],
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
     "cash": 0,
     "digital": 0,
     "rounding": 0,

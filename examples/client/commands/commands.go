@@ -138,15 +138,7 @@ func CreateFNOperationV2(o models.Operation) (cmdData []byte, err error) {
 	return buf.Bytes(), nil
 }
 
-type CloseCheckPackage struct {
-	Cash       int64
-	Casheless  int64
-	BottomLine string
-	Rounding   byte
-	TaxSystem  byte
-}
-
-func CreateFNCloseCheck(m CloseCheckPackage) (cmdData []byte, err error) {
+func CreateFNCloseCheck(m models.CheckPackage) (cmdData []byte, err error) {
 	// writeCashierINN in check composition before create fn close check
 	buf := newBufWithDefaultPassword(FnCloseCheckV2, true)
 	cash, err := intToBytesWithLen(m.Cash, 5)
@@ -154,21 +146,9 @@ func CreateFNCloseCheck(m CloseCheckPackage) (cmdData []byte, err error) {
 		return nil, err
 	}
 
-	casheless, err := intToBytesWithLen(m.Casheless, 5)
+	casheless, err := intToBytesWithLen(m.Digital, 5)
 	if err != nil {
 		return nil, err
-	}
-
-	str, err := charmap.Windows1251.NewEncoder().String(m.BottomLine)
-	if err != nil {
-		return nil, err
-	}
-
-	b := make([]byte, 64)
-	if _, err := bytes.NewBufferString(str).Read(b); err != nil {
-		if !errors.Is(err, io.EOF) {
-			return nil, err
-		}
 	}
 
 	if m.Rounding > 99 {
@@ -181,7 +161,7 @@ func CreateFNCloseCheck(m CloseCheckPackage) (cmdData []byte, err error) {
 	buf.WriteByte(m.Rounding)   // округление до рубля в копейках, макс 99коп
 	buf.Write(make([]byte, 30)) // 5 * 6 = 30 байт налогов
 	buf.WriteByte(m.TaxSystem)  // биты систем налогообложения
-	buf.Write(b)                // нижняя строка чека, 64 байта win1251 текста
+	buf.Write(make([]byte, 64)) // нижняя строка чека, 64 байта win1251 текста
 
 	if buf.Len() != 182 {
 		return nil, fmt.Errorf("wrong FNCloseCheck len command: %v", buf.Len())
