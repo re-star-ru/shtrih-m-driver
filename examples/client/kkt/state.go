@@ -8,6 +8,7 @@ const (
 	shiftOpen   = "shiftOpen"
 	shiftClose  = "shiftClose"
 	shiftReopen = "shiftReopen"
+	cancelCheck = "cancelCheck"
 )
 
 func newState() *fsm.FSM {
@@ -18,6 +19,7 @@ func newState() *fsm.FSM {
 			{Name: shiftOpen, Src: []string{"shiftClosed"}, Dst: "shiftOpen"},
 			{Name: shiftClose, Src: []string{"shiftOpen"}, Dst: "shiftClosed"},
 			{Name: shiftReopen, Src: []string{"shiftExpired"}, Dst: "shiftClosed"},
+			{Name: cancelCheck, Src: []string{"checkOpen"}, Dst: "shiftOpen"},
 		},
 		fsm.Callbacks{},
 	)
