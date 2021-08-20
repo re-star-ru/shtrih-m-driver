@@ -5,8 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-
-	"golang.org/x/sync/errgroup"
+	"sync"
 
 	"github.com/fess932/shtrih-m-driver/examples/client/kkt"
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
@@ -36,14 +35,33 @@ type Operation struct {
 	Name    string `json:"name"`    // Наименование продукта
 }
 
-func (k *KKTService) getPrinterByOrgAndPlace(organization, place string) *kkt.KKT {
-	for _, kk := range k.ks {
-		if kk.Place == place && kk.Organization == organization {
-			return kk
-		}
-	}
+type Tx struct {
+	Status string `json:"status"`
+	Error  string `json:"error"`
+}
 
-	return nil
+type errGroup struct {
+	sync.Mutex
+	txs map[string]Tx
+}
+
+func (e *errGroup) addError(err error, key string) {
+	log.Println("adding error", err, key)
+
+	e.Lock()
+	defer e.Unlock()
+
+	if err != nil {
+		e.txs[key] = Tx{
+			Status: "error",
+			Error:  err.Error(),
+		}
+		return
+	}
+	e.txs[key] = Tx{
+		Status: "done",
+		Error:  "",
+	}
 }
 
 func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request) {
@@ -57,42 +75,42 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	// concurrent run print cmd
-	var g errgroup.Group
+	e := &errGroup{
+		Mutex: sync.Mutex{},
+		txs:   make(map[string]Tx),
+	}
+
+	var wg sync.WaitGroup
 
 	for key, chkPkg := range data {
-		ky := key
-		c := chkPkg
-		g.Go(func() error {
-			kk, ok := k.ks[ky]
+		wg.Add(1)
+		go func(key string, chkPkg CheckPackage) {
+			defer wg.Done()
+			kk, ok := k.ks[key]
 			if !ok {
-				notFoundKKT := fmt.Errorf("не найдена касса по ключу место-организация: %v", ky)
-				return notFoundKKT
+				notFoundKKT := fmt.Errorf("не найдена касса по ключу место-организация: %v", key)
+				e.addError(notFoundKKT, key)
+				return
 			}
 
-			chkModelPkg, err := packageModelFromReq(c)
+			chkModelPkg, err := packageModelFromReq(chkPkg)
 			if err != nil {
-				return err
+				e.addError(err, key)
+				return
 			}
 
 			printCmd := kkt.PrintCheckHandler(chkModelPkg)
 			log.Printf("cmd print : %v\n", printCmd)
 
-			err = kk.Do(printCmd)
-			return err
-		})
+			e.addError(kk.Do(printCmd), key)
+		}(key, chkPkg)
 	}
 
-	err := g.Wait()
-	if err != nil {
-		log.Println(err)
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+	wg.Wait()
 
-	log.Println(data)
+	log.Println(e)
 
-	if err := json.NewEncoder(w).Encode(data); err != nil {
+	if err := json.NewEncoder(w).Encode(e.txs); err != nil {
 		log.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
