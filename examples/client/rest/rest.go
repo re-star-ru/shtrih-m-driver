@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sort"
 
 	"github.com/fess932/shtrih-m-driver/examples/client/kkt"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 )
 
 type KKTService struct {
@@ -30,6 +32,10 @@ func (k *KKTService) Run() {
 func (k *KKTService) rest() {
 	r := chi.NewRouter()
 
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"*"},
+	}))
+
 	r.Get("/status", k.status)
 	r.Post("/printPackage", func(w http.ResponseWriter, r *http.Request) {
 		k.printPackageHandler(w, r)
@@ -50,6 +56,10 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 	for _, kk := range k.ks {
 		s = append(s, Status{IP: kk.Addr, State: kk.State.Current()})
 	}
+
+	sort.Slice(s, func(i, j int) bool {
+		return false
+	})
 
 	if _, ok := r.URL.Query()["json"]; ok {
 		if err := json.NewEncoder(w).Encode(s); err != nil {

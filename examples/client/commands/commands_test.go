@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
+
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"github.com/stretchr/testify/assert"
 )
@@ -23,7 +25,7 @@ var successCreateCloseCheckData = []byte{
 
 func TestCreateFNCloseCheck(t *testing.T) {
 	type args struct {
-		chk CloseCheckPackage
+		chk models.CheckPackage
 	}
 
 	tests := []struct {
@@ -34,24 +36,22 @@ func TestCreateFNCloseCheck(t *testing.T) {
 	}{
 		{
 			name: "success check package",
-			args: args{chk: CloseCheckPackage{
-				Cash:       1,
-				Casheless:  0,
-				BottomLine: "",
-				Rounding:   0,
-				TaxSystem:  consts.PSN,
+			args: args{chk: models.CheckPackage{
+				Cash:      1,
+				Digital:   0,
+				Rounding:  0,
+				TaxSystem: consts.PSN,
 			}},
 			wantCmdData: successCreateCloseCheckData,
 			wantErr:     false,
 		},
 		{
 			name: "rounding > 99",
-			args: args{chk: CloseCheckPackage{
-				Cash:       0,
-				Casheless:  0,
-				BottomLine: "",
-				Rounding:   100,
-				TaxSystem:  0,
+			args: args{chk: models.CheckPackage{
+				Cash:      0,
+				Digital:   0,
+				Rounding:  100,
+				TaxSystem: 0,
 			}},
 			wantCmdData: nil,
 			wantErr:     true,
@@ -80,7 +80,7 @@ func TestCreateFNCloseCheck(t *testing.T) {
 
 func TestCreateFNOperationV2(t *testing.T) {
 	type args struct {
-		o Operation
+		o models.Operation
 	}
 	tests := []struct {
 		name        string
@@ -91,7 +91,7 @@ func TestCreateFNOperationV2(t *testing.T) {
 		{
 			name: "first",
 			args: args{
-				o: Operation{
+				o: models.Operation{
 					Type:    0,
 					Subject: 0,
 					Amount:  0,

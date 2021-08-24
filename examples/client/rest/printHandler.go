@@ -46,8 +46,6 @@ type errGroup struct {
 }
 
 func (e *errGroup) addError(err error, key string) {
-	log.Println("adding error", err, key)
-
 	e.Lock()
 	defer e.Unlock()
 
@@ -102,7 +100,9 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 			printCmd := kkt.PrintCheckHandler(chkModelPkg)
 			log.Printf("cmd print : %v\n", printCmd)
 
-			e.addError(kk.Do(printCmd), key)
+			err = kk.Do(printCmd)
+			log.Println("error in print handler ", err)
+			e.addError(err, key)
 		}(key, chkPkg)
 	}
 

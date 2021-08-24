@@ -1,6 +1,7 @@
 package kkt
 
 import (
+	"encoding/hex"
 	"fmt"
 	"log"
 
@@ -8,6 +9,11 @@ import (
 )
 
 func (kkt *KKT) parseCmd(cmd []byte) error {
+	if cmd[0] != 0x10 {
+		log.Println("parce cmd:")
+		log.Println(hex.Dump(cmd))
+	}
+
 	if cmd[0] == 0xFF {
 		return parseFNcmd(cmd[1:], kkt)
 	}

@@ -13,14 +13,14 @@ func main() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 	log.Println("dial to kkt")
 
-	//kks, err := initKkts(confKKT{
-	//	"EV-N": "10.51.0.73:7778",
-	//	"SM-N": "10.51.0.74:7778",
-	//})
-
 	kks, err := initKkts(confKKT{
-		"SM-N": "127.0.0.1:7879",
+		//"EV-N": "10.51.0.73:7778",
+		"SM-N": "10.51.0.74:7778",
 	})
+
+	//kks, err := initKkts(confKKT{
+	//	"SM-N": "127.0.0.1:7879",
+	//})
 
 	if err != nil {
 		log.Fatal(err)

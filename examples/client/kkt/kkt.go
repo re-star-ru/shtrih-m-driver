@@ -1,7 +1,6 @@
 package kkt
 
 import (
-	"encoding/hex"
 	"fmt"
 	"log"
 	"net"
@@ -95,6 +94,8 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 
 func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 	return func(kkt *KKT) (err error) {
+		defer log.Println("error", err)
+
 		log.Println("check:", check)
 
 		// check state
@@ -113,8 +114,9 @@ func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 
 		// add operationV2 to check
 		for _, v := range check.Operations {
-			if err := sendOperationsV2(kkt, v); err != nil {
-				return err
+			if err = sendOperationsV2(kkt, v); err != nil {
+				log.Println(err)
+				return
 			}
 		}
 
@@ -148,11 +150,7 @@ func sendOperationsV2(kkt *KKT, o models.Operation) error {
 		return err
 	}
 
-	log.Println("Cmd len ", len(data))
-	log.Println("Data cmd create fn \n", hex.Dump(data))
-
 	msg := createMessage(data)
-	log.Println("msg: ", msg)
 
 	resp, err := kkt.sendMessage(msg)
 	if err != nil {
