@@ -14,7 +14,7 @@ import (
 	"github.com/looplab/fsm"
 )
 
-const pingDeadline = time.Millisecond * 500
+const pingDeadline = time.Second
 
 type KKT struct {
 	Organization string
@@ -50,12 +50,9 @@ func NewKKT(key, addr string, connTimeout time.Duration, healthCheck bool) (kkt 
 	if healthCheck { // run healthcheck
 		go func() {
 			for {
-				t := time.Now()
 				if err := kkt.Do(healhCheck); err != nil {
 					log.Println(err)
 				}
-
-				log.Println("cmd time:", time.Since(t))
 				time.Sleep(time.Second * 5)
 			}
 		}() // run healthcheck
@@ -65,24 +62,29 @@ func NewKKT(key, addr string, connTimeout time.Duration, healthCheck bool) (kkt 
 }
 
 // Do is function for starting request, create connection and close after exit
-func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
+func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 	kkt.Lock()
 	defer kkt.Unlock()
 
-	if err = kkt.dial(); err != nil {
+	t := time.Now()
+	defer func(t time.Time) {
+		log.Println("cmd time:", time.Since(t))
+	}(t)
+
+	if err := kkt.dial(); err != nil {
 		err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.Addr, err)
-		return
+		return err
 	}
 	defer func() {
-		if err = kkt.conn.Close(); err != nil {
-			log.Println("deferred closing error:", err)
+		if e := kkt.conn.Close(); e != nil {
+			log.Println("deferred closing error:", e)
 		}
 	}()
 
-	if err = kkt.prepareRequest(); err != nil {
-		err = fmt.Errorf("kkt %s : prepare request error: %w", kkt.Addr, err)
-		return
-	}
+	//if err := kkt.prepareRequest(); err != nil {
+	//	err = fmt.Errorf("kkt %s : prepare request error: %w", kkt.Addr, err)
+	//	return err
+	//}
 
 	return cb(kkt)
 }
@@ -94,8 +96,6 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 
 func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 	return func(kkt *KKT) (err error) {
-		defer log.Println("error", err)
-
 		log.Println("check:", check)
 
 		// check state
@@ -111,37 +111,64 @@ func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 				return
 			}
 		}
+		log.Println("not print ok")
 
 		// add operationV2 to check
 		for _, v := range check.Operations {
 			if err = sendOperationsV2(kkt, v); err != nil {
 				log.Println(err)
-				return
+				return err
 			}
+			log.Println("send operationv2 ok")
 		}
 
+		return sendCloseCheckV2(kkt, check)
 		// close check V2
-		data, err := commands.CreateFNCloseCheck(check)
-		if err != nil {
-			return err
-		}
-
-		msg := createMessage(data)
-		log.Println("msg: ", msg)
-
-		resp, err := kkt.sendMessage(msg)
-		if err != nil {
-			err = fmt.Errorf("kkt %s: send operationV2 message error: %w", kkt.Addr, err)
-			return err
-		}
-
-		if err = kkt.parseCmd(resp); err != nil {
-			err = fmt.Errorf("kkt %s: parse recieve closeCheckV2 message error: %w", kkt.Addr, err)
-			return
-		}
-
-		return nil
+		//data, err := commands.CreateFNCloseCheck(check)
+		//if err != nil {
+		//	return err
+		//}
+		//
+		//msg := createMessage(data)
+		//log.Println("msg: ", msg)
+		//
+		//resp, err := kkt.sendMessage(msg)
+		//if err != nil {
+		//	err = fmt.Errorf("kkt %s: send operationV2 message error: %w", kkt.Addr, err)
+		//	return err
+		//}
+		//
+		//if err = kkt.parseCmd(resp); err != nil {
+		//	err = fmt.Errorf("kkt %s: parse recieve closeCheckV2 message error: %w", kkt.Addr, err)
+		//	return
+		//}
+		//
+		//return err
 	}
+}
+
+func sendCloseCheckV2(kkt *KKT, check models.CheckPackage) error {
+	// close check V2
+	data, err := commands.CreateFNCloseCheck(check)
+	if err != nil {
+		return err
+	}
+
+	msg := createMessage(data)
+	log.Println("msg: ", msg)
+
+	return sendENQ(kkt, msg)
+
+	//resp, err := kkt.sendMessage(msg)
+	//if err != nil {
+	//	err = fmt.Errorf("kkt %s: send operationV2 message error: %w", kkt.Addr, err)
+	//	return err
+	//}
+	//
+	//if err = kkt.parseCmd(resp); err != nil {
+	//	err = fmt.Errorf("kkt %s: parse recieve closeCheckV2 message error: %w", kkt.Addr, err)
+	//	return
+	//}
 }
 
 func sendOperationsV2(kkt *KKT, o models.Operation) error {
@@ -152,49 +179,56 @@ func sendOperationsV2(kkt *KKT, o models.Operation) error {
 
 	msg := createMessage(data)
 
-	resp, err := kkt.sendMessage(msg)
-	if err != nil {
-		err = fmt.Errorf("kkt %s: send operationV2 message error: %w", kkt.Addr, err)
-		return err
-	}
+	return sendENQ(kkt, msg)
 
-	if err = kkt.parseCmd(resp); err != nil {
-		err = fmt.Errorf("kkt %s: parse recive operationV2 message error: %w", kkt.Addr, err)
-		return err
-	}
-
-	return nil
+	//resp, err := kkt.sendMessage(msg)
+	//if err != nil {
+	//	err = fmt.Errorf("kkt %s: send operationV2 message error: %w", kkt.Addr, err)
+	//	return err
+	//}
+	//
+	//if err = kkt.parseCmd(resp); err != nil {
+	//	err = fmt.Errorf("kkt %s: parse recive operationV2 message error: %w", kkt.Addr, err)
+	//	return err
+	//}
+	//
+	//return nil
 }
 
 func healhCheck(kkt *KKT) (err error) {
 	msg := createMessage(commands.CreateShortStatus())
-	resp, err := kkt.sendMessage(msg)
+	//resp, err := kkt.sendMessage(msg)
 
-	if err != nil {
-		err = fmt.Errorf("kkt %s : send message error: %w", kkt.Addr, err)
-		return
-	}
-
-	if err = kkt.parseCmd(resp); err != nil {
-		log.Println("error while parsing response command:", err)
-		return
-	}
-
-	return nil
+	return sendENQ(kkt, msg)
+	//
+	//if err != nil {
+	//	err = fmt.Errorf("kkt %s : send message error: %w", kkt.Addr, err)
+	//	return
+	//}
+	//
+	//if err = kkt.parseCmd(resp); err != nil {
+	//	log.Println("error while parsing response command:", err)
+	//	return
+	//}
+	//
+	//return nil
 }
 
 func notPrintOneCheck(kkt *KKT) (err error) {
 	msg := createMessage(commands.CreateNotPrintOneCheck())
-	resp, err := kkt.sendMessage(msg)
-	if err != nil {
-		err = fmt.Errorf("kkt %s : send message error: %w", kkt.Addr, err)
-		return
-	}
 
-	if err = kkt.parseCmd(resp); err != nil {
-		log.Println("error while parsing response command:", err)
-		return
-	}
+	return sendENQ(kkt, msg)
 
-	return nil
+	//resp, err := kkt.sendMessage(msg)
+	//if err != nil {
+	//	err = fmt.Errorf("kkt %s : send message error: %w", kkt.Addr, err)
+	//	return
+	//}
+	//
+	//if err = kkt.parseCmd(resp); err != nil {
+	//	log.Println("error while parsing response command:", err)
+	//	return
+	//}
+	//
+	//return nil
 }

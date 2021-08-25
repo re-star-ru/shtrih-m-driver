@@ -40,7 +40,6 @@ var routes = map[byte]func(cmd []byte, kkt *KKT){
 
 func updateState(cmd []byte, kkt *KKT) {
 	st := status(cmd)
-	log.Println("cmd:", st, kkt.Addr)
 
 	// main State
 	switch st.state {

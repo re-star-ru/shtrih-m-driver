@@ -17,6 +17,678 @@ Content-Type: application/json
     "digital": 0,
     "rounding": 0,
     "taxSystem": "PSN",
+    "notPrint": false
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": false
+  }
+}
+
+<> 2021-08-25T125247.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T124734.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T124620.200.json
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-25T124614.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T112923.200.json
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-25T105650.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-25T105647.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T103615.200.json
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-25T103610.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-25T103607.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T102219.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T102134.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T102103.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T102000.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T101757.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T101554.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T101541.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T101243.200.json
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T101059.200.json
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-25T090930.200.txt
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-25T090927.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-25T090924.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
     "notPrint": true
   },
   "EV-N": {
@@ -1044,490 +1716,6 @@ Content-Type: application/json
 }
 
 <> 2021-08-20T111859.200.json
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM-N": {
-    "cashierINN": "123456789012",
-    "operations": [
-      {
-        "type": "income",
-        "subject": "goods",
-        "amount": 0,
-        "sum": 0,
-        "name": "product name"
-      }
-    ],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": true
-  },
-  "EV-N": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": true
-  }
-}
-
-<> 2021-08-19T162404.200.json
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM-N": {
-    "cashierINN": "123456789012",
-    "operations": [
-      {
-        "type": "income",
-        "subject": "goods",
-        "amount": 0,
-        "sum": 0,
-        "name": "product name"
-      }
-    ],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": true
-  },
-  "EV-N": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": true
-  }
-}
-
-<> 2021-08-19T121417.200.json
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM-N": {
-    "cashierINN": "123456789012",
-    "operations": [
-      {
-        "type": "Income",
-        "subject": 0,
-        "amount": 0,
-        "sum": 0,
-        "name": "product name"
-      }
-    ],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": true
-  },
-  "EV-N": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": true
-  }
-}
-
-<> 2021-08-19T121319.400.txt
-
-###
-
-GET http://localhost:8080/status
-Accept: application/json
-
-<> 2021-08-19T121310.200.txt
-
-###
-
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2021-08-19T121302.200.txt
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "place": "N",
-    "cashierINN": "123456789012",
-    "operations": [
-      {
-        "type": 0,
-        "subject": 0,
-        "amount": 0,
-        "sum": 0,
-        "name": "product name"
-      }
-    ],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  },
-  "EV": {
-    "place": "N",
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  }
-}
-
-<> 2021-08-18T132856.200.json
-
-###
-
-GET http://localhost:8080/status
-Accept: application/json
-
-<> 2021-08-18T132852.200.txt
-
-###
-
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2021-08-18T132850.200.txt
-
-###
-
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2021-08-18T124821.200.txt
-
-###
-
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2021-08-18T124816.200.txt
-
-###
-
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2021-08-18T124810.200.txt
-
-###
-
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2021-08-18T124805.200.txt
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "place": "N",
-    "cashierINN": "123456789012",
-    "operations": [
-      {
-        "type": 0,
-        "subject": 0,
-        "amount": 0,
-        "sum": 0,
-        "name": "product name"
-      }
-    ],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  },
-  "EV": {
-    "place": "N",
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  }
-}
-
-<> 2021-08-18T115852.200.json
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "place": "N",
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  },
-  "EV": {
-    "place": "N",
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  }
-}
-
-<> 2021-08-18T112611.200.json
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "place": "S",
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  },
-  "EV": {
-    "place": "N",
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  }
-}
-
-<> 2021-08-18T112314.404.txt
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  },
-  "EV": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  }
-}
-
-<> 2021-08-18T103531.200.json
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  },
-  "EV": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  }
-}
-
-<> 2021-08-18T103518.200.json
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  },
-  "EV": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": "PSN",
-    "notPrint": false
-  }
-}
-
-<> 2021-08-18T103241.200.txt
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": 32,
-    "notPrint": false
-  },
-  "EV": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": 32,
-    "notPrint": false
-  }
-}
-
-<> 2021-08-17T155245.200.txt
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-{
-  "SM": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": 32,
-    "notPrint": false
-  },
-
-  "EV": {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": 32,
-    "notPrint": false
-  },
-
-}
-
-<> 2021-08-17T155231.400.txt
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-[
-  {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": 32,
-    "notPrint": false
-
-  },
-  {}
-]
-
-<> 2021-08-17T154940.400.txt
-
-###
-
-POST http://localhost:8080/printPackage
-Content-Type: application/json
-
-[
-  {
-    "cashierINN": "123456789012",
-    "operations": [],
-    "cash": 0,
-    "digital": 0,
-    "rounding": 0,
-    "taxSystem": 32,
-    "notPrint": false
-
-  },
-  {}
-]
-
-<> 2021-08-17T154312.200.txt
 
 ###
 

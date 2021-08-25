@@ -98,11 +98,8 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 			}
 
 			printCmd := kkt.PrintCheckHandler(chkModelPkg)
-			log.Printf("cmd print : %v\n", printCmd)
 
-			err = kk.Do(printCmd)
-			log.Println("error in print handler ", err)
-			e.addError(err, key)
+			e.addError(kk.Do(printCmd), key)
 		}(key, chkPkg)
 	}
 

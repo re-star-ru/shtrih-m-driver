@@ -14,6 +14,9 @@ func main() {
 	log.Println("dial to kkt")
 
 	kks, err := initKkts(confKKT{
+		//"EV-S": "10.51.0.71:7778",
+		//"SM-S": "10.51.0.72:7778",
+		//
 		//"EV-N": "10.51.0.73:7778",
 		"SM-N": "10.51.0.74:7778",
 	})

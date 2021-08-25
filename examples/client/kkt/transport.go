@@ -2,13 +2,14 @@ package kkt
 
 import (
 	"fmt"
+	"log"
 	"time"
 )
 
 // Control bytes
 const (
-	ENQ byte = 0x05
-	STX byte = 0x02
+	STX byte = 0x02 // 2
+	ENQ byte = 0x05 // 5
 	ACK byte = 0x06 // 6
 	NAK byte = 0x15 // 21
 )
@@ -26,6 +27,51 @@ func (kkt *KKT) dial() (err error) {
 	}
 
 	return
+}
+
+func sendENQ(kkt *KKT, msg []byte) error {
+	if err := kkt.conn.SetDeadline(time.Now().Add(pingDeadline)); err != nil {
+		return err
+	}
+
+	if _, err := kkt.conn.Write([]byte{ENQ}); err != nil {
+		return err
+	}
+
+	if _, err := kkt.conn.Read(kkt.ctrlByte); err != nil {
+		return err
+	}
+
+	switch kkt.ctrlByte[0] {
+	case ACK:
+		// read message
+		resp, err := kkt.receiveMessage()
+		if err != nil {
+			err = fmt.Errorf("kkt %s : err while receive message error: %w", kkt.Addr, err)
+			return err
+		}
+		if err = kkt.parseCmd(resp); err != nil {
+			err = fmt.Errorf("kkt %s : err while parse response: %w", kkt.Addr, err)
+			return err
+		}
+	case NAK:
+		// send message
+		resp, err := kkt.sendMessage(msg)
+		if err != nil {
+			err = fmt.Errorf("kkt %s : send message error: %w", kkt.Addr, err)
+			log.Println(err)
+			return err
+		}
+		if err = kkt.parseCmd(resp); err != nil {
+			log.Println("error while parsing response command:", err)
+			return err
+		}
+
+	default:
+		// wait
+	}
+
+	return nil
 }
 
 func (kkt *KKT) prepareRequest() (err error) {
@@ -96,6 +142,12 @@ func (kkt *KKT) receiveMessage() (message []byte, err error) {
 	msg, err := kkt.readMessage(l)
 	if err != nil {
 		err = fmt.Errorf("err while read message: %w", err)
+		return
+	}
+
+	err = kkt.sendACK()
+	if err != nil {
+		err = fmt.Errorf("err while send ack: %w", err)
 		return
 	}
 
