@@ -1,6 +1,10 @@
 package main
 
-import "log"
+import (
+	"bytes"
+	"log"
+	"net"
+)
 
 const (
 	RECV = ACK
@@ -44,10 +48,48 @@ func processSend() {
 	}
 }
 
+const (
+	READ = iota
+	WRITE
+)
+
 type k struct {
 	state byte
 	ctrl  byte
 	err   error
+	conn  net.Conn
+	buf   bytes.Buffer
+}
+
+func (k *k) write(b []byte) {
+	k.read()
+}
+
+func (k *k) read() {
+	for {
+
+	}
+}
+
+func (k *k) do() {
+	switch k.state {
+	case READ:
+		k.read()
+	case WRITE:
+		k.write(k.buf.Bytes())
+	}
+}
+
+func m() {
+	kk := &k{}
+	go kk.read()
+
+	kk.SendMessage([]byte{})
+}
+
+func (k *k) SendMessage(b []byte) error {
+	k.write([]byte{ENQ})
+
 }
 
 func (k *k) send(b byte) {
