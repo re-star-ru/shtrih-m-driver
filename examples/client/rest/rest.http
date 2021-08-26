@@ -14,7 +14,7 @@ Content-Type: application/json
 
 {
   "SM-N": {
-    "cashierINN": "123456789012",
+    "cashierINN": "262804786800",
     "operations": [
       {
         "type": "income",
@@ -28,7 +28,7 @@ Content-Type: application/json
     "digital": 0,
     "rounding": 0,
     "taxSystem": "PSN",
-    "notPrint": false
+    "notPrint": true
   },
   "EV-N": {
     "cashierINN": "123456789012",
@@ -45,7 +45,7 @@ Content-Type: application/json
     "digital": 0,
     "rounding": 0,
     "taxSystem": "PSN",
-    "notPrint": false
+    "notPrint": true
   }
 }
 

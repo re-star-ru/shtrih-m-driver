@@ -45,16 +45,16 @@ func (k *KKTService) rest() {
 }
 
 type Status struct {
-	IP    string `json:"ip"`
-	State string `json:"state"`
+	IP       string `json:"ip"`
+	State    string `json:"state"`
+	SubState string `json:"subState"`
 }
 
 func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 	s := make([]Status, 0, len(k.ks))
 
-	// todo run concurrent with gorutines
 	for _, kk := range k.ks {
-		s = append(s, Status{IP: kk.Addr, State: kk.State.Current()})
+		s = append(s, Status{IP: kk.Addr, State: kk.State.Current(), SubState: kk.Substate.Current()})
 	}
 
 	sort.Slice(s, func(i, j int) bool {
@@ -72,7 +72,7 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, line := range s {
-		if _, err := fmt.Fprintf(w, "Kkt ip: %v, state: %v \n", line.IP, line.State); err != nil {
+		if _, err := fmt.Fprintf(w, "Kkt ip: %v, state: %v, subState: %v \n", line.IP, line.State, line.SubState); err != nil {
 			log.Println(err)
 			return
 		}

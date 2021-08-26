@@ -35,9 +35,9 @@ var fnRoutes = map[byte]func(cmd []byte, kkt *KKT){
 }
 
 func closeCheckV2(fncmd []byte, kkt *KKT) {
-	log.Println("close check handler", fncmd, kkt.Addr)
+	log.Printf("close check handler %X, %s\n", fncmd, kkt.Addr)
 }
 
 func fnOperationV2(fncmd []byte, kkt *KKT) {
-	log.Println("fn operation handler", fncmd, kkt.Addr)
+	log.Printf("fn operation handler %X, %s\n", fncmd, kkt.Addr)
 }

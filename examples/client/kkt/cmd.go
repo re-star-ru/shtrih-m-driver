@@ -36,6 +36,12 @@ func (kkt *KKT) parseCmd(cmd []byte) error {
 
 var routes = map[byte]func(cmd []byte, kkt *KKT){
 	commands.ShortStatus: updateState,
+	commands.OpenSession: openSessionHandler,
+}
+
+func openSessionHandler(cmd []byte, kkt *KKT) {
+	log.Println("open session repsonse:")
+	log.Println(hex.Dump(cmd))
 }
 
 func updateState(cmd []byte, kkt *KKT) {
@@ -60,6 +66,12 @@ func updateState(cmd []byte, kkt *KKT) {
 	switch st.substate {
 	case 0:
 		kkt.Substate.SetState("paperLoaded")
+	case 1:
+		kkt.Substate.SetState("emptyPaper")
+	case 2:
+		kkt.Substate.SetState("printPhaseEmptyPaper")
+	case 3:
+		kkt.Substate.SetState("printPhaseLoadedPaper")
 	default:
 		kkt.Substate.SetState("wrongSubstate")
 	}

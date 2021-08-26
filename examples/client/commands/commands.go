@@ -5,9 +5,10 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"io"
-
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
+	"io"
+	"strconv"
+	"strings"
 
 	"golang.org/x/text/encoding/charmap"
 
@@ -20,6 +21,7 @@ const (
 	ZReport     byte = 0x41
 	CancelCheck byte = 0x88
 	WriteTable  byte = 0x1E
+	OpenSession byte = 0xE0
 	// сброс состояния сделать или
 	// отмена чека
 )
@@ -33,8 +35,7 @@ const (
 	FnCancelFNDocument byte = 0x08
 
 	FnBeginOpenSession byte = 0x41 // start then
-	FnWriteTLV         byte = 0x0C // send tlv then
-	FnOpenSession      byte = 0x0B // end open
+	FnWriteTLV         byte = 0x0C // send tlv then open session <<<
 )
 
 var defaultPassword = []byte{0x1E, 0x00, 0x00, 0x00}
@@ -56,18 +57,7 @@ func CreateShortStatus() []byte {
 }
 
 func CreateNotPrintOneCheck() []byte {
-	buf := newBufWithDefaultPassword(WriteTable, false)
-
-	buf.WriteByte(17) // номер таблицы
-
-	rowNumBin := make([]byte, 2)
-	binary.LittleEndian.PutUint16(rowNumBin, 1)
-	buf.Write(rowNumBin) // номер ряда
-
-	buf.WriteByte(7) // номер поля
-	buf.WriteByte(1) // значение поля
-
-	return buf.Bytes()
+	return createWriteTable(17, 1, 7, []byte{1})
 }
 
 func CreateCancelCheck() []byte {
@@ -76,6 +66,14 @@ func CreateCancelCheck() []byte {
 
 func CreateCloseSession() []byte {
 	return newBufWithDefaultPassword(ZReport, false).Bytes()
+}
+
+func CreateFNBeginOpenSession() []byte {
+	return newBufWithDefaultPassword(FnBeginOpenSession, true).Bytes()
+}
+
+func CreateOpenSession() []byte {
+	return newBufWithDefaultPassword(OpenSession, false).Bytes()
 }
 
 func CreateFNOperationV2(o models.Operation) (cmdData []byte, err error) {
@@ -132,7 +130,7 @@ func CreateFNOperationV2(o models.Operation) (cmdData []byte, err error) {
 	buf.Write(b)
 
 	if buf.Len() != 160 {
-		return nil, errors.New("wrong len of cmd addOperationV2")
+		return nil, fmt.Errorf("wrong len of cmd addOperationV2 %v", buf.Len())
 	}
 
 	return buf.Bytes(), nil
@@ -170,7 +168,7 @@ func CreateFNCloseCheck(m models.CheckPackage) (cmdData []byte, err error) {
 	return buf.Bytes(), nil
 }
 
-func intToBytesWithLen(val int64, bytesLen int64) ([]byte, error) {
+func intToBytesWithLen(val uint64, bytesLen int64) ([]byte, error) {
 	buf := bytes.NewBuffer([]byte{})
 
 	if err := binary.Write(buf, binary.LittleEndian, val); err != nil {
@@ -180,28 +178,67 @@ func intToBytesWithLen(val int64, bytesLen int64) ([]byte, error) {
 	return buf.Bytes()[:bytesLen], nil
 }
 
-//func (p *printerUsecase) writeTable(tableNumber byte, rowNumber uint16, fieldNumber byte, fieldValue models.FieldValue) {
-//	buf, cmdLen := p.createCommandBuffer(models.WriteTable, p.password)
-//
-//	buf.WriteByte(tableNumber) // номер таблицы
-//
-//	rowNumBin := make([]byte, 2)
-//	binary.LittleEndian.PutUint16(rowNumBin, rowNumber)
-//	buf.Write(rowNumBin) // номер ряда
-//
-//	buf.WriteByte(fieldNumber) // номер поля
-//
-//	buf.Write(fieldValue.Bytes()) // запись поля
-//
-//	rFrame, err := p.send(buf.Bytes(), cmdLen)
-//	if err != nil {
-//		p.logger.Error(err)
-//		return
-//	}
-//
-//	if err := models.CheckOnPrinterError(rFrame.ERR); err != nil {
-//		p.logger.Fatal(err)
-//	}
-//
-//	p.logger.Debug("frame in: \n", hex.Dump(rFrame.Bytes()))
-//}
+func createWriteTable(tableNumber byte, rowNumber uint16, fieldNumber byte, fieldValue []byte) []byte {
+	buf := newBufWithDefaultPassword(WriteTable, false)
+
+	rowNumBin := make([]byte, 2)
+	binary.LittleEndian.PutUint16(rowNumBin, rowNumber)
+
+	buf.WriteByte(tableNumber) // номер таблицы
+	buf.Write(rowNumBin)       // номер ряда
+	buf.WriteByte(fieldNumber) // номер поля
+	buf.Write(fieldValue)      // запись поля
+
+	return buf.Bytes()
+}
+
+func CreateWriteCashierINN(inn string) ([]byte, error) {
+	buf := newBufWithDefaultPassword(FnWriteTLV, true)
+
+	cpStr, err := charmap.CodePage866.NewEncoder().String(inn)
+	if err != nil {
+		return nil, err
+	}
+
+	// tlv структура
+	if err = writeTlv(buf, consts.CashierINN.Code, consts.CashierINN.Length, []byte(cpStr)); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+func ValidateINN(inn string) error {
+	a := strings.Split(inn, "")
+	b := make([]int, 12)
+
+	var err error
+	for i, v := range a {
+		b[i], err = strconv.Atoi(v)
+		if err != nil {
+			fmt.Println("WTF??", err)
+		}
+	}
+
+	// first
+	first := ((b[0] * 7) + (b[1] * 2) + (b[2] * 4) + (b[3] * 10) + (b[4] * 3) +
+		(b[5] * 5) + (b[6] * 9) + (b[7] * 4) + (b[8] * 6) + (b[9] * 8)) % 11
+
+	if first > 9 {
+		first %= 10
+	}
+
+	// second
+	second := ((b[0] * 3) + (b[1] * 7) + (b[2] * 2) + (b[3] * 4) + (b[4] * 10) +
+		(b[5] * 3) + (b[6] * 5) + (b[7] * 9) + (b[8] * 4) + (b[9] * 6) + (b[10] * 8)) % 11
+
+	if second > 9 {
+		second %= 10
+	}
+
+	if first == b[10] && second == b[11] {
+		return nil
+	}
+
+	return fmt.Errorf("wrong inn: %v", inn)
+}
