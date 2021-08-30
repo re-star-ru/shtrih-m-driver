@@ -3,11 +3,12 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fess932/shtrih-m-driver/examples/client/kkt"
-	"github.com/go-chi/render"
 	"log"
 	"net/http"
 	"sync"
+
+	"github.com/fess932/shtrih-m-driver/examples/client/kkt"
+	"github.com/go-chi/render"
 
 	"github.com/fess932/shtrih-m-driver/pkg/consts"
 	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
@@ -170,7 +171,7 @@ func getTypeOperationByte(typ string) (byte, error) {
 	switch typ {
 	case "income":
 		return consts.Income, nil
-	case "outcome":
+	case "returnIncome":
 		return consts.ReturnIncome, nil
 	default:
 		return 0, fmt.Errorf("неправильный тип операции: %v", typ)

@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/fess932/shtrih-m-driver/examples/client/rest"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/fess932/shtrih-m-driver/examples/client/rest"
 
 	_ "net/http/pprof"
 
@@ -19,11 +20,11 @@ func main() {
 	}()
 
 	kks, err := initKkts(confKKT{
-		"EV-S": ck{"10.51.0.71:7778", "263209745357"},
-		"SM-S": ck{"10.51.0.72:7778", "262804786800"},
-
-		"EV-N": ck{"10.51.0.73:7778", "263209745357"},
-		"SM-N": ck{"10.51.0.74:7778", "262804786800"},
+		//"EV-S": ck{"10.51.0.71:7778", "263209745357"},
+		//"SM-S": ck{"10.51.0.72:7778", "262804786800"},
+		//
+		//"EV-N": ck{"10.51.0.73:7778", "263209745357"},
+		//"SM-N": ck{"10.51.0.74:7778", "262804786800"},
 	})
 
 	if err != nil {

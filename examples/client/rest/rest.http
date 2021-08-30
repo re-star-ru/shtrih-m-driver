@@ -19,6 +19,7 @@ Content-Type: application/json
       {
         "type": "income",
         "subject": "goods",
+        "price": 0,
         "amount": 0,
         "sum": 0,
         "name": "тест test"

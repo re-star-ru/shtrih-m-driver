@@ -41,6 +41,7 @@ func (k *KKTService) rest() {
 		k.printPackageHandler(w, r)
 	})
 
+	log.Println("server listen at :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
