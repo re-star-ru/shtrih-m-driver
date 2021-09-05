@@ -2,11 +2,12 @@ package main
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/fess932/shtrih-m-driver/examples/client/rest"
 
-	_ "net/http/pprof"
+	// _ "net/http/pprof"
 
 	"github.com/fess932/shtrih-m-driver/examples/client/kkt"
 )
@@ -30,8 +31,14 @@ func main() {
 		log.Fatal(err)
 		return
 	}
+
+	// addr
+	addr := os.Getenv("ADDR")
+	if addr == "" {
+		addr = "0.0.0.0:8080"
+	}
 	//
-	service := rest.New(kks)
+	service := rest.New(kks, addr)
 	service.Run()
 }
 

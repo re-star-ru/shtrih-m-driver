@@ -11,9 +11,7 @@ COPY --from=build /build/app /srv/app
 
 WORKDIR /srv
 
-EXPOSE 8080
-
-ENV LISTEN = "0.0.0.0:8080"
+ENV ADDR = "0.0.0.0:8080"
 
 CMD ["./app"]
 
