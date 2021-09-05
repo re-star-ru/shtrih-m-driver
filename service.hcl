@@ -1,4 +1,4 @@
-job "shtrih-m-driver" {
+job "kkt-server" {
   datacenters = [
     "restar"
   ]
@@ -6,12 +6,12 @@ job "shtrih-m-driver" {
 
   group "default" {
     network {
-      port "shtrih-m" {
+      port "kkt_server" {
         static = 19300
       }
     }
 
-    task "shtrih-m-driver" {
+    task "kkt_server" {
       driver = "docker"
 
       resources {
@@ -25,7 +25,7 @@ job "shtrih-m-driver" {
       }
 
       env {
-        ADDR = "${NOMAD_ADDR_feziv}"
+        ADDR = "${NOMAD_ADDR_kkt_server}"
       }
 
     }
