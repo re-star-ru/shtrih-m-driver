@@ -37,4 +37,4 @@ jobs:
           NOMAD_ADDR: https://nomad.re-star.ru
         uses: docker://hashicorp/levant:latest
         with:
-          args: levant deploy -var "tag=${{github.sha}}" web-service.hcl
+          args: levant deploy -var "tag=${{github.sha}}" service.hcl
