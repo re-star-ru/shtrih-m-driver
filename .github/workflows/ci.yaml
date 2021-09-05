@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: build and deploy master image to ghcr.io
+        env:
+          GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          USERNAME: ${{github.actor}}
+          GITHUB_REF: ${{github.ref}}
+          GITHUB_SHA: ${{github.sha}}
+        run: |
+          ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
+          echo GITHUB_REF - $ref
+          echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
+          docker buildx build --push \
+            --build-arg CI=github --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} \
+            --platform linux/amd64 \
+            -t ghcr.io/${USERNAME}/shtrih-m-driver:${ref} \
+            -t ghcr.io/${USERNAME}/shtrih-m-driver:${GITHUB_SHA} \
+            -t ghcr.io/${USERNAME}/shtrih-m-driver:latest .
+
+      - name: Deploy with Nomad
+        env:
+          #          NOMAD_ADDR: http://feziv.com:4646
+          NOMAD_ADDR: https://nomad.re-star.ru
+        uses: docker://hashicorp/levant:latest
+        with:
+          args: levant deploy -var "tag=${{github.sha}}" web-service.hcl
