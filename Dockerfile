@@ -13,6 +13,7 @@ COPY --from=build /build/app /srv/app
 
 EXPOSE 8080
 WORKDIR /srv
+ENV LISTEN = "0.0.0.0:8080"
 
 CMD ["/srv/app"]
 
