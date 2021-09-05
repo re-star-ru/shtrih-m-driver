@@ -73,7 +73,7 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, err := fmt.Fprintf(w, "Время: %s", time.Now().Format(time.UnixDate)); err != nil {
+	if _, err := fmt.Fprintf(w, "Время: %s \n\n", time.Now().Format(time.UnixDate)); err != nil {
 		log.Println(err)
 		return
 	}
