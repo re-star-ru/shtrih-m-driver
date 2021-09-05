@@ -13,7 +13,6 @@ job "kkt-server" {
 
     task "kkt_server" {
       driver = "docker"
-
       resources {
         cpu = 100
         memory = 64
