@@ -54,7 +54,7 @@ func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) 
 				if err := kkt.Do(healhCheck); err != nil {
 					log.Println(err)
 				}
-				time.Sleep(time.Second * 15)
+				time.Sleep(time.Second * 30)
 			}
 		}() // run healthcheck
 	}
