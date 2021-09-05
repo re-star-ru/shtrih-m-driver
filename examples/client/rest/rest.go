@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"time"
 
 	"github.com/fess932/shtrih-m-driver/examples/client/kkt"
 
@@ -69,6 +70,11 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		return
+	}
+
+	if _, err := fmt.Fprintf(w, "Время: %s", time.Now().Format(time.UnixDate)); err != nil {
+		log.Println(err)
 		return
 	}
 
