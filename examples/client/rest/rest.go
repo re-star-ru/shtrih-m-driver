@@ -41,8 +41,8 @@ func (k *KKTService) rest() {
 		k.printPackageHandler(w, r)
 	})
 
-	log.Println("server listen at :8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Println("server listen at 0.0.0.0:8080")
+	log.Fatal(http.ListenAndServe("0.0.0.0:8080", r))
 }
 
 type Status struct {

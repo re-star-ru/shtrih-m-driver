@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/fess932/shtrih-m-driver/examples/client/rest"
@@ -15,9 +14,9 @@ import (
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
-	go func() {
-		log.Fatal(http.ListenAndServe(":8090", nil))
-	}()
+	//go func() {
+	//	log.Fatal(http.ListenAndServe(":8090", nil))
+	//}()
 
 	kks, err := initKkts(confKKT{
 		//"EV-S": ck{"10.51.0.71:7778", "263209745357"},

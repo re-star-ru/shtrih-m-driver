@@ -1,21 +1,21 @@
-FROM ghcr.io/umputun/baseimage/buildgo:latest as build
+FROM golang:alpine as build
+
 WORKDIR /build
 ADD . /build
 
-RUN \
-    revision=$(/script/git-rev.sh) && \
-    echo "revision=${revision}" && \
-    go build -o app -ldflags "-X main.revision=$revision -s -w" ./examples/client
+RUN go build -o app ./examples/client
 
-FROM ghcr.io/umputun/baseimage/app:lastest
+FROM golang:alpine
 
 COPY --from=build /build/app /srv/app
 
-EXPOSE 8080
 WORKDIR /srv
+
+EXPOSE 8080
+
 ENV LISTEN = "0.0.0.0:8080"
 
-CMD ["/srv/app"]
+CMD ["./app"]
 
 
 

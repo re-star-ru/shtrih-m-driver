@@ -2,39 +2,30 @@ job "shtrih-m-driver" {
   datacenters = [
     "restar"
   ]
-
   type = "service"
 
   group "default" {
     network {
-      port "feziv" {
-        host_network = "private"
+      port "shtrih-m" {
+        static = 19300
       }
     }
 
     task "shtrih-m-driver" {
-      //      service {
-      //        port = "feziv"
-      //        tags = [
-      //          "reproxy.enabled=1",
-      //          "reproxy.server=feziv.com,www.feziv.com"
-      //        ]
-      //      }
-      // serve static files for feziv.com
+      driver = "docker"
 
       resources {
+        cpu = 100
         memory = 64
       }
 
-      driver = "docker"
-
-      env {
-        LISTEN = "${NOMAD_ADDR_feziv}"
+      config {
+        image = "ghcr.io/[[.repo]]:[[.tag]]"
+        network_mode = "host"
       }
 
-      config {
-        image = "ghcr.io/fess932/shtrih-m-driver:latest"
-        network_mode = "host"
+      env {
+        ADDR = "${NOMAD_ADDR_feziv}"
       }
 
     }

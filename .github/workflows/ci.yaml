@@ -1,7 +1,6 @@
 name: ci
 
-on:
-  push:
+on: [ push ]
 
 jobs:
   build:
@@ -17,7 +16,9 @@ jobs:
       - name: build and deploy master image to ghcr.io
         env:
           GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
           USERNAME: ${{github.actor}}
+          REPO: ${{github.repository}}
           GITHUB_REF: ${{github.ref}}
           GITHUB_SHA: ${{github.sha}}
         run: |
@@ -27,14 +28,17 @@ jobs:
           docker buildx build --push \
             --build-arg CI=github --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} \
             --platform linux/amd64 \
-            -t ghcr.io/${USERNAME}/shtrih-m-driver:${ref} \
-            -t ghcr.io/${USERNAME}/shtrih-m-driver:${GITHUB_SHA} \
-            -t ghcr.io/${USERNAME}/shtrih-m-driver:latest .
+            -t ghcr.io/${REPO}:${ref} \
+            -t ghcr.io/${REPO}:${GITHUB_SHA} \
+            -t ghcr.io/${REPO}:latest .
 
       - name: Deploy with Nomad
         env:
-          #          NOMAD_ADDR: http://feziv.com:4646
+          NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
           NOMAD_ADDR: https://nomad.re-star.ru
         uses: docker://hashicorp/levant:latest
         with:
-          args: levant deploy -var "tag=${{github.sha}}" service.hcl
+          args: levant deploy
+            -var "tag=${{github.sha}}"
+            -var "repo=${{github.repository}}"
+            service.hcl
