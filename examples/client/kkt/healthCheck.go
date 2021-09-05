@@ -30,7 +30,7 @@ func healhCheck(kkt *KKT) (err error) {
 
 	case "shiftClosed":
 		t := time.Now()
-		if t.Hour() >= 7 || t.Hour() <= 22 {
+		if t.Hour() >= 7 && t.Hour() <= 22 {
 			log.Println("day goes, open shift")
 			return openSession(kkt)
 		}
