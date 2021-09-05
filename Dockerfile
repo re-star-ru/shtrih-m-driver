@@ -12,6 +12,7 @@ COPY --from=build /build/app /srv/app
 WORKDIR /srv
 
 ENV ADDR = "0.0.0.0:8080"
+ENV TZ = Europe/Moscow
 
 CMD ["./app"]
 
