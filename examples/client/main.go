@@ -20,11 +20,11 @@ func main() {
 	//}()
 
 	kks, err := initKkts(confKKT{
-		"EV-S": ck{"10.51.0.71:7778", "263209745357"},
-		"SM-S": ck{"10.51.0.72:7778", "262804786800"},
-
-		"EV-N": ck{"10.51.0.73:7778", "263209745357"},
-		"SM-N": ck{"10.51.0.74:7778", "262804786800"},
+		//"EV-S": ck{"10.51.0.71:7778", "263209745357"},
+		// "SM-S": ck{"10.51.0.72:7778", "262804786800"},
+		//
+		//"EV-N": ck{"10.51.0.73:7778", "263209745357"},
+		//"SM-N": ck{"10.51.0.74:7778", "262804786800"},
 	})
 
 	if err != nil {
@@ -53,7 +53,7 @@ func initKkts(confs confKKT) (kks map[string]*kkt.KKT, err error) {
 	kks = make(map[string]*kkt.KKT)
 
 	for key, c := range confs {
-		kk, err := kkt.NewKKT(key, c.addr, c.inn, time.Second*5, true)
+		kk, err := kkt.NewKKT(key, c.addr, c.inn, time.Second*10, true)
 		if err != nil {
 			return nil, err
 		}

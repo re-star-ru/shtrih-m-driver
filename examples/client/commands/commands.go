@@ -5,10 +5,11 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 	"io"
 	"strconv"
 	"strings"
+
+	"github.com/fess932/shtrih-m-driver/pkg/driver/models"
 
 	"golang.org/x/text/encoding/charmap"
 
@@ -30,6 +31,7 @@ const (
 const (
 	FNCommand byte = 0xFF
 
+	FNStatus           byte = 0x01
 	FnOperationV2      byte = 0x46
 	FnCloseCheckV2     byte = 0x45
 	FnCancelFNDocument byte = 0x08
@@ -54,6 +56,10 @@ func newBufWithDefaultPassword(cmdID byte, isFnCmd bool) (buf *bytes.Buffer) {
 
 func CreateShortStatus() []byte {
 	return newBufWithDefaultPassword(ShortStatus, false).Bytes()
+}
+
+func CreateFnStatus() []byte {
+	return newBufWithDefaultPassword(FNStatus, true).Bytes()
 }
 
 func CreateNotPrintOneCheck() []byte {

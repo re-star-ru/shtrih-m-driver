@@ -32,6 +32,7 @@ func parseFNcmd(fncmd []byte, kkt *KKT) error {
 var fnRoutes = map[byte]func(cmd []byte, kkt *KKT){
 	commands.FnCloseCheckV2: closeCheckV2,
 	commands.FnOperationV2:  fnOperationV2,
+	commands.FNStatus:       fnStatus,
 }
 
 func closeCheckV2(fncmd []byte, kkt *KKT) {
@@ -40,4 +41,8 @@ func closeCheckV2(fncmd []byte, kkt *KKT) {
 
 func fnOperationV2(fncmd []byte, kkt *KKT) {
 	log.Printf("fn operation handler %X, %s\n", fncmd, kkt.Addr)
+}
+
+func fnStatus(fncmd []byte, kkt *KKT) {
+	log.Printf("fn status handler %X, %s\n", fncmd, kkt.Addr)
 }

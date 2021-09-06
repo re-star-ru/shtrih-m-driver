@@ -74,6 +74,8 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
+	log.Println(data)
+
 	e := &errGroup{
 		Mutex: sync.Mutex{},
 		txs:   make(map[string]Tx),

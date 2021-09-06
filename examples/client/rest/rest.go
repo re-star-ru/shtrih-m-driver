@@ -8,6 +8,8 @@ import (
 	"sort"
 	"time"
 
+	"github.com/go-chi/chi/v5/middleware"
+
 	"github.com/fess932/shtrih-m-driver/examples/client/kkt"
 
 	"github.com/go-chi/chi/v5"
@@ -32,6 +34,7 @@ func (k *KKTService) Run() {
 
 func (k *KKTService) rest() {
 	r := chi.NewRouter()
+	r.Use(middleware.Timeout(time.Second * 30))
 
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
