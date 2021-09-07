@@ -10,14 +10,15 @@ import (
 )
 
 func (kkt *KKT) parseCmd(cmd []byte) error {
+	if cmd[0] == 0xFF {
+		return parseFNcmd(cmd[1:], kkt)
+	}
+
 	if cmd[0] != 0x10 {
 		log.Print("parce cmd:")
 		log.Print(hex.Dump(cmd))
 	}
 
-	if cmd[0] == 0xFF {
-		return parseFNcmd(cmd[1:], kkt)
-	}
 	if cmd[1] != 0x00 {
 		return errCheck(cmd[1])
 	}
