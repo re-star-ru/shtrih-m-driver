@@ -34,7 +34,7 @@ func (k *KKTService) Run() {
 
 func (k *KKTService) rest() {
 	r := chi.NewRouter()
-	r.Use(middleware.Timeout(time.Second * 30))
+	r.Use(middleware.Timeout(time.Second * 60))
 
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
