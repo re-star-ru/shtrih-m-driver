@@ -2,13 +2,13 @@ package kkt
 
 import (
 	"fmt"
-	"log"
 	"net"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/looplab/fsm"
+	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/kkt/transport"
 )
@@ -54,7 +54,7 @@ func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) 
 		go func() {
 			for {
 				if err := kkt.Do(healhCheck); err != nil {
-					log.Println(err)
+					log.Err(err).Send()
 				}
 				time.Sleep(time.Second * 30)
 			}
@@ -97,7 +97,7 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 	}
 	defer func() {
 		if e := kkt.c.Close(); e != nil {
-			log.Println("deferred closing error:", e)
+			log.Err(e).Msg("deferred closing error:")
 		}
 	}()
 

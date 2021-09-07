@@ -1,8 +1,9 @@
 package kkt
 
 import (
-	"log"
 	"time"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/commands"
 )
@@ -23,7 +24,7 @@ func healhCheck(kkt *KKT) (err error) {
 	case "shiftOpen":
 		t := time.Now()
 		if t.Hour() <= 6 || t.Hour() >= 23 {
-			log.Println("day ended, closing shift")
+			log.Print("day ended, closing shift")
 			return closeSession(kkt)
 		}
 
@@ -32,18 +33,18 @@ func healhCheck(kkt *KKT) (err error) {
 	case "shiftClosed":
 		t := time.Now()
 		if t.Hour() >= 7 && t.Hour() <= 22 {
-			log.Println("day goes, open shift")
+			log.Print("day goes, open shift")
 			return openSession(kkt)
 		}
 
 		return
 
 	case "shiftExpired":
-		log.Println("shift expired, closing")
+		log.Print("shift expired, closing")
 		return closeSession(kkt)
 
 	case "checkOpen":
-		log.Println("check open in check state, cancel check")
+		log.Print("check open in check state, cancel check")
 		return cancelCheck(kkt)
 	}
 

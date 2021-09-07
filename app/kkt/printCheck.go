@@ -2,10 +2,10 @@ package kkt
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/commands"
 	"github.com/re-star-ru/shtrih-m-driver/app/models"
+	"github.com/rs/zerolog/log"
 )
 
 // send printCmd[]
@@ -31,7 +31,7 @@ func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 		// set state not print one check if specified
 		if check.NotPrint {
 			if err = notPrintOneCheck(kkt); err != nil {
-				log.Println(err)
+				log.Err(err).Send()
 				return
 			}
 		}
@@ -39,13 +39,13 @@ func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
 		// add operationV2 to check
 		for _, v := range check.Operations {
 			if err = sendOperationsV2(kkt, v); err != nil {
-				log.Println(err)
+				log.Err(err).Send()
 				return err
 			}
 		}
 
 		if err = writeCashierINN(kkt, check.CashierINN); err != nil {
-			log.Println(err)
+			log.Err(err).Send()
 			return err
 		}
 

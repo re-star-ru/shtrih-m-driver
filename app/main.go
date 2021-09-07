@@ -1,7 +1,6 @@
 package main
 
 import (
-	//"log"
 	// _ "net/http/pprof"
 
 	"os"
@@ -15,7 +14,8 @@ import (
 )
 
 func main() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.StampMicro})
+	//log.Logger = log.With().Caller().Logger()
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.StampMicro}).With().Caller().Logger()
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	//log.SetFlags(log.LstdFlags | log.Lshortfile)
 

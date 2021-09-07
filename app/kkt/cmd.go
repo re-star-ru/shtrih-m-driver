@@ -3,15 +3,16 @@ package kkt
 import (
 	"encoding/hex"
 	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/commands"
 )
 
 func (kkt *KKT) parseCmd(cmd []byte) error {
 	if cmd[0] != 0x10 {
-		log.Println("parce cmd:")
-		log.Println(hex.Dump(cmd))
+		log.Print("parce cmd:")
+		log.Print(hex.Dump(cmd))
 	}
 
 	if cmd[0] == 0xFF {
@@ -40,8 +41,8 @@ var routes = map[byte]func(cmd []byte, kkt *KKT){
 }
 
 func openSessionHandler(cmd []byte, kkt *KKT) {
-	log.Println("open session repsonse:")
-	log.Println(hex.Dump(cmd))
+	log.Print("open session repsonse:")
+	log.Print(hex.Dump(cmd))
 }
 
 func updateState(cmd []byte, kkt *KKT) {

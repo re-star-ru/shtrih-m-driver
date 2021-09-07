@@ -3,7 +3,9 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
+
 	"net/http"
 	"sync"
 
@@ -69,12 +71,12 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 	data := CheckReq{}
 
 	if err := render.DecodeJSON(r.Body, &data); err != nil {
-		log.Println(err)
+		log.Err(err).Send()
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	log.Println(data)
+	log.Print(data)
 
 	e := &errGroup{
 		Mutex: sync.Mutex{},
@@ -108,10 +110,10 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 
 	wg.Wait()
 
-	log.Println(e)
+	log.Print(e)
 
 	if err := json.NewEncoder(w).Encode(e.txs); err != nil {
-		log.Println(err)
+		log.Print(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

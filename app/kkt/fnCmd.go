@@ -3,14 +3,15 @@ package kkt
 import (
 	"encoding/hex"
 	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/commands"
 )
 
 func parseFNcmd(fncmd []byte, kkt *KKT) error {
-	log.Println("parce fncmd")
-	log.Println(hex.Dump(fncmd))
+	log.Print("parce fncmd")
+	log.Print(hex.Dump(fncmd))
 
 	if fncmd[1] != 0x00 {
 		return errCheck(fncmd[1])

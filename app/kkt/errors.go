@@ -2,12 +2,13 @@ package kkt
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
 )
 
 func errCheck(e byte) error {
 	err := fmt.Errorf("error in receive message: %X", e)
-	log.Println(err)
+	log.Err(err).Send()
 
 	return err
 }

@@ -2,7 +2,8 @@ package kkt
 
 import (
 	"fmt"
-	"log"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/commands"
 )
@@ -23,27 +24,27 @@ func openSession(kkt *KKT) error {
 		return err
 	}
 
-	log.Println("OPEN SESSION validate inn ok")
+	log.Print("OPEN SESSION validate inn ok")
 
 	if err := beginOpenSession(kkt); err != nil {
 		return fmt.Errorf("err begin open session: %w", err)
 	}
 
-	log.Println("OPEN SESSION begin open session ok")
+	log.Print("OPEN SESSION begin open session ok")
 
 	if err := writeCashierINN(kkt, kkt.CashierInn); err != nil {
-		log.Println(err)
+		log.Err(err).Send()
 		return err
 	}
 
-	log.Println("OPEN SESSION write cashier inn ok")
+	log.Print("OPEN SESSION write cashier inn ok")
 
 	if err := endOpenSession(kkt); err != nil {
-		log.Println(err)
+		log.Err(err).Send()
 		return err
 	}
 
-	log.Println("OPEN SESSION end open session ok")
+	log.Print("OPEN SESSION end open session ok")
 
 	return nil
 }
