@@ -14,10 +14,8 @@ import (
 )
 
 func main() {
-	//log.Logger = log.With().Caller().Logger()
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.StampMicro}).With().Caller().Logger()
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	//log.SetFlags(log.LstdFlags | log.Lshortfile)
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMicro
 
 	//go func() {
 	//	log.Fatal(http.ListenAndServe(":8090", nil))
