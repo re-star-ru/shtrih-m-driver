@@ -1,16 +1,16 @@
 FROM golang:alpine as build
 ENV CGO_ENABLED=0
 
-WORKDIR /build
 ADD . /build
+WORKDIR /build
 
-RUN go build -o app ./examples/client
+RUN cd app && go build -o /build/kktAPI
 
 FROM umputun/baseimage:scratch-latest
 ENV TZ=Europe/Moscow
 ENV ADDR="0.0.0.0:8080"
 
-COPY --from=build /build/app /srv/app
+COPY --from=build /build/kktAPI /srv/app
 
 WORKDIR /srv
 CMD ["/srv/app"]
