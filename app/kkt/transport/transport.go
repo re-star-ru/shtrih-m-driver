@@ -2,7 +2,9 @@ package transport
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
+	"io"
 	"net"
 	"time"
 
@@ -33,6 +35,10 @@ func New(conn net.Conn) *K {
 func (k *K) SendMessage(msg []byte) ([]byte, error) {
 	k.sendMsgBuf.Write(msg)
 	resp, err := k.sendENQ()
+	if errors.Is(err, io.EOF) {
+		return nil, err
+	}
+
 	k.sendMsgBuf.Reset()
 
 	return resp, err
@@ -40,7 +46,10 @@ func (k *K) SendMessage(msg []byte) ([]byte, error) {
 
 func (k *K) sendENQ() ([]byte, error) {
 	k.writeByte(ENQ)
-	k.readControlByte()
+	if err := k.readControlByte(); errors.Is(err, io.EOF) {
+		log.Err(err).Send()
+		return nil, err
+	}
 
 	switch k.controlByte {
 	case ACK:
@@ -86,10 +95,13 @@ func (k *K) sendMsg() error {
 
 	for i := 0; ; i++ {
 		if _, err := k.conn.Write(buf.Bytes()); err != nil {
-			log.Print("err in send msg loop:", err.Error())
+			log.Err(err).Msg("err in send msg loop")
 		}
 
-		k.readControlByte()
+		if err := k.readControlByte(); errors.Is(err, io.EOF) {
+			log.Err(err).Msg("err in read control byte in msg loop")
+		}
+
 		switch k.controlByte {
 		case ACK:
 			return nil
@@ -107,17 +119,17 @@ func (k *K) sendMsg() error {
 // read stx
 // read len
 func (k *K) reciveMsg() ([]byte, error) {
-	if b := k.readByte(); b != STX {
+	if b, _ := k.readByte(); b != STX {
 		return nil, fmt.Errorf("wrong stx: %x", b)
 	}
 
-	lenMsg := k.readByte()
+	lenMsg, _ := k.readByte()
 	msg := make([]byte, lenMsg)
 	if _, err := k.conn.Read(msg); err != nil {
 		return nil, fmt.Errorf("error reading message: %w", err)
 	}
 
-	lrc := k.readByte()
+	lrc, _ := k.readByte()
 
 	k.writeByte(ACK) // write ack after read last byte in msg
 
@@ -144,8 +156,9 @@ func getChecksum(data []byte) (lrc byte) {
 	return
 }
 
-func (k *K) readControlByte() {
-	k.controlByte = k.readByte()
+func (k *K) readControlByte() (err error) {
+	k.controlByte, err = k.readByte()
+	return
 }
 
 func (k *K) writeByte(b byte) {
@@ -154,10 +167,18 @@ func (k *K) writeByte(b byte) {
 	}
 }
 
-func (k *K) readByte() byte {
+func (k *K) readByte() (byte, error) {
 	b := make([]byte, 1)
-	if _, err := k.conn.Read(b); err != nil {
-		log.Print("error read single byte:", err.Error())
+
+	_, err := k.conn.Read(b)
+
+	if err != nil {
+		log.Err(err).Msg("error read single byte")
 	}
-	return b[0]
+
+	if errors.Is(err, io.EOF) {
+		return 0, io.EOF
+	}
+
+	return b[0], nil
 }
