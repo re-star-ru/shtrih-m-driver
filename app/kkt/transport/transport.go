@@ -35,12 +35,7 @@ func New(conn net.Conn) *K {
 func (k *K) SendMessage(msg []byte) ([]byte, error) {
 	k.sendMsgBuf.Write(msg)
 	resp, err := k.sendENQ()
-	if errors.Is(err, io.EOF) {
-		return nil, err
-	}
-
 	k.sendMsgBuf.Reset()
-
 	return resp, err
 }
 
@@ -48,7 +43,6 @@ func (k *K) sendENQ() ([]byte, error) {
 	k.writeByte(ENQ)
 	if err := k.readControlByte(); errors.Is(err, io.EOF) {
 		log.Err(err).Send()
-		return nil, err
 	}
 
 	switch k.controlByte {
