@@ -28,6 +28,46 @@ type CheckPackage struct {
 	NotPrint   bool        `json:"notPrint"`   // Не печатать чек на бумаге
 }
 
+func (chk *CheckPackage) toPackageModel() (cp models.CheckPackage, err error) {
+	cp = models.CheckPackage{
+		CashierINN: chk.CashierINN,
+		Cash:       chk.Cash,
+		Digital:    chk.Digital,
+		Rounding:   chk.Rounding,
+		NotPrint:   chk.NotPrint,
+	}
+
+	cp.TaxSystem, err = getTaxSystemByte(chk.TaxSystem)
+	if err != nil {
+		return
+	}
+
+	for _, v := range chk.Operations {
+		typ, err := getTypeOperationByte(v.Type)
+		if err != nil {
+			return models.CheckPackage{}, err
+		}
+
+		sub, err := getSubByte(v.Subject)
+		if err != nil {
+			return models.CheckPackage{}, err
+		}
+
+		op := models.Operation{
+			Type:    typ,
+			Subject: sub,
+			Amount:  v.Amount,
+			Price:   v.Price,
+			Sum:     v.Sum,
+			Name:    v.Name,
+		}
+
+		cp.Operations = append(cp.Operations, op)
+	}
+
+	return cp, nil
+}
+
 // Operation Операции в чеке
 type Operation struct {
 	Type    string `json:"type"`    // Тип операции
@@ -96,7 +136,7 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 				return
 			}
 
-			chkModelPkg, err := packageModelFromReq(chkPkg)
+			chkModelPkg, err := chkPkg.toPackageModel()
 			if err != nil {
 				e.addError(err, key)
 				return
@@ -117,46 +157,6 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-}
-
-func packageModelFromReq(chk CheckPackage) (cp models.CheckPackage, err error) {
-	cp = models.CheckPackage{
-		CashierINN: chk.CashierINN,
-		Cash:       chk.Cash,
-		Digital:    chk.Digital,
-		Rounding:   chk.Rounding,
-		NotPrint:   chk.NotPrint,
-	}
-
-	cp.TaxSystem, err = getTaxSystemByte(chk.TaxSystem)
-	if err != nil {
-		return
-	}
-
-	for _, v := range chk.Operations {
-		typ, err := getTypeOperationByte(v.Type)
-		if err != nil {
-			return models.CheckPackage{}, err
-		}
-
-		sub, err := getSubByte(v.Subject)
-		if err != nil {
-			return models.CheckPackage{}, err
-		}
-
-		op := models.Operation{
-			Type:    typ,
-			Subject: sub,
-			Amount:  v.Amount,
-			Price:   v.Price,
-			Sum:     v.Sum,
-			Name:    v.Name,
-		}
-
-		cp.Operations = append(cp.Operations, op)
-	}
-
-	return cp, nil
 }
 
 // ///////////////////////////////////////////////////

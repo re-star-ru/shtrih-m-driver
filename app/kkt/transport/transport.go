@@ -33,10 +33,13 @@ func New(conn net.Conn) *K {
 }
 
 func (k *K) SendMessage(msg []byte) ([]byte, error) {
-	k.sendMsgBuf.Write(msg)
-	resp, err := k.sendENQ()
 	k.sendMsgBuf.Reset()
-	return resp, err
+	defer k.sendMsgBuf.Reset()
+	k.sendMsgBuf.Write(msg)
+
+	time.Sleep(time.Millisecond * 50)
+
+	return k.sendENQ()
 }
 
 func (k *K) sendENQ() ([]byte, error) {
@@ -50,20 +53,20 @@ func (k *K) sendENQ() ([]byte, error) {
 		log.Printf("ENQ ACK")
 		msg, err := k.reciveMsg()
 		if err != nil {
-			log.Err(err).Send()
+			log.Err(err).Msg("err in ack")
 		}
-		log.Printf("received message in send enq: %x\n", msg)
+		log.Debug().Msgf("received message in send enq: %x\n", msg)
 
 		return k.sendENQ()
 	case NAK:
 		if err := k.sendMsg(); err != nil {
-			log.Print(err)
+			log.Err(err).Msg("err in nak")
 		}
 
 		return k.reciveMsg()
 	default:
-		log.Printf("wrong control byte %X, retry after sleep\n", k.controlByte)
-		time.Sleep(time.Millisecond * 600)
+		log.Debug().Msgf("wrong control byte %X, retry after sleep\n", k.controlByte)
+		time.Sleep(time.Millisecond * 100)
 
 		return k.sendENQ()
 	}
@@ -101,7 +104,7 @@ func (k *K) sendMsg() error {
 			return nil
 		default:
 			if i < 10 { // 10
-				log.Printf("continue %v, ctrlByte: 0x%X \n", i, k.controlByte)
+				log.Debug().Msgf("continue %v, ctrlByte: 0x%X \n", i, k.controlByte)
 				continue
 			}
 			err := fmt.Errorf("wrong contol byte send message end %x", k.controlByte)
@@ -157,7 +160,7 @@ func (k *K) readControlByte() (err error) {
 
 func (k *K) writeByte(b byte) {
 	if _, err := k.conn.Write([]byte{b}); err != nil {
-		log.Print("error write single byte:", err.Error())
+		log.Err(err).Msg("error write single byte:")
 	}
 }
 

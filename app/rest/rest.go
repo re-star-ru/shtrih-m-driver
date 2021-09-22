@@ -34,16 +34,14 @@ func (k *KKTService) Run() {
 
 func (k *KKTService) rest() {
 	r := chi.NewRouter()
-	r.Use(middleware.Timeout(time.Second * 60))
+	r.Use(middleware.Timeout(time.Second * 120))
 
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
 	}))
 
 	r.Get("/status", k.status)
-	r.Post("/printPackage", func(w http.ResponseWriter, r *http.Request) {
-		k.printPackageHandler(w, r)
-	})
+	r.Post("/printPackage", k.printPackageHandler)
 
 	log.Print("server listen at: ", k.addr)
 	log.Fatal().Err(http.ListenAndServe(k.addr, r)).Send()
@@ -63,7 +61,7 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sort.Slice(s, func(i, j int) bool {
-		return false
+		return s[i].IP < s[j].IP
 	})
 
 	if _, ok := r.URL.Query()["json"]; ok {
