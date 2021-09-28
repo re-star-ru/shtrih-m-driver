@@ -1,7 +1,6 @@
 package kkt
 
 import (
-	"context"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -11,8 +10,8 @@ import (
 
 // TODO: FN STATE
 
-func doHealhCheck(context context.Context, kkt *KKT) (err error) {
-	resp, err := kkt.m.SendMessage(context, commands.CreateShortStatus())
+func doHealhCheck(kkt *KKT) (err error) {
+	resp, err := kkt.m.SendMessage(commands.CreateShortStatus())
 	if err != nil {
 		return err
 	}
@@ -26,7 +25,7 @@ func doHealhCheck(context context.Context, kkt *KKT) (err error) {
 		t := time.Now()
 		if t.Hour() <= 6 || t.Hour() >= 23 {
 			log.Print("day ended, closing shift")
-			return closeSession(context, kkt)
+			return closeSession(kkt)
 		}
 
 		return
@@ -35,18 +34,18 @@ func doHealhCheck(context context.Context, kkt *KKT) (err error) {
 		t := time.Now()
 		if t.Hour() >= 7 && t.Hour() <= 22 {
 			log.Print("day goes, open shift")
-			return openSession(context, kkt)
+			return openSession(kkt)
 		}
 
 		return
 
 	case "shiftExpired":
 		log.Print("shift expired, closing")
-		return closeSession(context, kkt)
+		return closeSession(kkt)
 
 	case "checkOpen":
 		log.Print("check open in check state, cancel check")
-		return cancelCheck(context, kkt)
+		return cancelCheck(kkt)
 	}
 
 	// TODO after all: Substate

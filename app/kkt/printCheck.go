@@ -1,7 +1,6 @@
 package kkt
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/commands"
@@ -14,8 +13,8 @@ import (
 // send writeCashierInn
 // send closeCheck
 
-func PrintCheckHandler(check models.CheckPackage) func(context context.Context, kkt *KKT) error {
-	return func(context context.Context, kkt *KKT) (err error) {
+func PrintCheckHandler(check models.CheckPackage) func(kkt *KKT) error {
+	return func(kkt *KKT) (err error) {
 		// check state
 		if !kkt.canPrintCheck() { // check State
 			if kkt.Substate.Is("paperEmpty") {
@@ -31,7 +30,7 @@ func PrintCheckHandler(check models.CheckPackage) func(context context.Context, 
 
 		// set state not print one check if specified
 		if check.NotPrint {
-			if err = notPrintOneCheck(context, kkt); err != nil {
+			if err = notPrintOneCheck(kkt); err != nil {
 				log.Err(err).Send()
 				return
 			}
@@ -39,28 +38,28 @@ func PrintCheckHandler(check models.CheckPackage) func(context context.Context, 
 
 		// add operationV2 to check
 		for _, v := range check.Operations {
-			if err = sendOperationsV2(context, kkt, v); err != nil {
+			if err = sendOperationsV2(kkt, v); err != nil {
 				log.Err(err).Send()
 				return err
 			}
 		}
 
-		if err = writeCashierINN(context, kkt, check.CashierINN); err != nil {
+		if err = writeCashierINN(kkt, check.CashierINN); err != nil {
 			log.Err(err).Send()
 			return err
 		}
 
-		return sendCloseCheckV2(context, kkt, check)
+		return sendCloseCheckV2(kkt, check)
 	}
 }
 
-func sendOperationsV2(context context.Context, kkt *KKT, o models.Operation) error {
+func sendOperationsV2(kkt *KKT, o models.Operation) error {
 	data, err := commands.CreateFNOperationV2(o)
 	if err != nil {
 		return err
 	}
 
-	resp, err := kkt.m.SendMessage(context, data)
+	resp, err := kkt.m.SendMessage(data)
 	if err != nil {
 		return err
 	}
@@ -68,13 +67,13 @@ func sendOperationsV2(context context.Context, kkt *KKT, o models.Operation) err
 	return kkt.parseCmd(resp)
 }
 
-func sendCloseCheckV2(context context.Context, kkt *KKT, check models.CheckPackage) error {
+func sendCloseCheckV2(kkt *KKT, check models.CheckPackage) error {
 	data, err := commands.CreateFNCloseCheck(check)
 	if err != nil {
 		return err
 	}
 
-	resp, err := kkt.m.SendMessage(context, data)
+	resp, err := kkt.m.SendMessage(data)
 	if err != nil {
 		return err
 	}
@@ -82,13 +81,13 @@ func sendCloseCheckV2(context context.Context, kkt *KKT, check models.CheckPacka
 	return kkt.parseCmd(resp)
 }
 
-func writeCashierINN(context context.Context, kkt *KKT, inn string) error {
+func writeCashierINN(kkt *KKT, inn string) error {
 	data, err := commands.CreateWriteCashierINN(inn)
 	if err != nil {
 		return err
 	}
 
-	resp, err := kkt.m.SendMessage(context, data)
+	resp, err := kkt.m.SendMessage(data)
 	if err != nil {
 		return err
 	}
@@ -96,8 +95,8 @@ func writeCashierINN(context context.Context, kkt *KKT, inn string) error {
 	return kkt.parseCmd(resp)
 }
 
-func notPrintOneCheck(context context.Context, kkt *KKT) (err error) {
-	resp, err := kkt.m.SendMessage(context, commands.CreateNotPrintOneCheck())
+func notPrintOneCheck(kkt *KKT) (err error) {
+	resp, err := kkt.m.SendMessage(commands.CreateNotPrintOneCheck())
 	if err != nil {
 		return err
 	}

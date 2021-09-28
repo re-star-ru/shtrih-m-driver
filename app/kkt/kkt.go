@@ -12,10 +12,11 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/kkt/transport"
+	"github.com/re-star-ru/shtrih-m-driver/app/models/apperrs"
 )
 
 type Messager interface {
-	SendMessage(ctx context.Context, msg []byte) (resp []byte, err error)
+	SendMessage(msg []byte) (resp []byte, err error)
 }
 
 type KKT struct {
@@ -84,27 +85,41 @@ func (kkt *KKT) connect() (err error) {
 }
 
 // Do is function for starting request, create connection and close after exit
-func (kkt *KKT) Do(cb func(ctx context.Context, kkt *KKT) (err error)) error {
+// Handle context right here
+func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 	kkt.Lock()
-	defer kkt.Unlock()
-
-	context, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
-	defer cancel()
-
-	t := time.Now()
-	defer func(t time.Time) {
-		log.Printf("kkt: %v, cmd time: %v", kkt.Addr, time.Since(t))
-	}(t)
-
-	if err := kkt.connect(); err != nil {
-		err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.Addr, err)
-		return err
-	}
 	defer func() {
 		if e := kkt.c.Close(); e != nil {
 			log.Err(e).Msg("deferred closing error:")
 		}
+		kkt.Unlock()
 	}()
 
-	return cb(context, kkt)
+	t := time.Now()
+	context, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
+	defer cancel()
+	defer func(t time.Time) {
+		log.Printf("kkt: %v, cmd time: %v", kkt.Addr, time.Since(t))
+	}(t)
+
+	ch := make(chan error)
+
+	go kkt.goDo(ch, cb)
+
+	select {
+	case <-context.Done():
+		log.Print("TIMEOUT WIHT CONTEXT!")
+		return apperrs.ErrTimeout
+	case err := <-ch:
+		return err
+	}
+}
+
+func (kkt *KKT) goDo(ch chan error, cb func(kkt *KKT) (err error)) {
+	if err := kkt.connect(); err != nil {
+		err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.Addr, err)
+		ch <- err
+	}
+
+	ch <- cb(kkt)
 }
