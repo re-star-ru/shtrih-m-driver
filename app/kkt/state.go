@@ -14,7 +14,7 @@ const (
 
 func newState() *fsm.FSM {
 	return fsm.NewFSM(
-		"",
+		"stateUnknown",
 		fsm.Events{
 			{Name: printCheck, Src: []string{"shiftOpen"}, Dst: "shiftOpen"},
 			{Name: shiftOpen, Src: []string{"shiftClosed"}, Dst: "shiftOpen"},
@@ -27,7 +27,7 @@ func newState() *fsm.FSM {
 
 func newSubstate() *fsm.FSM {
 	return fsm.NewFSM(
-		"",
+		"substateUnknown",
 		fsm.Events{
 			{Name: printCheck, Src: []string{"paperLoaded"}, Dst: "paperLoaded"},
 			{Src: []string{"paperEmpty"}},

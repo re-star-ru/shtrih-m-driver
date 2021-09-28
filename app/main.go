@@ -1,28 +1,20 @@
 package main
 
 import (
-	// _ "net/http/pprof"
-
 	"os"
 	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 
-	"github.com/re-star-ru/shtrih-m-driver/app/kkt"
 	"github.com/re-star-ru/shtrih-m-driver/app/rest"
 )
 
 func main() {
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.StampMilli}).
-		With().
+	log.Logger = log.Logger.With().
 		Caller().
 		Logger()
 	zerolog.TimeFieldFormat = time.StampMilli
-
-	//go func() {
-	//	log.Fatal(http.ListenAndServe(":8090", nil))
-	//}()
 
 	kks, err := initKkts(confKKT{
 		"EV-S": ck{"10.51.0.71:7778", "263209745357"},
@@ -45,25 +37,4 @@ func main() {
 	//
 	service := rest.New(kks, addr)
 	service.Run()
-}
-
-type confKKT map[string]ck
-
-type ck struct {
-	addr string
-	inn  string
-}
-
-func initKkts(confs confKKT) (kks map[string]*kkt.KKT, err error) {
-	kks = make(map[string]*kkt.KKT)
-
-	for key, c := range confs {
-		kk, err := kkt.NewKKT(key, c.addr, c.inn, time.Second*10, true)
-		if err != nil {
-			return nil, err
-		}
-		kks[key] = kk
-	}
-
-	return
 }

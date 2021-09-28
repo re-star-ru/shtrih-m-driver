@@ -1,6 +1,7 @@
 package kkt
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"strings"
@@ -14,7 +15,7 @@ import (
 )
 
 type Messager interface {
-	SendMessage(msg []byte) (resp []byte, err error)
+	SendMessage(ctx context.Context, msg []byte) (resp []byte, err error)
 }
 
 type KKT struct {
@@ -53,9 +54,10 @@ func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) 
 	if healthCheck { // run healthcheck
 		go func() {
 			for {
-				if err := kkt.Do(healhCheck); err != nil {
+				if err := kkt.Do(doHealhCheck); err != nil {
 					log.Err(err).Send()
 				}
+
 				time.Sleep(time.Second * 30)
 			}
 		}() // run healthcheck
@@ -82,9 +84,11 @@ func (kkt *KKT) connect() (err error) {
 }
 
 // Do is function for starting request, create connection and close after exit
-func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
+func (kkt *KKT) Do(cb func(ctx context.Context, kkt *KKT) (err error)) error {
 	kkt.Lock()
 	defer kkt.Unlock()
+
+	context, _ := context.WithTimeout(context.Background(), kkt.d.Timeout)
 
 	t := time.Now()
 	defer func(t time.Time) {
@@ -101,5 +105,5 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 		}
 	}()
 
-	return cb(kkt)
+	return cb(context, kkt)
 }

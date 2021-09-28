@@ -2,6 +2,7 @@ package transport
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -9,6 +10,8 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
+
+	"github.com/re-star-ru/shtrih-m-driver/app/models/apperrs"
 )
 
 const (
@@ -32,14 +35,36 @@ func New(conn net.Conn) *K {
 	}
 }
 
-func (k *K) SendMessage(msg []byte) ([]byte, error) {
-	k.sendMsgBuf.Reset()
-	defer k.sendMsgBuf.Reset()
-	k.sendMsgBuf.Write(msg)
+type Result struct {
+	Message []byte
+	Error   error
+}
 
+func (k *K) SendMessage(ctx context.Context, msg []byte) ([]byte, error) {
+	defer k.sendMsgBuf.Reset()
+
+	ch := make(chan Result)
+	go k.sendMessageConc(ch, msg)
+
+	select {
+	case <-ctx.Done():
+		return nil, apperrs.ErrTimeout
+
+	case r := <-ch:
+		return r.Message, r.Error
+	}
+}
+
+func (k *K) sendMessageConc(ch chan Result, msg []byte) {
+	k.sendMsgBuf.Reset()
+	k.sendMsgBuf.Write(msg)
 	time.Sleep(time.Millisecond * 50)
 
-	return k.sendENQ()
+	data, err := k.sendENQ()
+
+	if ch != nil {
+		ch <- Result{data, err}
+	}
 }
 
 func (k *K) sendENQ() ([]byte, error) {

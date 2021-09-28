@@ -1,10 +1,12 @@
-package errors
+package apperrs
 
 import (
 	"errors"
 	"fmt"
 	"strings"
 )
+
+var ErrTimeout = errors.New("timeout error")
 
 const ErrLen = 1 // длинна кода ошибки
 
