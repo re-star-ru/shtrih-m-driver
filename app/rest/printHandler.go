@@ -159,7 +159,8 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-// ///////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+
 func getTaxSystemByte(tax string) (byte, error) {
 	switch tax {
 	case "PSN":
