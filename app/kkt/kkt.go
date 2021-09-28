@@ -88,7 +88,8 @@ func (kkt *KKT) Do(cb func(ctx context.Context, kkt *KKT) (err error)) error {
 	kkt.Lock()
 	defer kkt.Unlock()
 
-	context, _ := context.WithTimeout(context.Background(), kkt.d.Timeout)
+	context, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
+	defer cancel()
 
 	t := time.Now()
 	defer func(t time.Time) {
