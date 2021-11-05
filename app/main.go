@@ -10,7 +10,7 @@ import (
 	"github.com/re-star-ru/shtrih-m-driver/app/rest"
 )
 
-var rev = 1
+var rev = 2
 
 func main() {
 	log.Logger = log.Logger.With().
