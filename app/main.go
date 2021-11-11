@@ -12,7 +12,13 @@ import (
 
 var rev = 2
 
+func showVersion() {
+	println("version: ", rev)
+}
+
 func main() {
+	showVersion()
+
 	log.Logger = log.Logger.With().
 		Caller().
 		Logger()
