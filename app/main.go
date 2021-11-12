@@ -10,7 +10,7 @@ import (
 	"github.com/re-star-ru/shtrih-m-driver/app/rest"
 )
 
-var version = 2
+var version = "unknown"
 
 func main() {
 	log.Logger = log.Logger.With().
