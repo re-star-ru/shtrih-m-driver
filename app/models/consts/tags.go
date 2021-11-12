@@ -7,14 +7,12 @@ type TLVTag struct {
 	Length uint16 // длинна тега
 }
 
-var (
-	CashierINN = TLVTag{
-		Name:   "ИНН Кассира",
-		Type:   "String",
-		Code:   1203,
-		Length: 12,
-	} // Инн кассира
-)
+var CashierINN = TLVTag{
+	Name:   "ИНН Кассира",
+	Type:   "String",
+	Code:   1203,
+	Length: 12,
+} // Инн кассира
 
 const (
 	DocumentName        = 1000 // наименование документа
@@ -58,7 +56,7 @@ const (
 	ClientEmailOrNumber = 1008 // емейл или номер клиента
 
 	SubjectOfCalculation  = 1059 // предмет рассчета
-	CalculationSum        = 1020 //сумма рассчета указанного в чеке
+	CalculationSum        = 1020 // сумма рассчета указанного в чеке
 	CalculationSumCash    = 1031 // сумма по чеку наличными
 	CalculationSumNonCash = 1081 // сумма по чеку безналичными
 

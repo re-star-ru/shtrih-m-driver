@@ -3,11 +3,10 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/rs/zerolog/log"
-
 	"net/http"
 	"sync"
+
+	"github.com/rs/zerolog/log"
 
 	"github.com/go-chi/render"
 
@@ -68,7 +67,7 @@ func (chk *CheckPackage) toPackageModel() (cp models.CheckPackage, err error) {
 	return cp, nil
 }
 
-// Operation Операции в чеке
+// Operation Операции в чеке.
 type Operation struct {
 	Type    string `json:"type"`    // Тип операции
 	Subject string `json:"subject"` // Предмет рассчета

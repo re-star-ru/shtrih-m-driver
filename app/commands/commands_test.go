@@ -1,4 +1,4 @@
-package commands
+package commands_test
 
 import (
 	"encoding/hex"
@@ -6,11 +6,14 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/re-star-ru/shtrih-m-driver/app/commands"
+
 	"github.com/re-star-ru/shtrih-m-driver/app/models"
 	"github.com/re-star-ru/shtrih-m-driver/app/models/consts"
 	"github.com/stretchr/testify/assert"
 )
 
+// nolint
 var successCreateCloseCheckData = []byte{
 	255, 69, 30, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -23,6 +26,8 @@ var successCreateCloseCheckData = []byte{
 }
 
 func TestCreateFNCloseCheck(t *testing.T) {
+	t.Parallel()
+
 	type args struct {
 		chk models.CheckPackage
 	}
@@ -58,13 +63,18 @@ func TestCreateFNCloseCheck(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
-			gotCmdData, err := CreateFNCloseCheck(tt.args.chk)
+			t.Parallel()
+
+			gotCmdData, err := commands.CreateFNCloseCheck(tt.args.chk)
 
 			if tt.wantErr {
 				if assert.Error(t, err) {
 					assert.Nil(t, gotCmdData)
 				}
+
 				return
 			}
 
@@ -78,9 +88,12 @@ func TestCreateFNCloseCheck(t *testing.T) {
 }
 
 func TestCreateFNOperationV2(t *testing.T) {
+	t.Parallel()
+
 	type args struct {
 		o models.Operation
 	}
+
 	tests := []struct {
 		name        string
 		args        args
@@ -103,13 +116,18 @@ func TestCreateFNOperationV2(t *testing.T) {
 			wantErr:     false,
 		},
 	}
+
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			gotCmdData, err := CreateFNOperationV2(tt.args.o)
+			t.Parallel()
+
+			gotCmdData, err := commands.CreateFNOperationV2(tt.args.o)
 			log.Println("got", hex.Dump(gotCmdData))
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateFNOperationV2() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
 			if !reflect.DeepEqual(gotCmdData, tt.wantCmdData) {

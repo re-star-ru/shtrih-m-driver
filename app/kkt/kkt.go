@@ -12,7 +12,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/kkt/transport"
-	"github.com/re-star-ru/shtrih-m-driver/app/models/apperrs"
+	"github.com/re-star-ru/shtrih-m-driver/app/models/kkterrors"
 )
 
 type Messager interface {
@@ -96,7 +96,7 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 	}()
 
 	t := time.Now()
-	context, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
 	defer cancel()
 	defer func(t time.Time) {
 		log.Printf("kkt: %v, cmd time: %v", kkt.Addr, time.Since(t))
@@ -107,9 +107,9 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 	go kkt.goDo(ch, cb)
 
 	select {
-	case <-context.Done():
-		log.Print("TIMEOUT WIHT CONTEXT!")
-		return apperrs.ErrTimeout
+	case <-ctx.Done():
+		log.Print("TIMEOUT WITH CONTEXT!")
+		return kkterrors.ErrTimeout
 	case err := <-ch:
 		return err
 	}

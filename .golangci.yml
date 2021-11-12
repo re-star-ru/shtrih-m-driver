@@ -1,0 +1,11 @@
+linters:
+  enable-all: true
+  disable:
+    - interfacer
+    - maligned
+    - golint
+    - scopelint
+    - gomnd
+    - gci
+    - varnamelen
+    - exhaustivestruct

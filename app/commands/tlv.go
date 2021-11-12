@@ -6,20 +6,30 @@ import (
 	"io"
 )
 
-func writeTlv(w io.Writer, tag, Len uint16, value []byte) error {
+var ErrWongTlvLength = errors.New("len not equal to value(len)")
+
+func writeTlv(w io.Writer, tag, tagLen uint16, value []byte) (err error) {
 	buf := make([]byte, 2)
 
 	binary.LittleEndian.PutUint16(buf, tag) // код тега
-	w.Write(buf)
 
-	binary.LittleEndian.PutUint16(buf, Len) // длинна тега 	// значение тега
-	w.Write(buf)
-
-	if len(value) != int(Len) {
-		return errors.New("длинна не совпадает со значением")
+	_, err = w.Write(buf)
+	if err != nil {
+		return
 	}
 
-	w.Write(value)
+	binary.LittleEndian.PutUint16(buf, tagLen) // длинна тега
 
-	return nil
+	_, err = w.Write(buf)
+	if err != nil {
+		return
+	}
+
+	if len(value) != int(tagLen) {
+		return ErrWongTlvLength
+	}
+
+	_, err = w.Write(value) // значение тега
+
+	return
 }

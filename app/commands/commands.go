@@ -9,24 +9,31 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/rs/zerolog/log"
+
 	"golang.org/x/text/encoding/charmap"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/models"
 	"github.com/re-star-ru/shtrih-m-driver/app/models/consts"
 )
 
-// KKT Commands
+var (
+	ErrWrongInn    = errors.New("wrong inn")
+	ErrWrongCmdLen = errors.New("wron cmd len")
+	ErrRoundPenni  = errors.New("round penny")
+)
+
+// KKT Commands.
 const (
 	ShortStatus byte = 0x10
 	ZReport     byte = 0x41
 	CancelCheck byte = 0x88
 	WriteTable  byte = 0x1E
 	OpenSession byte = 0xE0
-	// сброс состояния сделать или
-	// отмена чека
+	// сброс состояния сделать или отмена чека.
 )
 
-// Fn Commands Start with FF
+// Fn Commands Start with FF.
 const (
 	FNCommand byte = 0xFF
 
@@ -39,16 +46,17 @@ const (
 	FnWriteTLV         byte = 0x0C // send tlv then open session <<<
 )
 
-var defaultPassword = []byte{0x1E, 0x00, 0x00, 0x00}
-
 func newBufWithDefaultPassword(cmdID byte, isFnCmd bool) (buf *bytes.Buffer) {
+	_defaultPassword := []byte{0x1E, 0x00, 0x00, 0x00}
+
 	buf = new(bytes.Buffer)
 
 	if isFnCmd { // if is fn cmd write fn cmd byte
 		buf.WriteByte(FNCommand)
 	}
+
 	buf.WriteByte(cmdID)
-	buf.Write(defaultPassword)
+	buf.Write(_defaultPassword)
 
 	return
 }
@@ -122,20 +130,21 @@ func CreateFNOperationV2(o models.Operation) (cmdData []byte, err error) {
 	// кодировка win1251
 	str, err := charmap.Windows1251.NewEncoder().String(o.Name)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("charmap encode: %w", err)
 	}
 
 	b := make([]byte, 128)
 
 	if _, err := bytes.NewBufferString(str).Read(b); err != nil {
 		if !errors.Is(err, io.EOF) {
-			return nil, err
+			return nil, fmt.Errorf("read from buffer: %w", err)
 		}
 	}
+
 	buf.Write(b)
 
 	if buf.Len() != 160 {
-		return nil, fmt.Errorf("wrong len of cmd addOperationV2 %v", buf.Len())
+		return nil, fmt.Errorf("%w: addOperationV2 %v", ErrWrongCmdLen, buf.Len())
 	}
 
 	return buf.Bytes(), nil
@@ -144,6 +153,7 @@ func CreateFNOperationV2(o models.Operation) (cmdData []byte, err error) {
 func CreateFNCloseCheck(m models.CheckPackage) (cmdData []byte, err error) {
 	// writeCashierINN in check composition before create fn close check
 	buf := newBufWithDefaultPassword(FnCloseCheckV2, true)
+
 	cash, err := intToBytesWithLen(m.Cash, 5)
 	if err != nil {
 		return nil, err
@@ -155,7 +165,7 @@ func CreateFNCloseCheck(m models.CheckPackage) (cmdData []byte, err error) {
 	}
 
 	if m.Rounding > 99 {
-		return nil, fmt.Errorf("round penni biggest than 99: %v", m.Rounding)
+		return nil, fmt.Errorf("%w: biggest than 99: %v", ErrRoundPenni, m.Rounding)
 	}
 
 	buf.Write(cash)             // 5 байт сумма наличных
@@ -167,7 +177,7 @@ func CreateFNCloseCheck(m models.CheckPackage) (cmdData []byte, err error) {
 	buf.Write(make([]byte, 64)) // нижняя строка чека, 64 байта win1251 текста
 
 	if buf.Len() != 182 {
-		return nil, fmt.Errorf("wrong FNCloseCheck len command: %v", buf.Len())
+		return nil, fmt.Errorf("FNCloseCheck: %w: %v", ErrWrongCmdLen, buf.Len())
 	}
 
 	return buf.Bytes(), nil
@@ -177,7 +187,7 @@ func intToBytesWithLen(val uint64, bytesLen int64) ([]byte, error) {
 	buf := bytes.NewBuffer([]byte{})
 
 	if err := binary.Write(buf, binary.LittleEndian, val); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("intToBytesWithLen: %w", err)
 	}
 
 	return buf.Bytes()[:bytesLen], nil
@@ -202,7 +212,7 @@ func CreateWriteCashierINN(inn string) ([]byte, error) {
 
 	cpStr, err := charmap.CodePage866.NewEncoder().String(inn)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("create write cashier inn error: %w", err)
 	}
 
 	// tlv структура
@@ -221,7 +231,7 @@ func ValidateINN(inn string) error {
 	for i, v := range a {
 		b[i], err = strconv.Atoi(v)
 		if err != nil {
-			fmt.Println("WTF??", err)
+			log.Err(err).Msgf("WTF??")
 		}
 	}
 
@@ -245,5 +255,5 @@ func ValidateINN(inn string) error {
 		return nil
 	}
 
-	return fmt.Errorf("wrong inn: %v", inn)
+	return fmt.Errorf("%w: %v", ErrWrongInn, inn)
 }

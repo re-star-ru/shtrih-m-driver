@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/kkt"
@@ -9,7 +10,7 @@ import (
 type confKKT map[string]ck
 
 type ck struct {
-	addr string // ip addres for kkt
+	addr string // ip address for kkt
 	inn  string // default inn for fiscal operations
 }
 
@@ -21,8 +22,9 @@ func initKkts(confs confKKT) (kks map[string]*kkt.KKT, err error) {
 	for key, c := range confs {
 		kk, err := kkt.NewKKT(key, c.addr, c.inn, defaultTimeout, true)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("init kkt: %w", err)
 		}
+
 		kks[key] = kk
 	}
 

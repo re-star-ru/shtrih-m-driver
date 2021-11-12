@@ -18,6 +18,13 @@ const (
 	NAK byte = 0x15 // 21
 )
 
+var (
+	ErrInvalidChecksum   = errors.New("invalid checksum")
+	ErrWrongSTX          = errors.New("wrong stx")
+	ErrOverflowMsgLength = errors.New("overflow msg length")
+	ErrWrongControlByte  = errors.New("wrong control byte")
+)
+
 type K struct {
 	controlByte byte
 	conn        net.Conn
@@ -44,6 +51,7 @@ func (k *K) SendMessage(msg []byte) ([]byte, error) {
 
 func (k *K) sendENQ() ([]byte, error) {
 	k.writeByte(ENQ)
+
 	if err := k.readControlByte(); errors.Is(err, io.EOF) {
 		log.Err(err).Send()
 	}
@@ -51,10 +59,12 @@ func (k *K) sendENQ() ([]byte, error) {
 	switch k.controlByte {
 	case ACK:
 		log.Printf("ENQ ACK")
+
 		msg, err := k.reciveMsg()
 		if err != nil {
 			log.Err(err).Msg("err in ack")
 		}
+
 		log.Debug().Msgf("received message in send enq: %x\n", msg)
 
 		return k.sendENQ()
@@ -75,7 +85,7 @@ func (k *K) sendENQ() ([]byte, error) {
 func (k *K) sendMsg() error {
 	msgLen := k.sendMsgBuf.Len()
 	if msgLen > 255 {
-		return fmt.Errorf("owerflow msg length: %v", msgLen)
+		return fmt.Errorf("sendMsg: %w: %v", ErrOverflowMsgLength, msgLen)
 	}
 
 	var resp []byte
@@ -90,7 +100,7 @@ func (k *K) sendMsg() error {
 	buf.Write(k.sendMsgBuf.Bytes())
 	buf.WriteByte(crc)
 
-	for i := 0; ; i++ {
+	for attempt := 0; ; attempt++ {
 		if _, err := k.conn.Write(buf.Bytes()); err != nil {
 			log.Err(err).Msg("err in send msg loop")
 		}
@@ -103,24 +113,28 @@ func (k *K) sendMsg() error {
 		case ACK:
 			return nil
 		default:
-			if i < 10 { // 10
-				log.Debug().Msgf("continue %v, ctrlByte: 0x%X \n", i, k.controlByte)
+			if attempt < 10 { // 10
+				log.Debug().Msgf("attempt %v, ctrlByte: 0x%X \n", attempt, k.controlByte)
+
 				continue
 			}
-			err := fmt.Errorf("wrong contol byte send message end %x", k.controlByte)
+
+			err := fmt.Errorf("send message end: %w: %x", ErrWrongControlByte, k.controlByte)
+
 			return err
 		}
 	}
 }
 
-// read stx
-// read len
+// read stx.
+// read len.
 func (k *K) reciveMsg() ([]byte, error) {
 	if b, _ := k.readByte(); b != STX {
-		return nil, fmt.Errorf("wrong stx: %x", b)
+		return nil, fmt.Errorf("reciveMsg: %w: %x", ErrWrongSTX, b)
 	}
 
 	lenMsg, _ := k.readByte()
+
 	msg := make([]byte, lenMsg)
 	if _, err := k.conn.Read(msg); err != nil {
 		return nil, fmt.Errorf("error reading message: %w", err)
@@ -135,7 +149,7 @@ func (k *K) reciveMsg() ([]byte, error) {
 	resp = append(resp, msg...)
 
 	if !checksum(resp, lrc) {
-		return nil, fmt.Errorf("invalid checksum %v", lrc)
+		return nil, fmt.Errorf("reciveMsg: %w: %v", ErrInvalidChecksum, lrc)
 	}
 
 	return msg, nil
@@ -155,6 +169,7 @@ func getChecksum(data []byte) (lrc byte) {
 
 func (k *K) readControlByte() (err error) {
 	k.controlByte, err = k.readByte()
+
 	return
 }
 
@@ -165,10 +180,9 @@ func (k *K) writeByte(b byte) {
 }
 
 func (k *K) readByte() (byte, error) {
-	b := make([]byte, 1)
+	buf := make([]byte, 1)
 
-	_, err := k.conn.Read(b)
-
+	_, err := k.conn.Read(buf)
 	if err != nil {
 		log.Err(err).Msg("error read single byte")
 	}
@@ -177,5 +191,5 @@ func (k *K) readByte() (byte, error) {
 		return 0, io.EOF
 	}
 
-	return b[0], nil
+	return buf[0], nil
 }

@@ -1,6 +1,6 @@
 package consts
 
-// Признак способа рассчета
+// Признак способа рассчета.
 const (
 	PrePayment100 byte = 1
 	PrePayment    byte = 2
@@ -8,7 +8,7 @@ const (
 	FullPayment   byte = 4 // предоплата
 )
 
-// Признак предмета рассчета/ subject
+// Признак предмета рассчета/ subject.
 const (
 	Goods       byte = 1 // товар
 	ExciseGoods byte = 2 // акцизный товар
