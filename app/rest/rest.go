@@ -38,6 +38,6 @@ func (k *KKTService) rest() {
 		r.Post("/printPackage", k.printPackageHandler)
 	}
 
-	log.Info().Msgf("server listen at: ", k.addr)
+	log.Info().Msgf("server listen at: %v", k.addr)
 	log.Fatal().Err(http.ListenAndServe(k.addr, r)).Send()
 }
