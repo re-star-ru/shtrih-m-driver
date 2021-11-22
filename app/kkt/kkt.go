@@ -34,14 +34,14 @@ type KKT struct {
 	Substate *fsm.FSM
 }
 
-// NewKKT init new kkt device
-func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) (kkt *KKT, err error) {
+// NewKKT init new kkt device.
+func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) (*KKT, error) {
 	s := strings.Split(key, "-")
 	if len(s) != 2 {
 		return nil, fmt.Errorf("неправильный ключ для ккт: %v", key)
 	}
 
-	kkt = &KKT{
+	kkt := &KKT{
 		Organization: s[0],
 		Place:        s[1],
 		Addr:         addr,
@@ -64,7 +64,7 @@ func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) 
 		}() // run healthcheck
 	}
 
-	return
+	return kkt, nil
 }
 
 func (kkt *KKT) connect() (err error) {
@@ -78,6 +78,7 @@ func (kkt *KKT) connect() (err error) {
 		}
 
 		kkt.m = transport.New(kkt.c)
+
 		return nil
 	}
 
@@ -85,7 +86,7 @@ func (kkt *KKT) connect() (err error) {
 }
 
 // Do is function for starting request, create connection and close after exit
-// Handle context right here
+// Handle context right here.
 func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 	kkt.Lock()
 	defer func() {
@@ -96,6 +97,7 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 	}()
 
 	t := time.Now()
+
 	ctx, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
 	defer cancel()
 	defer func(t time.Time) {

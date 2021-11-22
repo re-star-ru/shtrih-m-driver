@@ -43,7 +43,9 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, line := range s {
-		if _, err := fmt.Fprintf(w, "Kkt ip: %v, state: %v, subState: %v \n", line.IP, line.State, line.SubState); err != nil {
+		if _, err := fmt.Fprintf(
+			w, "Kkt ip: %v, state: %v, subState: %v \n", line.IP, line.State, line.SubState,
+		); err != nil {
 			log.Err(err).Send()
 			return
 		}

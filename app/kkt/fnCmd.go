@@ -16,6 +16,7 @@ func parseFNcmd(fncmd []byte, kkt *KKT) error {
 	if fncmd[1] != 0x00 {
 		return errCheck(fncmd[1])
 	}
+
 	if len(fncmd) <= 2 { // если длинна команды 2 то это пустая команда не требующая обработки имеющая лишь код ошибки
 		return nil
 	}

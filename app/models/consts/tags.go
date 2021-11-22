@@ -7,6 +7,8 @@ type TLVTag struct {
 	Length uint16 // длинна тега
 }
 
+// CashierINN is ...
+//nolint
 var CashierINN = TLVTag{
 	Name:   "ИНН Кассира",
 	Type:   "String",

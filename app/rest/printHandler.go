@@ -98,6 +98,7 @@ func (e *errGroup) addError(err error, key string) {
 		}
 		return
 	}
+
 	e.txs[key] = Tx{
 		Status: "done",
 		Error:  "",
@@ -112,6 +113,7 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 	if err := render.DecodeJSON(r.Body, &data); err != nil {
 		log.Err(err).Send()
 		http.Error(w, err.Error(), http.StatusBadRequest)
+
 		return
 	}
 
@@ -128,6 +130,7 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 		wg.Add(1)
 		go func(key string, chkPkg CheckPackage) {
 			defer wg.Done()
+
 			kk, ok := k.ks[key]
 			if !ok {
 				notFoundKKT := fmt.Errorf("не найдена касса по ключу место-организация: %v", key)

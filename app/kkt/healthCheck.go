@@ -10,7 +10,7 @@ import (
 
 // TODO: FN STATE
 
-func doHealhCheck(kkt *KKT) (err error) {
+func doHealhCheck(kkt *KKT) error {
 	resp, err := kkt.m.SendMessage(commands.CreateShortStatus())
 	if err != nil {
 		return err
@@ -28,7 +28,7 @@ func doHealhCheck(kkt *KKT) (err error) {
 			return closeSession(kkt)
 		}
 
-		return
+		return nil
 
 	case "shiftClosed":
 		t := time.Now()
@@ -37,7 +37,7 @@ func doHealhCheck(kkt *KKT) (err error) {
 			return openSession(kkt)
 		}
 
-		return
+		return nil
 
 	case "shiftExpired":
 		log.Print("shift expired, closing")
@@ -49,12 +49,12 @@ func doHealhCheck(kkt *KKT) (err error) {
 	}
 
 	// TODO after all: Substate
-	//switch kkt.Substate.Current() {
-	//case 0:
+	// switch kkt.Substate.Current() {
+	// case 0:
 	//	kkt.Substate.SetState("paperLoaded")
-	//default:
+	// default:
 	//	kkt.Substate.SetState("wrongSubstate")
 	//}
 
-	return
+	return nil
 }

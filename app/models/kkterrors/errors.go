@@ -1,3 +1,5 @@
+// Package kkterrors contains and check all kkt errors.
+//nolint
 package kkterrors
 
 import (
@@ -11,31 +13,31 @@ var ErrTimeout = errors.New("timeout error")
 const ErrLen = 1 // длинна кода ошибки
 
 var (
-	FSPrinterError01 = PrinterError{msg: "ФН: Неизвестная команда, неверный формат посылки или неизвестные параметры", num: 1} // FSPrinterError01 = ФН: Неизвестная команда, неверный формат посылки или неизвестные параметры
-	FSPrinterError02 = PrinterError{msg: "ФН: Неверное состояние ФН", num: 2}                                                  // FSPrinterError02 = ФН: Неверное состояние ФН
-	FSPrinterError03 = PrinterError{msg: "ФН: Ошибка ФН", num: 3}                                                              // FSPrinterError03 = ФН: Ошибка ФН
-	FSPrinterError04 = PrinterError{msg: "ФН: Ошибка КС", num: 4}                                                              // FSPrinterError04 = ФН: Ошибка КС
-	FSPrinterError05 = PrinterError{msg: "ФН: Закончен срок эксплуатации ФН", num: 5}                                          // FSPrinterError05 = ФН: Закончен срок эксплуатации ФН
-	FSPrinterError06 = PrinterError{msg: "ФН: Архив ФН переполнен", num: 6}                                                    // FSPrinterError06 = ФН: Архив ФН переполнен
+	FSPrinterError01 = PrinterError{msg: "ФН: Неизвестная команда, неверный формат посылки или неизвестные параметры", num: 1}
+	FSPrinterError02 = PrinterError{msg: "ФН: Неверное состояние ФН", num: 2}
+	FSPrinterError03 = PrinterError{msg: "ФН: Ошибка ФН", num: 3}
+	FSPrinterError04 = PrinterError{msg: "ФН: Ошибка КС", num: 4}
+	FSPrinterError05 = PrinterError{msg: "ФН: Закончен срок эксплуатации ФН", num: 5}
+	FSPrinterError06 = PrinterError{msg: "ФН: Архив ФН переполнен", num: 6}
 
-	PrinterError33 = PrinterError{msg: "Некорректные параметры в команде", num: 51} // PrinterError33 = Некорректные параметры в команде
+	PrinterError33 = PrinterError{msg: "Некорректные параметры в команде", num: 51}
 
 	PrinterError36 = PrinterError{msg: "Некорректные параметры в команде для данной реализации", num: 54} //
 
 	PrinterError37 = PrinterError{msg: "Команда не поддерживается в данной реализации", num: 55} //
 
-	PrinterError40 = PrinterError{msg: "Переполнение диапазона скидок", num: 64} // PrinterError40 = Переполнение диапазона скидок
+	PrinterError40 = PrinterError{msg: "Переполнение диапазона скидок", num: 64}
 	PrinterError4F = PrinterError{msg: "Неверный пароль", num: 79}
-	PrinterError50 = PrinterError{msg: "Идет печать предыдущей команды", num: 80} // PrinterError50 = Идет печать предыдущей команды
+	PrinterError50 = PrinterError{msg: "Идет печать предыдущей команды", num: 80}
 
-	PrinterError54 = PrinterError{msg: "Переполнение накоплений по типу оплаты 4 в смене", num: 84} // переполнение накоплений по типу оплаты 4 в смене
+	PrinterError54 = PrinterError{msg: "Переполнение накоплений по типу оплаты 4 в смене", num: 84}
 
 	PrinterError5E = PrinterError{msg: "Некорректная операция", num: 94}
 
 	PrinterError69 = PrinterError{msg: "Переполнение денег по обороту налогов", num: 105}
-	PrinterError73 = PrinterError{msg: "Команда не поддерживается в данном режиме", num: 115} // Команда не поддерживается в данном режиме
-	PrinterError7E = PrinterError{msg: "Неверное значение в поле длины", num: 126}            //
-	PrinterError8E = PrinterError{msg: "Нулевой итог чека", num: 142}                         // Нулевой итог чека
+	PrinterError73 = PrinterError{msg: "Команда не поддерживается в данном режиме", num: 115}
+	PrinterError7E = PrinterError{msg: "Неверное значение в поле длины", num: 126}
+	PrinterError8E = PrinterError{msg: "Нулевой итог чека", num: 142}
 
 	PrinterError45 = PrinterError{msg: "Cумма всех типов оплаты меньше итога чека", num: 69}
 

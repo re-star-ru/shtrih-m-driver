@@ -4,7 +4,7 @@ import (
 	"github.com/looplab/fsm"
 )
 
-// Events
+// Events.
 const (
 	printCheck  = "printCheck"
 	shiftOpen   = "shiftOpen"

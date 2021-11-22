@@ -7,4 +7,7 @@ podman:
 docker:
 	docker build --tag shtrihdriver .
 
-.PHONY: build, podman, docker
+lint:
+	golangci-lint.exe run
+
+.PHONY: build, podman, docker, lint

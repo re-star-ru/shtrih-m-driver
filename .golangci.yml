@@ -9,3 +9,5 @@ linters:
     - gci
     - varnamelen
     - exhaustivestruct
+    - tagliatelle
+    - nolintlint

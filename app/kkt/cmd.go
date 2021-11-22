@@ -22,6 +22,7 @@ func (kkt *KKT) parseCmd(cmd []byte) error {
 	if cmd[1] != 0x00 {
 		return errCheck(cmd[1])
 	}
+
 	if len(cmd) <= 2 { // если длинна команды 2 то это пустая команда не требующая обработки имеющая лишь код ошибки
 		return nil
 	}
@@ -41,8 +42,8 @@ var routes = map[byte]func(cmd []byte, kkt *KKT){
 	commands.OpenSession: openSessionHandler,
 }
 
-func openSessionHandler(cmd []byte, kkt *KKT) {
-	log.Print("open session repsonse:")
+func openSessionHandler(cmd []byte, _ *KKT) {
+	log.Print("open session response:")
 	log.Print(hex.Dump(cmd))
 }
 
