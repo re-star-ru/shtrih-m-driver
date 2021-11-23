@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"net"
 	"time"
 
@@ -27,33 +26,50 @@ var (
 
 type K struct {
 	controlByte byte
-	conn        net.Conn
+	c           net.Conn
 	sendMsgBuf  bytes.Buffer
 }
 
-func New(conn net.Conn) *K {
+func New(c net.Conn) *K {
 	return &K{
 		controlByte: 0,
-		conn:        conn,
+		c:           c,
 		sendMsgBuf:  bytes.Buffer{},
 	}
+}
+
+// Close is function for close and delete conn
+func (k *K) Close() (err error) {
+	if k.c != nil {
+		err = k.c.Close()
+		k.c = nil
+		if err != nil {
+			return fmt.Errorf("transport closing conn error %w", err)
+		}
+	}
+
+	return nil
 }
 
 func (k *K) SendMessage(msg []byte) ([]byte, error) {
 	k.sendMsgBuf.Reset()
 	defer k.sendMsgBuf.Reset()
 	k.sendMsgBuf.Write(msg)
-
-	time.Sleep(time.Millisecond * 50)
-
 	return k.sendENQ()
 }
 
 func (k *K) sendENQ() ([]byte, error) {
-	k.writeByte(ENQ)
+	if k.c == nil {
+		return nil, net.ErrClosed
+	}
 
-	if err := k.readControlByte(); errors.Is(err, io.EOF) {
-		log.Err(err).Send()
+	if err := k.writeByte(ENQ); err != nil {
+		err = fmt.Errorf("err write ENQ: %w", err)
+		return nil, err
+	}
+
+	if err := k.readControlByte(); err != nil {
+		return nil, err
 	}
 
 	switch k.controlByte {
@@ -76,7 +92,7 @@ func (k *K) sendENQ() ([]byte, error) {
 		return k.reciveMsg()
 	default:
 		log.Debug().Msgf("wrong control byte %X, retry after sleep\n", k.controlByte)
-		time.Sleep(time.Millisecond * 100)
+		time.Sleep(time.Millisecond * 50)
 
 		return k.sendENQ()
 	}
@@ -100,13 +116,17 @@ func (k *K) sendMsg() error {
 	buf.Write(k.sendMsgBuf.Bytes())
 	buf.WriteByte(crc)
 
-	for attempt := 0; ; attempt++ {
-		if _, err := k.conn.Write(buf.Bytes()); err != nil {
-			log.Err(err).Msg("err in send msg loop")
+	for attempt := 0; attempt < 10; attempt++ {
+		if _, err := k.c.Write(buf.Bytes()); err != nil {
+			err = fmt.Errorf("err in attempt loop: %w", err)
+			log.Err(err).Send()
+			continue
 		}
 
-		if err := k.readControlByte(); errors.Is(err, io.EOF) {
-			log.Err(err).Msg("err in read control byte in msg loop")
+		if err := k.readControlByte(); err != nil {
+			err = fmt.Errorf("err in attempt loop: %w", err)
+			log.Err(err).Send()
+			continue
 		}
 
 		switch k.controlByte {
@@ -115,7 +135,7 @@ func (k *K) sendMsg() error {
 		default:
 			if attempt < 10 { // 10
 				log.Debug().Msgf("attempt %v, ctrlByte: 0x%X \n", attempt, k.controlByte)
-
+				time.Sleep(time.Millisecond * 10)
 				continue
 			}
 
@@ -124,32 +144,53 @@ func (k *K) sendMsg() error {
 			return err
 		}
 	}
+
+	return fmt.Errorf("cannot send msg")
 }
 
 // read stx.
 // read len.
+// mb error while io.EOF
 func (k *K) reciveMsg() ([]byte, error) {
-	if b, _ := k.readByte(); b != STX {
-		return nil, fmt.Errorf("reciveMsg: %w: %x", ErrWrongSTX, b)
+	stx, err := k.readByte()
+	if err != nil {
+		err = fmt.Errorf("error read stx: %w", err)
+		return nil, err
 	}
 
-	lenMsg, _ := k.readByte()
+	if stx != STX {
+		return nil, fmt.Errorf("reciveMsg: %w: %x", ErrWrongSTX, stx)
+	}
+
+	lenMsg, err := k.readByte()
+	if err != nil {
+		err = fmt.Errorf("error read lenMsg: %w", err)
+		return nil, err
+	}
 
 	msg := make([]byte, lenMsg)
-	if _, err := k.conn.Read(msg); err != nil {
-		return nil, fmt.Errorf("error reading message: %w", err)
+	if _, err = k.c.Read(msg); err != nil {
+		return nil, fmt.Errorf("error read message: %w", err)
 	}
 
-	lrc, _ := k.readByte()
+	lrc, err := k.readByte()
+	if err != nil {
+		err = fmt.Errorf("error read checksum: %w", err)
+		return nil, err
+	}
 
-	k.writeByte(ACK) // write ack after read last byte in msg
+	err = k.writeByte(ACK) // write ack after read last byte in msg
+	if err != nil {
+		err = fmt.Errorf("error write ACK error: %w", err)
+		return nil, err
+	}
 
 	var resp []byte
 	resp = append(resp, lenMsg)
 	resp = append(resp, msg...)
 
 	if !checksum(resp, lrc) {
-		return nil, fmt.Errorf("reciveMsg: %w: %v", ErrInvalidChecksum, lrc)
+		return nil, fmt.Errorf("error checksum: %w: %v", ErrInvalidChecksum, lrc)
 	}
 
 	return msg, nil
@@ -169,26 +210,29 @@ func getChecksum(data []byte) (lrc byte) {
 
 func (k *K) readControlByte() (err error) {
 	k.controlByte, err = k.readByte()
-
-	return
-}
-
-func (k *K) writeByte(b byte) {
-	if _, err := k.conn.Write([]byte{b}); err != nil {
-		log.Err(err).Msg("error write single byte:")
+	if err != nil {
+		err = fmt.Errorf("error read control byte: %w", err)
 	}
+	return err
 }
 
+// error write
+func (k *K) writeByte(b byte) error {
+	if _, err := k.c.Write([]byte{b}); err != nil {
+		err = fmt.Errorf("error write single byte: %w", err)
+		return err
+	}
+	return nil
+}
+
+// error read
 func (k *K) readByte() (byte, error) {
 	buf := make([]byte, 1)
 
-	_, err := k.conn.Read(buf)
+	_, err := k.c.Read(buf)
 	if err != nil {
-		log.Err(err).Msg("error read single byte")
-	}
-
-	if errors.Is(err, io.EOF) {
-		return 0, io.EOF
+		err = fmt.Errorf("error read single byte: %w", err)
+		return buf[0], err
 	}
 
 	return buf[0], nil

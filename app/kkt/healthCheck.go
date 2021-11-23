@@ -11,6 +11,10 @@ import (
 // TODO: FN STATE
 
 func doHealhCheck(kkt *KKT) error {
+	defer func() {
+		log.Printf("health check kkt %v_%v, state: %v", kkt.Organization, kkt.Place, kkt.Substate.Current())
+	}()
+
 	resp, err := kkt.m.SendMessage(commands.CreateShortStatus())
 	if err != nil {
 		return err

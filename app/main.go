@@ -16,6 +16,7 @@ func main() {
 	log.Logger = log.Logger.With().
 		Caller().
 		Logger()
+	//.Output(zerolog.ConsoleWriter{Out: os.Stdout})
 	zerolog.TimeFieldFormat = time.StampMilli
 
 	log.Info().Msgf("version: %v", version)

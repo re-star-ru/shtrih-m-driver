@@ -12,11 +12,11 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/kkt/transport"
-	"github.com/re-star-ru/shtrih-m-driver/app/models/kkterrors"
 )
 
-type Messager interface {
+type MessageSendCloser interface {
 	SendMessage(msg []byte) (resp []byte, err error)
+	Close() error
 }
 
 type KKT struct {
@@ -25,17 +25,19 @@ type KKT struct {
 	Addr         string
 	CashierInn   string
 
+	// t is timeout for cmd
+	t time.Duration
+
 	sync.Mutex
-	m Messager
+	m MessageSendCloser
 	d net.Dialer
-	c net.Conn
 
 	State    *fsm.FSM
 	Substate *fsm.FSM
 }
 
 // NewKKT init new kkt device.
-func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) (*KKT, error) {
+func NewKKT(key, addr, inn string, timeout time.Duration, healthCheck bool) (*KKT, error) {
 	s := strings.Split(key, "-")
 	if len(s) != 2 {
 		return nil, fmt.Errorf("неправильный ключ для ккт: %v", key)
@@ -46,9 +48,9 @@ func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) 
 		Place:        s[1],
 		Addr:         addr,
 		CashierInn:   inn,
+		t:            timeout,
 	}
 
-	kkt.d.Timeout = connTimeout
 	kkt.State = newState()
 	kkt.Substate = newSubstate()
 
@@ -56,7 +58,7 @@ func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) 
 		go func() {
 			for {
 				if err := kkt.Do(doHealhCheck); err != nil {
-					log.Err(err).Send()
+					log.Err(err).Msg("healthcheck error")
 				}
 
 				time.Sleep(time.Second * 30)
@@ -67,67 +69,59 @@ func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) 
 	return kkt, nil
 }
 
-func (kkt *KKT) connect(ctx context.Context) (err error) {
-	kkt.c, err = kkt.d.DialContext(ctx, "tcp", kkt.Addr)
+func (kkt *KKT) connect(ctx context.Context) error {
+	kkt.Lock()
+	c, err := kkt.d.DialContext(ctx, "tcp", kkt.Addr)
 	if err != nil {
 		return err
 	}
-	kkt.m = transport.New(kkt.c)
+	kkt.m = transport.New(c)
 	return nil
+}
+
+func (kkt *KKT) close() (err error) {
+	defer kkt.Unlock()
+	if kkt.m != nil {
+		err = kkt.m.Close()
+	}
+
+	return err
 }
 
 // Do is function for starting request, create connection and close after exit
 // Handle context right here.
-func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
-	kkt.Lock()
-	defer func() {
-		if e := kkt.c.Close(); e != nil {
-			log.Err(e).Msg("deferred closing error:")
-		}
-		kkt.Unlock()
-	}()
-
-	ctx, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
-
+func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
+	ctx, cancel := context.WithTimeout(context.Background(), kkt.t)
 	t := time.Now()
 
-	defer cancel()
 	defer func(t time.Time) {
+		if e := kkt.close(); e != nil {
+			log.Err(e).Msg("kkt close error")
+		}
+		cancel()
 		log.Printf("kkt: %v, cmd time: %v", kkt.Addr, time.Since(t))
 	}(t)
 
+	if err = kkt.connect(ctx); err != nil {
+		err = fmt.Errorf("kkt %s: %w", kkt.Addr, err)
+		return err
+	}
+
 	ch := make(chan error)
-
-	go func(ctx context.Context, ch chan error, cb func(kkt *KKT) (err error)) {
-		if err := kkt.connect(ctx); err != nil {
-			err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.Addr, err)
-			ch <- err
-			return
-		}
-
+	go func(chan<- error) {
 		ch <- cb(kkt)
+	}(ch)
 
-		for {
-			select {
-			case <-ctx.Done():
-				log.Print("TIMEOUT WITH CONTEXT!")
-				ch <- kkterrors.ErrTimeout
-				return
-			}
+	select {
+	case <-ctx.Done():
+		log.Debug().Msg("Context deadline, close conn")
+	case err = <-ch:
+		if err != nil {
+			log.Err(err).Msg("cmd done with error")
+		} else {
+			log.Debug().Msg("cmd done successful")
 		}
+	}
 
-	}(ctx, ch, cb)
-
-	return <-ch
+	return err
 }
-
-//
-//func (kkt *KKT) goDo(ctx context.Context, ch chan error, cb func(kkt *KKT) (err error)) {
-//
-//	if err := kkt.connect(); err != nil {
-//		err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.Addr, err)
-//		ch <- err
-//	}
-//
-//	ch <- cb(kkt)
-//}
