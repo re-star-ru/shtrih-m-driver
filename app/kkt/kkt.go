@@ -118,8 +118,6 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) (err error) {
 	case err = <-ch:
 		if err != nil {
 			log.Err(err).Msg("cmd done with error")
-		} else {
-			log.Debug().Msg("cmd done successful")
 		}
 	}
 
