@@ -1,6 +1,8 @@
 package kkt
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/rs/zerolog/log"
@@ -10,11 +12,13 @@ import (
 
 // TODO: FN STATE
 
+var ErrUnknownState = errors.New("unknown state")
+
 func doHealhCheck(kkt *KKT) error {
 	defer func() {
 		log.Printf(
 			"health check kkt %v_%v, state: %v, substate: %v",
-			kkt.Organization, kkt.Place, kkt.State, kkt.Substate.Current(),
+			kkt.Organization, kkt.Place, kkt.State.Current(), kkt.Substate.Current(),
 		)
 	}()
 
@@ -27,7 +31,39 @@ func doHealhCheck(kkt *KKT) error {
 		return err
 	}
 
+	err = prepareState(kkt)
+	if err != nil {
+		err = fmt.Errorf("error update shift %w", err)
+		return err
+	}
+
+	// TODO after all: Substate
+	// switch kkt.Substate.Current() {
+	// case 0:
+	//	kkt.Substate.SetState("paperLoaded")
+	// default:
+	//	kkt.Substate.SetState("wrongSubstate")
+	//}
+
+	return nil
+}
+
+func prepareState(kkt *KKT) error {
 	switch kkt.State.Current() {
+	case "shiftOpen", "shiftClosed", "shiftExpired":
+		return updateShift(kkt, kkt.State.Current())
+
+	case "checkOpen":
+		log.Print("check open in check state, cancel check")
+		return cancelCheck(kkt)
+
+	default:
+		return ErrUnknownState
+	}
+}
+
+func updateShift(kkt *KKT, state string) error {
+	switch state {
 	case "shiftOpen":
 		t := time.Now()
 		if t.Hour() <= 6 || t.Hour() >= 23 {
@@ -50,18 +86,7 @@ func doHealhCheck(kkt *KKT) error {
 		log.Print("shift expired, closing")
 		return closeSession(kkt)
 
-	case "checkOpen":
-		log.Print("check open in check state, cancel check")
-		return cancelCheck(kkt)
+	default:
+		return nil
 	}
-
-	// TODO after all: Substate
-	// switch kkt.Substate.Current() {
-	// case 0:
-	//	kkt.Substate.SetState("paperLoaded")
-	// default:
-	//	kkt.Substate.SetState("wrongSubstate")
-	//}
-
-	return nil
 }
