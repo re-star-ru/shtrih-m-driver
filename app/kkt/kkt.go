@@ -67,22 +67,13 @@ func NewKKT(key, addr, inn string, connTimeout time.Duration, healthCheck bool) 
 	return kkt, nil
 }
 
-func (kkt *KKT) connect() (err error) {
-	const dialRetries = 3
-
-	for i := 0; i < dialRetries; i++ {
-		kkt.c, err = kkt.d.Dial("tcp", kkt.Addr)
-		if err != nil {
-			time.Sleep(time.Second * 1) // default timeout for retry
-			continue
-		}
-
-		kkt.m = transport.New(kkt.c)
-
-		return nil
+func (kkt *KKT) connect(ctx context.Context) (err error) {
+	kkt.c, err = kkt.d.DialContext(ctx, "tcp", kkt.Addr)
+	if err != nil {
+		return err
 	}
-
-	return
+	kkt.m = transport.New(kkt.c)
+	return nil
 }
 
 // Do is function for starting request, create connection and close after exit
@@ -96,9 +87,10 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 		kkt.Unlock()
 	}()
 
+	ctx, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
+
 	t := time.Now()
 
-	ctx, cancel := context.WithTimeout(context.Background(), kkt.d.Timeout)
 	defer cancel()
 	defer func(t time.Time) {
 		log.Printf("kkt: %v, cmd time: %v", kkt.Addr, time.Since(t))
@@ -106,22 +98,36 @@ func (kkt *KKT) Do(cb func(kkt *KKT) (err error)) error {
 
 	ch := make(chan error)
 
-	go kkt.goDo(ch, cb)
+	go func(ctx context.Context, ch chan error, cb func(kkt *KKT) (err error)) {
+		if err := kkt.connect(ctx); err != nil {
+			err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.Addr, err)
+			ch <- err
+			return
+		}
 
-	select {
-	case <-ctx.Done():
-		log.Print("TIMEOUT WITH CONTEXT!")
-		return kkterrors.ErrTimeout
-	case err := <-ch:
-		return err
-	}
+		ch <- cb(kkt)
+
+		for {
+			select {
+			case <-ctx.Done():
+				log.Print("TIMEOUT WITH CONTEXT!")
+				ch <- kkterrors.ErrTimeout
+				return
+			}
+		}
+
+	}(ctx, ch, cb)
+
+	return <-ch
 }
 
-func (kkt *KKT) goDo(ch chan error, cb func(kkt *KKT) (err error)) {
-	if err := kkt.connect(); err != nil {
-		err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.Addr, err)
-		ch <- err
-	}
-
-	ch <- cb(kkt)
-}
+//
+//func (kkt *KKT) goDo(ctx context.Context, ch chan error, cb func(kkt *KKT) (err error)) {
+//
+//	if err := kkt.connect(); err != nil {
+//		err = fmt.Errorf("kkt %s : dial: no connection: %w", kkt.Addr, err)
+//		ch <- err
+//	}
+//
+//	ch <- cb(kkt)
+//}

@@ -1,4 +1,5 @@
 # shtrih-m-driver
+
 go tcp driver for shtrih-m
 
 - Start shift with inn
@@ -6,7 +7,8 @@ go tcp driver for shtrih-m
 - Status kkt (healthcheck)
 - Check [without print bool]
 
-## TODO: 
+## TODO:
+
 - [ ] FN Prints check
 - [ ] FN Prints return check
 
@@ -17,20 +19,16 @@ go tcp driver for shtrih-m
 
 # TODO for v0.2:
 
-1: driver for sending end returning messages to/from Cashbox
-return error
+1: driver for sending end returning messages to/from Cashbox return error
 
-2: retry policy for sending messages
-if error retry
+2: retry policy for sending messages if error retry
 
-3: async request for client?
-usecase:
-client add message for driver; if 
-message adding once and always shuld be delivery for FN
+3: async request for client? usecase:
+client add message for driver; if message adding once and always shuld be delivery for FN
 
 client need to know successfull message or unsuccessfull!
 
 4: Ui for settings and FN status
-> 
+>
 > list FN : Status (Open, Close, Open date) : Name IP : ID : 
 

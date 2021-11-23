@@ -31,6 +31,7 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(s); err != nil {
 			log.Err(err).Send()
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+
 			return
 		}
 

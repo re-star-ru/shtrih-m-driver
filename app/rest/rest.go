@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -32,6 +33,9 @@ func (k *KKTService) rest() {
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
 	}))
+
+	// prometheus metrics
+	r.Handle("/metrics", promhttp.Handler())
 
 	{
 		r.Get("/status", k.status)

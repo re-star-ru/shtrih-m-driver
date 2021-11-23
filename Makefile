@@ -1,5 +1,6 @@
 
-build:
+run:
+	go run ./app
 
 podman:
 	podman build --tag shtrihdriver .

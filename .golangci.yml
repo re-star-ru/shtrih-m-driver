@@ -11,3 +11,12 @@ linters:
     - exhaustivestruct
     - tagliatelle
     - nolintlint
+
+    #    // wtf
+    - gofmt
+    - goimports
+    - gofumpt
+    - gochecknoglobals
+
+    # todos
+    - godox

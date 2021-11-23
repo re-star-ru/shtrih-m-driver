@@ -2,7 +2,7 @@ job "kkt-server" {
   datacenters = [
     "restar"
   ]
-  type = "service"
+  type        = "service"
 
   group "default" {
     network {
@@ -13,14 +13,14 @@ job "kkt-server" {
 
     task "kkt_server" {
       driver = "docker"
-      
+
       resources {
-        cpu = 100
+        cpu    = 100
         memory = 64
       }
 
       config {
-        image = "ghcr.io/[[.repo]]:[[.tag]]"
+        image        = "ghcr.io/[[.repo]]:[[.tag]]"
         network_mode = "host"
       }
 

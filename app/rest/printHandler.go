@@ -96,6 +96,7 @@ func (e *errGroup) addError(err error, key string) {
 			Status: "error",
 			Error:  err.Error(),
 		}
+
 		return
 	}
 
@@ -128,6 +129,7 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 
 	for key, chkPkg := range data {
 		wg.Add(1)
+
 		go func(key string, chkPkg CheckPackage) {
 			defer wg.Done()
 
@@ -135,6 +137,7 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 			if !ok {
 				notFoundKKT := fmt.Errorf("не найдена касса по ключу место-организация: %v", key)
 				e.addError(notFoundKKT, key)
+
 				return
 			}
 
@@ -157,6 +160,7 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 	if err := json.NewEncoder(w).Encode(e.txs); err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
+
 		return
 	}
 }
