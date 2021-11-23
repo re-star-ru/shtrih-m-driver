@@ -12,7 +12,10 @@ import (
 
 func doHealhCheck(kkt *KKT) error {
 	defer func() {
-		log.Printf("health check kkt %v_%v, state: %v", kkt.Organization, kkt.Place, kkt.Substate.Current())
+		log.Printf(
+			"health check kkt %v_%v, state: %v, substate: %v",
+			kkt.Organization, kkt.Place, kkt.State, kkt.Substate.Current(),
+		)
 	}()
 
 	resp, err := kkt.m.SendMessage(commands.CreateShortStatus())
