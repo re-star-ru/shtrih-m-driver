@@ -76,6 +76,7 @@ func updateState(cmd []byte, kkt *KKT) {
 	case 3:
 		kkt.Substate.SetState("printPhaseLoadedPaper")
 	default:
+		log.Info().Msgf("wrong substate: %X", st.substate)
 		kkt.Substate.SetState("wrongSubstate")
 	}
 }

@@ -67,6 +67,7 @@ func (k *K) sendENQ() ([]byte, error) {
 		err = fmt.Errorf("err write ENQ: %w", err)
 		return nil, err
 	}
+	time.Sleep(time.Millisecond * 50)
 
 	if err := k.readControlByte(); err != nil {
 		return nil, err
