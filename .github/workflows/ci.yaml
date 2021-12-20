@@ -1,9 +1,12 @@
 name: ci
-on: [ push ]
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      REPO: ${{github.repository}}
+      GITHUB_SHA: ${{github.sha}}
 
     steps:
       - name: Checkout repo
@@ -17,9 +20,7 @@ jobs:
           GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
           USERNAME: ${{github.actor}}
-          REPO: ${{github.repository}}
           GITHUB_REF: ${{github.ref}}
-          GITHUB_SHA: ${{github.sha}}
         run: |
           ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
           echo GITHUB_REF - $ref
@@ -31,13 +32,26 @@ jobs:
             -t ghcr.io/${REPO}:${GITHUB_SHA} \
             -t ghcr.io/${REPO}:latest .
 
-      - name: Deploy with Nomad
-        env:
-          NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
-          NOMAD_ADDR: https://nomad.re-star.ru
-        uses: docker://hashicorp/levant:latest
-        with:
-          args: levant deploy
-            -var "tag=${{github.sha}}"
-            -var "repo=${{github.repository}}"
-            service.hcl
+      # - name: Deploy with Nomad
+      #   env:
+      #     NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
+      #     NOMAD_ADDR: https://nomad.re-star.ru
+      #   uses: docker://hashicorp/levant:latest
+      #   with:
+      #     args: levant deploy
+      #       -var "tag=${{github.sha}}"
+      #       -var "repo=${{github.repository}}"
+      #       service.hcl
+
+      # - name: Deploy with kube-tools
+      #   uses: stefanprodan/kube-tools@v1
+      #   env:
+      #     KUBECONFIG: .kubeconfig
+      #     UPDATE: .deploy.yaml
+      #   with:
+      #     command: |
+      #       cd kube
+      #       kustomize edit set image ghcr.io/re-star-ru/shtrih-m-driver:latest=ghcr.io/${REPO}:${GITHUB_SHA}
+      #       kustomize build . > $UPDATE
+      #       echo "${{secrets.KUBE_CONFIG}}" > $KUBECONFIG
+      #       kubectl apply -f $UPDATE
