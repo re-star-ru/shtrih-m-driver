@@ -4,27 +4,27 @@ metadata:
   name: restar
 
 ---
-# re-star.ru site
+# kkt driver
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: re-star-ru
-  name: re-star-ru
+    app: kkt-service
+  name: kkt-service
   namespace: restar
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: re-star-ru
+      app: kkt-service
   template:
     metadata:
       labels:
-        app: re-star-ru
+        app: kkt-service
     spec:
       containers:
         - image: ghcr.io/re-star-ru/shtrih-m-driver:latest
-          name: re-star-ru
+          name: kkt-service
           resources:
             limits:
               memory: "128M"
@@ -37,7 +37,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: re-star-ru
+  name: kkt-service
   namespace: restar
 spec:
   ports:
@@ -45,20 +45,22 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: re-star-ru
+    app: kkt-service
 
 ---
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy
 metadata:
-  name: re-star-ru
+  name: kkt-service
   namespace: restar
 spec:
   virtualhost:
-    fqdn: re-star.ru
+    fqdn: api.re-star.ru
     tls:
       secretName: kube-system/re-star-ru-wildcard
   routes:
-    - services:
-        - name: re-star-ru
+    - conditions:
+        - prefix: /v1/kkt
+      services:
+        - name: kkt-service
           port: 8080

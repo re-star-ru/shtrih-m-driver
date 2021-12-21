@@ -43,15 +43,16 @@ jobs:
       #       -var "repo=${{github.repository}}"
       #       service.hcl
 
-      # - name: Deploy with kube-tools
-      #   uses: stefanprodan/kube-tools@v1
-      #   env:
-      #     KUBECONFIG: .kubeconfig
-      #     UPDATE: .deploy.yaml
-      #   with:
-      #     command: |
-      #       cd kube
-      #       kustomize edit set image ghcr.io/re-star-ru/shtrih-m-driver:latest=ghcr.io/${REPO}:${GITHUB_SHA}
-      #       kustomize build . > $UPDATE
-      #       echo "${{secrets.KUBE_CONFIG}}" > $KUBECONFIG
-      #       kubectl apply -f $UPDATE
+      - name: Deploy with kube-tools
+        uses: stefanprodan/kube-tools@v1
+        env:
+          KUBECONFIG: .kubeconfig
+          UPDATE: .deploy.yaml
+        with:
+          command: |
+            cd kube
+            kustomize edit set image ghcr.io/${REPO}:latest=ghcr.io/${REPO}:${GITHUB_SHA}
+            cat kustomization.yaml
+            kustomize build . > $UPDATE
+            echo "${{secrets.KUBE_CONFIG}}" > $KUBECONFIG
+            kubectl apply -f $UPDATE
