@@ -65,7 +65,10 @@ spec:
         - name: kkt-service
           port: 8080
     - conditions:
-        - prefix: /v1/
+        - prefix: /v1
+      pathRewritePolicy:
+        replacePrefix:
+          - replacement: /
       services:
         - name: kkt-service
           port: 8080
