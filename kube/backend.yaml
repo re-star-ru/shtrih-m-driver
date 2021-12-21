@@ -60,12 +60,7 @@ spec:
       secretName: kube-system/re-star-ru-wildcard
   routes:
     - conditions:
-        - prefix: /
-      services:
-        - name: kkt-service
-          port: 8080
-    - conditions:
-        - prefix: /v1
+        - prefix: /v1/kkt
       pathRewritePolicy:
         replacePrefix:
           - replacement: /
