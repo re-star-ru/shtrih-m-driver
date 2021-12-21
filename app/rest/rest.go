@@ -1,8 +1,9 @@
 package rest
 
 import (
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -39,6 +40,9 @@ func (k *KKTService) rest() {
 
 	{
 		r.Get("/status", k.status)
+		r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+			w.WriteHeader(http.StatusOK)
+		})
 		r.Post("/printPackage", k.printPackageHandler)
 	}
 
