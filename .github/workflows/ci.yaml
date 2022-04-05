@@ -46,13 +46,12 @@ jobs:
 
       - name: Deploy
         run: |
-          envsubst \${REPO} < service.nomad > job.nomad
+          envsubst \${REPO},\${TAG} < service.nomad > job.nomad
           cat job.nomad
           nomad job run job.nomad
         env:
           # NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
           NOMAD_ADDR: https://nomad.re-star.ru
-        # See about environment variables https://www.nomadproject.io/docs/commands
 
       # - name: Deploy with Nomad
       #   env:

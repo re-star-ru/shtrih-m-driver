@@ -30,7 +30,6 @@ job "kkt-server" {
       env {
         ADDR = "${NOMAD_ADDR_kkt_server}"
       }
-
     }
   }
 }
