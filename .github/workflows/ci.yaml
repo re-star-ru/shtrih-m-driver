@@ -46,7 +46,7 @@ jobs:
 
       - name: Deploy
         run: |
-          envsubst \${REPO},\${TAG} < service.nomad > job.nomad
+          envsubst \${REPO} < service.nomad > job.nomad
           cat job.nomad
           nomad job run job.nomad
         env:
