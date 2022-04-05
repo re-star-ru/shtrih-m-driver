@@ -15,22 +15,33 @@ jobs:
       - name: set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: build and deploy master image to ghcr.io
-        env:
-          GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      # - name: build and deploy master image to ghcr.io
+      #   env:
+      #     GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-          USERNAME: ${{github.actor}}
-          GITHUB_REF: ${{github.ref}}
-        run: |
-          ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
-          echo GITHUB_REF - $ref
-          echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
-          docker buildx build --push \
-            --build-arg CI=github --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} \
-            --platform linux/amd64 \
-            -t ghcr.io/${REPO}:${ref} \
-            -t ghcr.io/${REPO}:${GITHUB_SHA} \
-            -t ghcr.io/${REPO}:latest .
+      #     USERNAME: ${{github.actor}}
+      #     GITHUB_REF: ${{github.ref}}
+      #   run: |
+      #     ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
+      #     echo GITHUB_REF - $ref
+      #     echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
+      #     docker buildx build --push \
+      #       --build-arg CI=github --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} \
+      #       --platform linux/amd64 \
+      #       -t ghcr.io/${REPO}:${ref} \
+      #       -t ghcr.io/${REPO}:${GITHUB_SHA} \
+      #       -t ghcr.io/${REPO}:latest .
+
+      - name: Deploy with Nomad
+        env:
+          NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
+          NOMAD_ADDR: https://nomad.re-star.ru
+        uses: docker://hashicorp/levant:latest
+        with:
+          args: levant deploy
+            -var "tag=${{github.sha}}"
+            -var "repo=${{github.repository}}"
+            service.hcl
 
       # - name: Deploy with Nomad
       #   env:
@@ -43,16 +54,16 @@ jobs:
       #       -var "repo=${{github.repository}}"
       #       service.hcl
 
-      - name: Deploy with kube-tools
-        uses: stefanprodan/kube-tools@v1
-        env:
-          KUBECONFIG: .kubeconfig
-          UPDATE: .deploy.yaml
-        with:
-          command: |
-            cd kube
-            kustomize edit set image ghcr.io/${REPO}:latest=ghcr.io/${REPO}:${GITHUB_SHA}
-            cat kustomization.yaml
-            kustomize build . > $UPDATE
-            echo "${{secrets.KUBE_CONFIG}}" > $KUBECONFIG
-            kubectl apply -f $UPDATE
+      # - name: Deploy with kube-tools
+      #   uses: stefanprodan/kube-tools@v1
+      #   env:
+      #     KUBECONFIG: .kubeconfig
+      #     UPDATE: .deploy.yaml
+      #   with:
+      #     command: |
+      #       cd kube
+      #       kustomize edit set image ghcr.io/${REPO}:latest=ghcr.io/${REPO}:${GITHUB_SHA}
+      #       cat kustomization.yaml
+      #       kustomize build . > $UPDATE
+      #       echo "${{secrets.KUBE_CONFIG}}" > $KUBECONFIG
+      #       kubectl apply -f $UPDATE

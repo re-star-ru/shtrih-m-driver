@@ -2,7 +2,7 @@ job "kkt-server" {
   datacenters = [
     "restar"
   ]
-  type        = "service"
+  type = "service"
 
   group "default" {
     network {

@@ -38,6 +38,12 @@ func doHealhCheck(kkt *KKT) error {
 	}
 
 	// TODO after all: Substate
+	// 0, 1, 2, 3, 4, 5
+	// 5,4 - wait 5sec, retry
+	// 3 - send continue print cmd
+	// 2 - event "NOT INSERT PAPER" then state 3
+	// 1 - instert paper, just for fun
+	// 0 - ok!
 	// switch kkt.Substate.Current() {
 	// case 0:
 	//	kkt.Substate.SetState("paperLoaded")
@@ -47,8 +53,12 @@ func doHealhCheck(kkt *KKT) error {
 
 	return nil
 }
+var Kek interface {
+
+}
 
 func prepareState(kkt *KKT) error {
+
 	switch kkt.State.Current() {
 	case "shiftOpen", "shiftClosed", "shiftExpired":
 		return updateShift(kkt, kkt.State.Current())
