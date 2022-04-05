@@ -39,6 +39,7 @@ jobs:
       - name: Deploy
         run: |
           envsubst '${REPO}, ${TAG}' < service.nomad > job.nomad
+          cat job.hcl
           nomad job run job.hcl
         env:
           # NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
@@ -63,6 +64,7 @@ jobs:
       #     NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
       #     NOMAD_ADDR: https://nomad.re-star.ru
       #   uses: docker://hashicorp/levant:latest
+
       #   with:
       #     args: levant deploy
       #       -var "tag=${{github.sha}}"
