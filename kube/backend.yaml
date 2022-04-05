@@ -23,14 +23,14 @@ spec:
         app: kkt-service
     spec:
       nodeSelector:
-        node-role.kubernetes.io/master: "true"
+        node-role.kubernetes.io/master: 'true'
       containers:
         - image: ghcr.io/re-star-ru/shtrih-m-driver:latest
           name: kkt-service
           resources:
             limits:
-              memory: "128M"
-              cpu: "200m"
+              memory: '128M'
+              cpu: '200m'
           ports:
             - containerPort: 8080
               name: http

@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REPO: ${{github.repository}}
+      TAG: ${{github.sha}}
       GITHUB_SHA: ${{github.sha}}
 
     steps:
@@ -32,16 +33,30 @@ jobs:
       #       -t ghcr.io/${REPO}:${GITHUB_SHA} \
       #       -t ghcr.io/${REPO}:latest .
 
-      - name: Deploy with Nomad
+      - name: Setup Nomad
+        uses: rluisr/nomad-actions@master
+
+      - name: Deploy
+        run: |
+          envsubst '${REPO}, ${TAG}' < service.nomad > job.nomad
+          nomad job run job.hcl
         env:
-          NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
+          # NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
           NOMAD_ADDR: https://nomad.re-star.ru
-        uses: docker://hashicorp/levant:latest
-        with:
-          args: levant deploy
-            -var "tag=${{github.sha}}"
-            -var "repo=${{github.repository}}"
-            service.hcl
+        # See about environment variables https://www.nomadproject.io/docs/commands
+
+      # - name: Deploy with Nomad
+      #   env:
+      #     NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
+      #     NOMAD_ADDR: https://nomad.re-star.ru
+      #   uses: docker://hashicorp/levant:latest
+      #   with:
+      #     args: levant deploy
+      #       -var "tag=${{github.sha}}"
+      #       -var "repo=${{github.repository}}"
+      #       service.hcl
+
+      #       envsubst '${REPO}, ${TAG}' < service.nomad > jo.nomad
 
       # - name: Deploy with Nomad
       #   env:
