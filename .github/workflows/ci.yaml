@@ -71,11 +71,12 @@ jobs:
       - name: Deploy
         env:
           # NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
-          TAG: ${{ steps.meta.outputs.tags.sha }}
+          TAG: ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+          # TAG: ${{ steps.meta.outputs.tags.sha }}
           NOMAD_ADDR: https://nomad.re-star.ru
 
         run: |
-          envsubst \${REPO},\${TAG} < service.nomad > job.nomad
+          envsubst \${IMAGE_NAME},\${TAG} < service.nomad > job.nomad
           cat job.nomad
           nomad job run job.nomad
 
