@@ -39,14 +39,10 @@ job "kkt-server" {
         network_mode = "host"
       }
 
-      // config {
-      //   image        = "ghcr.io/[[.repo]]:[[.tag]]"
-      //   network_mode = "host"
-      // }
-
       env {
         ADDR = "${NOMAD_ADDR_kkt_server}"
       }
+      
     }
   }
 }
