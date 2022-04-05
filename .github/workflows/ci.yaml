@@ -40,44 +40,17 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # - name: build and deploy master image to ghcr.io
-      #   env:
-      #     GITHUB_PACKAGE_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-      #     USERNAME: ${{github.actor}}
-      #     GITHUB_REF: ${{github.ref}}
-      #   run: |
-      #     ref="$(echo ${GITHUB_REF} | cut -d'/' -f3)"
-      #     echo GITHUB_REF - $ref
-      #     echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
-      #     docker buildx build --push \
-      #       --build-arg CI=github --build-arg GITHUB_SHA=${GITHUB_SHA} --build-arg GIT_BRANCH=${ref} \
-      #       --platform linux/amd64 \
-      #       -t ghcr.io/${REPO}:${ref} \
-      #       -t ghcr.io/${REPO}:${GITHUB_SHA} \
-      #       -t ghcr.io/${REPO}:latest .
-
-      # - uses: danielr1996/envsubst-action@1.0.0
-      #   # env:
-      #   # REPO: ${{ env.REPO }}
-      #   # TAG: ${{ env.TAG }}
-      #   with:
-      #     input: service.nomad
-      #     output: job.nomad.json
-
       - name: Setup Nomad
         uses: rluisr/nomad-actions@master
 
       - name: Deploy
         env:
-          # NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
           TAG: ${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-          # TAG: ${{ steps.meta.outputs.tags.sha }}
           NOMAD_ADDR: https://nomad.re-star.ru
+          # NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
 
         run: |
           envsubst \${IMAGE_NAME},\${TAG} < service.nomad > job.nomad
-          cat job.nomad
           nomad job run job.nomad
 
       # - name: Deploy with Nomad
