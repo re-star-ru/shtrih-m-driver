@@ -18,7 +18,7 @@ job "kkt-server" {
       }
 
       config {
-        image        = "ghcr.io/${REPO}:${TAG}"
+        image        = "ghcr.io/${IMAGE_NAME}:${TAG}"
         network_mode = "host"
       }
 

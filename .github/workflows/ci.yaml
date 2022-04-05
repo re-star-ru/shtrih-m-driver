@@ -8,9 +8,8 @@ jobs:
       REGISTRY: ghcr.io
       IMAGE_NAME: ${{ github.repository }}
 
-      REPO: ${{github.repository}}
-      TAG: ${{github.sha}}
-      GITHUB_SHA: ${{github.sha}}
+      # TAG: ${{github.sha}}
+      # GITHUB_SHA: ${{github.sha}}
 
     steps:
       - name: Check out the repo
@@ -70,13 +69,15 @@ jobs:
         uses: rluisr/nomad-actions@master
 
       - name: Deploy
+        env:
+          # NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
+          TAG: ${{ steps.meta.outputs.tags.sha }}
+          NOMAD_ADDR: https://nomad.re-star.ru
+
         run: |
           envsubst \${REPO},\${TAG} < service.nomad > job.nomad
           cat job.nomad
           nomad job run job.nomad
-        env:
-          # NOMAD_TOKEN: ${{ secrets.NOMAD_TOKEN }}
-          NOMAD_ADDR: https://nomad.re-star.ru
 
       # - name: Deploy with Nomad
       #   env:
