@@ -33,19 +33,20 @@ jobs:
       #       -t ghcr.io/${REPO}:${GITHUB_SHA} \
       #       -t ghcr.io/${REPO}:latest .
 
-      - uses: danielr1996/envsubst-action@1.0.0
-        # env:
-        # REPO: ${{ env.REPO }}
-        # TAG: ${{ env.TAG }}
-        with:
-          input: service.nomad
-          output: job.nomad
+      # - uses: danielr1996/envsubst-action@1.0.0
+      #   # env:
+      #   # REPO: ${{ env.REPO }}
+      #   # TAG: ${{ env.TAG }}
+      #   with:
+      #     input: service.nomad
+      #     output: job.nomad.json
 
       - name: Setup Nomad
         uses: rluisr/nomad-actions@master
 
       - name: Deploy
         run: |
+          envsubst \${REPO},\${TAG} < service.nomad > job.nomad
           cat job.nomad
           nomad job run job.nomad
         env:
