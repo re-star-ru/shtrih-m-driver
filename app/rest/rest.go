@@ -3,10 +3,9 @@ package rest
 import (
 	"net/http"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog/log"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/kkt"
@@ -25,12 +24,7 @@ func New(ks map[string]*kkt.KKT, addr string) *KKTService {
 }
 
 func (k *KKTService) Run() {
-	k.rest()
-}
-
-func (k *KKTService) rest() {
 	r := chi.NewRouter()
-
 	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"*"},
 	}))
