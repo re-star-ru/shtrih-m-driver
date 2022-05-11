@@ -11,6 +11,8 @@ import (
 )
 
 func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
+	log.Debug().Msg("get status all")
+
 	s, err := k.pool.GetStatusAll(r.Context())
 	if err != nil {
 		log.Error().Err(err).Msg("get status")
@@ -22,20 +24,16 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 
 	if _, ok := r.URL.Query()["json"]; ok {
 		render.JSON(w, r, s)
+
 		return
 	}
 
-	if _, err = fmt.Fprintf(w, "Время: %s \n\n", time.Now().Format(time.UnixDate)); err != nil {
-		log.Err(err).Send()
-		return
-	}
+	render.PlainText(w, r, fmt.Sprintf("Время: %s \n\n", time.Now().Format(time.UnixDate)))
 
 	for _, line := range s {
-		if _, err = fmt.Fprintf(
-			w, "Адрес кассы ip: %v, статус: %v, подстатус: %v \n", line.IP, line.State, line.SubState,
-		); err != nil {
-			log.Err(err).Send()
-			return
-		}
+		render.PlainText(
+			w, r,
+			fmt.Sprintf("Адрес кассы ip: %v, статус: %v, подстатус: %v\n", line.IP, line.State, line.SubState),
+		)
 	}
 }
