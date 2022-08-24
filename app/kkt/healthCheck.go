@@ -14,7 +14,7 @@ import (
 
 var ErrUnknownState = errors.New("unknown state")
 
-func doHealhCheck(kkt *KKT) error {
+func UpdateState(kkt *KKT) error {
 	defer func() {
 		log.Printf(
 			"health check kkt %v_%v, state: %v, substate: %v",
@@ -52,9 +52,6 @@ func doHealhCheck(kkt *KKT) error {
 	//}
 
 	return nil
-}
-var Kek interface {
-
 }
 
 func prepareState(kkt *KKT) error {

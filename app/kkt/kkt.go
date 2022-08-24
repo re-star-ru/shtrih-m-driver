@@ -37,7 +37,7 @@ type KKT struct {
 }
 
 // NewKKT init new kkt device.
-func NewKKT(key, addr, inn string, timeout time.Duration, healthCheck bool) (*KKT, error) {
+func NewKKT(key, addr, inn string, timeout time.Duration) (*KKT, error) {
 	s := strings.Split(key, "-")
 	if len(s) != 2 {
 		return nil, fmt.Errorf("неправильный ключ для ккт: %v", key)
@@ -54,17 +54,17 @@ func NewKKT(key, addr, inn string, timeout time.Duration, healthCheck bool) (*KK
 	kkt.State = newState()
 	kkt.Substate = newSubstate()
 
-	if healthCheck { // run healthcheck
-		go func() {
-			for {
-				if err := kkt.Do(doHealhCheck); err != nil {
-					log.Err(err).Msg("healthcheck error")
-				}
-
-				time.Sleep(time.Second * 30)
-			}
-		}() // run healthcheck
-	}
+	//if healthCheck { // run healthcheck
+	//	go func() {
+	//		for {
+	//			if err := kkt.Do(doHealhCheck); err != nil {
+	//				log.Err(err).Msg("healthcheck error")
+	//			}
+	//
+	//			time.Sleep(time.Second * 30)
+	//		}
+	//	}() // run healthcheck
+	//}
 
 	return kkt, nil
 }
