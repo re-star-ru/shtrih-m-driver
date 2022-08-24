@@ -6,9 +6,7 @@ import (
 	"github.com/re-star-ru/shtrih-m-driver/app/configs"
 	"github.com/re-star-ru/shtrih-m-driver/app/kkt"
 	"github.com/re-star-ru/shtrih-m-driver/app/models"
-	"github.com/rs/zerolog/log"
 	"sync"
-	"time"
 )
 
 var ErrInvalidTypeAssertion = fmt.Errorf("invalid type assertion")
@@ -17,17 +15,13 @@ var ErrKKTNotFound = fmt.Errorf("kkt not found")
 type Req struct {
 	Name string
 	Ctx  context.Context
-	Body interface{}
-	Resp chan Resp
-}
-
-type Resp struct {
-	Err  error
-	Body interface{}
+	Err  chan error
+	Resp chan interface{}
 }
 
 type KKTPool interface {
 	GetKKTNames() []string
+	GetKKT(name string) (kkt.KKT, error)
 
 	GetStatus(ctx context.Context, name string) (models.Status, error)
 	GetStatusAll(ctx context.Context) ([]models.Status, error)
@@ -52,9 +46,6 @@ func NewPool(config configs.ConfKKT) (*Pool, error) {
 		pool.KKTS[key] = runWorker(newKKT)
 	}
 
-	ctx := context.Background()
-	pool.startUpdater(ctx) // state updater & healtchecker
-
 	return pool, nil
 }
 
@@ -63,32 +54,26 @@ type Pool struct {
 }
 
 func (p *Pool) GetStatus(ctx context.Context, name string) (models.Status, error) {
-	in, ok := p.KKTS[name]
-	if !ok {
-		return models.Status{}, ErrKKTNotFound
-	}
-
+	in := p.KKTS[name]
 	req := Req{
 		Name: "GetStatus",
 		Ctx:  ctx,
-		Resp: make(chan Resp, 1),
+		Err:  make(chan error, 1),
+		Resp: make(chan interface{}, 1),
 	}
-
-	log.Debug().Msg("send request to kkt")
 	in <- req
-	log.Debug().Msg("request sent")
 
-	resp := <-req.Resp
-	if resp.Err != nil {
-		return models.Status{}, resp.Err
+	select {
+	case err := <-req.Err:
+		return models.Status{}, err
+	case resp := <-req.Resp:
+		respn, ok := resp.(models.Status)
+		if !ok {
+			return models.Status{}, ErrInvalidTypeAssertion
+		}
+
+		return respn, nil
 	}
-
-	respn, ok := resp.Body.(models.Status)
-	if !ok {
-		return models.Status{}, ErrInvalidTypeAssertion
-	}
-
-	return respn, nil
 }
 func (p *Pool) GetStatusAll(ctx context.Context) ([]models.Status, error) {
 	var (
@@ -104,15 +89,12 @@ func (p *Pool) GetStatusAll(ctx context.Context) ([]models.Status, error) {
 		}
 	)
 
-	for name := range p.KKTS {
-		wg.Add(1)
+	wg.Add(len(p.KKTS))
 
+	for name := range p.KKTS {
 		go func(name string) {
 			defer wg.Done()
-
-			log.Debug().Msgf("get status for %s", name)
 			status, err := p.GetStatus(ctx, name)
-			log.Debug().Msgf("after got status for %s", name)
 
 			stats.Lock()
 			stats.stats = append(stats.stats, status)
@@ -121,9 +103,7 @@ func (p *Pool) GetStatusAll(ctx context.Context) ([]models.Status, error) {
 		}(name)
 	}
 
-	log.Debug().Msg("waiting for kkts statuses")
 	wg.Wait()
-	log.Debug().Msg("kkts statuses received")
 
 	for _, err := range stats.errors {
 		if err != nil {
@@ -134,35 +114,16 @@ func (p *Pool) GetStatusAll(ctx context.Context) ([]models.Status, error) {
 	return stats.stats, nil
 }
 
-const updateTimeout = time.Second * 30
-
-// run healthcheck
-func (p *Pool) startUpdater(ctx context.Context) {
-	for _, name := range p.GetKKTNames() {
-		go func(name string) {
-			for {
-				err := p.UpdateStatus(ctx, name)
-				if err != nil {
-					log.Error().Err(err).Msg("cant update status")
-				}
-
-				time.Sleep(updateTimeout)
-			}
-		}(name)
-	}
-}
-
 func (p *Pool) UpdateStatus(ctx context.Context, name string) error {
 	in := p.KKTS[name]
 	req := Req{
 		Name: "UpdateState",
 		Ctx:  ctx,
-		Resp: make(chan Resp, 1),
+		Err:  make(chan error, 1),
 	} // make request
 	in <- req // send to pool
-	resp := <-req.Resp
 
-	return resp.Err // read reasponse
+	return <-req.Err // read reasponse
 }
 func (p *Pool) UpdateStatusAll(ctx context.Context) error {
 	var (
@@ -206,24 +167,16 @@ func (p *Pool) GetKKTNames() []string {
 	for k := range p.KKTS {
 		kktNames = append(kktNames, k)
 	}
-
 	return kktNames
 }
-
-func (p *Pool) PrintCheck(ctx context.Context, name string, check models.CheckPackage) error {
-	in, ok := p.KKTS[name]
-	if !ok {
-		return fmt.Errorf("%w: %v", ErrKKTNotFound, name)
+func (p *Pool) GetKKT(name string) (chan Req, error) {
+	if _, ok := p.KKTS[name]; !ok {
+		return nil, ErrKKTNotFound
 	}
 
-	req := Req{
-		Name: "PrintCheck",
-		Ctx:  ctx,
-		Body: check,
-		Resp: make(chan Resp, 1),
-	}
-	in <- req
-	resp := <-req.Resp
+	return p.KKTS[name], nil
+}
 
-	return resp.Err
+func (p *Pool) PrintCheck(ctx context.Context, name string, operation models.CheckPackage) error {
+	return nil
 }

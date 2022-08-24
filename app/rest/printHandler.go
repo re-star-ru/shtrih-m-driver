@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"errors"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"sync"
@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-chi/render"
 
+	"github.com/re-star-ru/shtrih-m-driver/app/kkt"
 	"github.com/re-star-ru/shtrih-m-driver/app/models"
 	"github.com/re-star-ru/shtrih-m-driver/app/models/consts"
 )
@@ -106,7 +107,10 @@ func (e *errGroup) addError(err error, key string) {
 }
 
 func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	data := CheckReq{}
+
 	if err := render.DecodeJSON(r.Body, &data); err != nil {
 		log.Err(err).Send()
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -114,7 +118,7 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	log.Debug().Msgf("input data %+v", data)
+	log.Print(data)
 
 	e := &errGroup{
 		Mutex: sync.Mutex{},
@@ -123,40 +127,45 @@ func (k *KKTService) printPackageHandler(w http.ResponseWriter, r *http.Request)
 
 	var wg sync.WaitGroup
 
-	wg.Add(len(data))
+	for key, chkPkg := range data {
+		wg.Add(1)
 
-	for name, check := range data {
-		go func(name string, check CheckPackage) {
+		go func(key string, chkPkg CheckPackage) {
 			defer wg.Done()
 
-			cp, err := check.toPackageModel()
+			kk, ok := k.ks[key]
+			if !ok {
+				notFoundKKT := fmt.Errorf("не найдена касса по ключу место-организация: %v", key)
+				e.addError(notFoundKKT, key)
+
+				return
+			}
+
+			chkModelPkg, err := chkPkg.toPackageModel()
 			if err != nil {
-				e.addError(fmt.Errorf("cant convert check: %w", err), name)
-
+				e.addError(err, key)
 				return
 			}
 
-			if err = k.pool.PrintCheck(r.Context(), name, cp); err != nil {
-				e.addError(fmt.Errorf("cant print check: %w", err), name)
+			printCmd := kkt.PrintCheckHandler(chkModelPkg)
 
-				return
-			}
-		}(name, check)
+			e.addError(kk.Do(printCmd), key)
+		}(key, chkPkg)
 	}
 
 	wg.Wait()
 
-	log.Debug().Msgf("result %+v", e)
-	render.JSON(w, r, e.txs)
+	log.Print(e)
+
+	if err := json.NewEncoder(w).Encode(e.txs); err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+
+		return
+	}
 }
 
 ///////////////////////////////////////////////////////
-
-var (
-	ErrWrongTaxSystem     = errors.New("неправильная система налогообложения")
-	ErrWrongOperationType = errors.New("неправильный тип операции")
-	ErrWrongSubject       = errors.New("неправильный предмет расчета")
-)
 
 func getTaxSystemByte(tax string) (byte, error) {
 	switch tax {
@@ -165,7 +174,7 @@ func getTaxSystemByte(tax string) (byte, error) {
 	case "USNIncome":
 		return consts.USNIncome, nil
 	default:
-		return 0, fmt.Errorf("ошибка %w: %v", ErrWrongTaxSystem, tax)
+		return 0, fmt.Errorf("неправильная система налогообложения: %v", tax)
 	}
 }
 
@@ -176,7 +185,7 @@ func getTypeOperationByte(typ string) (byte, error) {
 	case "returnIncome":
 		return consts.ReturnIncome, nil
 	default:
-		return 0, fmt.Errorf("ошибка %w: %v", ErrWrongOperationType, typ)
+		return 0, fmt.Errorf("неправильный тип операции: %v", typ)
 	}
 }
 
@@ -188,6 +197,6 @@ func getSubByte(sub string) (byte, error) {
 		return consts.Service, nil
 
 	default:
-		return 0, fmt.Errorf("ошибка %w: %v", ErrWrongSubject, sub)
+		return 0, fmt.Errorf("неправильный признак рассчета %v", sub)
 	}
 }

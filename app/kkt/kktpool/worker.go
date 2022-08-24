@@ -3,8 +3,9 @@ package kktpool
 import (
 	"errors"
 	"fmt"
-	"github.com/re-star-ru/shtrih-m-driver/app/kkt"
 	"github.com/re-star-ru/shtrih-m-driver/app/models"
+
+	"github.com/re-star-ru/shtrih-m-driver/app/kkt"
 )
 
 var ErrCommandNotFound = errors.New("command not found")
@@ -26,15 +27,21 @@ func runWorker(k *kkt.KKT) chan Req {
 func (w *worker) run() chan Req {
 	in := make(chan Req)
 	go func(in chan Req) {
+		var (
+			resp interface{}
+			err  error
+		)
 		for req := range in {
-			req.Resp <- w.handle(req)
+			resp, err = w.handle(req) // todo cmd routing
+			req.Resp <- resp
+			req.Err <- err
 		}
 	}(in)
 
 	return in
 }
 
-func (w *worker) handle(req Req) Resp {
+func (w *worker) handle(req Req) (interface{}, error) {
 	switch req.Name {
 	case "GetStatus":
 		status := models.Status{
@@ -43,36 +50,19 @@ func (w *worker) handle(req Req) Resp {
 			SubState: w.kkt.Substate.Current(),
 		}
 
-		return Resp{
-			Err:  nil,
-			Body: status,
-		}
+		return status, nil
 
 	case "UpdateState":
 		if err := w.kkt.Do(kkt.UpdateState); err != nil {
-			return Resp{
-				fmt.Errorf("req name: %s: %w", req.Name, err),
-				nil,
-			}
+			return nil, fmt.Errorf("req name: %s: %w", req.Name, err)
 		}
 
-		return Resp{}
+		return nil, nil
 
 	case "PrintCheck":
-		check, ok := req.Body.(models.CheckPackage)
-		if !ok {
-			return Resp{Err: fmt.Errorf("PrintCheck %w", ErrInvalidTypeAssertion)}
-		}
-
-		if err := w.kkt.Do(kkt.PrintCheckHandler(check)); err != nil {
-			if err != nil {
-				return Resp{Err: fmt.Errorf("PrintCheck %w", err)}
-			}
-		}
-
-		return Resp{}
+		return nil, nil
 
 	default:
-		return Resp{Err: ErrCommandNotFound}
+		return nil, ErrCommandNotFound
 	}
 }
