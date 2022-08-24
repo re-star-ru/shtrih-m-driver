@@ -2,7 +2,6 @@
 
 go tcp driver for shtrih-m
 
-- thiking
 - Start shift with inn
 - Close shift
 - Status kkt (healthcheck)
