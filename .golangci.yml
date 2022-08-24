@@ -1,4 +1,11 @@
+run:
+  skip-files:
+    - main.go
+    - app_test.go
+    - common.go
+
 linters:
+
   disable-all: true
   enable:
     - asciicheck

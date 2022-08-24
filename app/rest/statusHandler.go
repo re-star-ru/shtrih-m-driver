@@ -1,8 +1,8 @@
 package rest
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/go-chi/render"
 	"net/http"
 	"sort"
 	"time"
@@ -10,10 +10,17 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+type Status struct {
+	IP       string `json:"ip"`
+	State    string `json:"state"`
+	SubState string `json:"subState"`
+}
+
 func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
-	s, err := k.pool.GetStatusAll(r.Context())
-	if err != nil {
-		log.Error().Err(err).Msg("get status")
+	s := make([]Status, 0, len(k.ks))
+
+	for _, kk := range k.ks {
+		s = append(s, Status{IP: kk.Addr, State: kk.State.Current(), SubState: kk.Substate.Current()})
 	}
 
 	sort.Slice(s, func(i, j int) bool {
@@ -21,18 +28,24 @@ func (k *KKTService) status(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if _, ok := r.URL.Query()["json"]; ok {
-		render.JSON(w, r, s)
+		if err := json.NewEncoder(w).Encode(s); err != nil {
+			log.Err(err).Send()
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+
+			return
+		}
+
 		return
 	}
 
-	if _, err = fmt.Fprintf(w, "Время: %s \n\n", time.Now().Format(time.UnixDate)); err != nil {
+	if _, err := fmt.Fprintf(w, "Время: %s \n\n", time.Now().Format(time.UnixDate)); err != nil {
 		log.Err(err).Send()
 		return
 	}
 
 	for _, line := range s {
-		if _, err = fmt.Fprintf(
-			w, "Адрес кассы ip: %v, статус: %v, подстатус: %v \n", line.IP, line.State, line.SubState,
+		if _, err := fmt.Fprintf(
+			w, "Kkt ip: %v, state: %v, subState: %v \n", line.IP, line.State, line.SubState,
 		); err != nil {
 			log.Err(err).Send()
 			return

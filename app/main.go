@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"github.com/re-star-ru/shtrih-m-driver/app/configs"
-	"github.com/re-star-ru/shtrih-m-driver/app/kkt/kktpool"
 	"os"
 	"time"
 
@@ -32,6 +30,19 @@ func main() {
 
 	log.Info().Msgf("version: %v", version)
 
+	kks, err := initKkts(confKKT{
+		"EV-S": ck{"10.51.0.71:7778", "263209745357"},
+		"SM-S": ck{"10.51.0.72:7778", "262804786800"},
+
+		"EV-N": ck{"10.51.0.73:7778", "263209745357"},
+		"SM-N": ck{"10.51.0.74:7778", "262804786800"},
+	})
+	if err != nil {
+		log.Fatal().Err(err).Send()
+
+		return
+	}
+
 	// addr
 	addr := os.Getenv("ADDR")
 	if addr == "" {
@@ -52,24 +63,7 @@ func main() {
 	span.End()
 	//
 
-	// app init
-
-	var pool kktpool.KKTPool
-	pool, err = kktpool.NewPool(configs.ConfKKT{
-		"EV-S": configs.Ck{Addr: "10.51.0.71:7778", Inn: "263209745357"},
-		"SM-S": configs.Ck{Addr: "10.51.0.72:7778", Inn: "262804786800"},
-
-		"EV-N": configs.Ck{Addr: "10.51.0.73:7778", Inn: "263209745357"},
-		"SM-N": configs.Ck{Addr: "10.51.0.74:7778", Inn: "262804786800"},
-	})
-
-	if err != nil {
-		log.Fatal().Err(err).Send()
-
-		return
-	}
-
-	service := rest.New(pool, addr)
+	service := rest.New(kks, addr)
 	service.Run()
 }
 

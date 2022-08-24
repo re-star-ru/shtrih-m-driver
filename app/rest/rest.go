@@ -1,23 +1,24 @@
 package rest
 
 import (
-	"github.com/re-star-ru/shtrih-m-driver/app/kkt/kktpool"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/zerolog/log"
+
+	"github.com/re-star-ru/shtrih-m-driver/app/kkt"
 )
 
 type KKTService struct {
-	pool kktpool.KKTPool
+	ks   map[string]*kkt.KKT
 	addr string
 }
 
-func New(pool kktpool.KKTPool, addr string) *KKTService {
+func New(ks map[string]*kkt.KKT, addr string) *KKTService {
 	return &KKTService{
-		pool: pool,
+		ks:   ks,
 		addr: addr,
 	}
 }
