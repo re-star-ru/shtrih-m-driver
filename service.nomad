@@ -9,22 +9,22 @@ job "kkt-server" {
       }
     }
 
-    service {
-      name = "kkt"
-      port = "kkt_server"
-
-      # The "check" stanza instructs Nomad to create a Consul health check for
-      # this service. A sample check is provided here for your convenience;
-      # uncomment it to enable it. The "check" stanza is documented in the
-      # "service" stanza documentation.
-
-      # check {
-      #   name     = "alive"
-      #   type     = "tcp"
-      #   interval = "10s"
-      #   timeout  = "2s"
-      # }
-    }
+#    service {
+#      name = "kkt"
+#      port = "kkt_server"
+#
+#      # The "check" stanza instructs Nomad to create a Consul health check for
+#      # this service. A sample check is provided here for your convenience;
+#      # uncomment it to enable it. The "check" stanza is documented in the
+#      # "service" stanza documentation.
+#
+#      # check {
+#      #   name     = "alive"
+#      #   type     = "tcp"
+#      #   interval = "10s"
+#      #   timeout  = "2s"
+#      # }
+#    }
 
     task "kkt_server" {
       driver = "docker"
