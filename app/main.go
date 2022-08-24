@@ -59,8 +59,8 @@ func main() {
 		"EV-S": configs.Ck{Addr: "10.51.0.71:7778", Inn: "263209745357"},
 		"SM-S": configs.Ck{Addr: "10.51.0.72:7778", Inn: "262804786800"},
 
-		//"EV-N": configs.Ck{Addr: "10.51.0.73:7778", Inn: "263209745357"},
-		//"SM-N": configs.Ck{Addr: "10.51.0.74:7778", Inn: "262804786800"},
+		"EV-N": configs.Ck{Addr: "10.51.0.73:7778", Inn: "2 63209745357"},
+		"SM-N": configs.Ck{Addr: "10.51.0.74:7778", Inn: "262804786800"},
 	})
 
 	if err != nil {
