@@ -1,40 +1,3 @@
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2022-05-10T154600.200.txt
-
-###
-
-POST http://localhost:8080/api/item
-Content-Type: application/json
-
-{}
-
-<> 2022-05-10T154546.404.txt
-
-###
-
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2022-05-10T154451.200.txt
-
-###
-
-GET http://localhost:8080/status
-Accept: application/json
-
-<> 2022-05-10T154449.200.txt
-
-###
-
-GET http://localhost:8080/status?json=
-Accept: application/json
-
-<> 2022-05-10T154442.200.txt
-
-###
-
 GET http://localhost:8080/status
 Accept: application/json
 
@@ -1455,6 +1418,115 @@ GET http://localhost:8080/status?json=
 Accept: application/json
 
 <> 2021-08-25T124614.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T112923.200.json
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-25T105650.200.txt
+
+###
+
+GET http://localhost:8080/status?json=
+Accept: application/json
+
+<> 2021-08-25T105647.200.txt
+
+###
+
+POST http://localhost:8080/printPackage
+Content-Type: application/json
+
+{
+  "SM-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "goods",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  },
+  "EV-N": {
+    "cashierINN": "123456789012",
+    "operations": [
+      {
+        "type": "income",
+        "subject": "service",
+        "amount": 0,
+        "sum": 0,
+        "name": "тест test"
+      }
+    ],
+    "cash": 0,
+    "digital": 0,
+    "rounding": 0,
+    "taxSystem": "PSN",
+    "notPrint": true
+  }
+}
+
+<> 2021-08-25T103615.200.json
+
+###
+
+GET http://localhost:8080/status
+Accept: application/json
+
+<> 2021-08-25T103610.200.txt
 
 ###
 

@@ -2,10 +2,13 @@
 run:
 	go run ./app
 
+podman:
+	podman build --tag shtrihdriver .
+
 docker:
 	docker build --tag shtrihdriver .
 
 lint:
-	golangci-lint run
+	golangci-lint.exe run
 
-.PHONY: build, docker, lint
+.PHONY: build, podman, docker, lint

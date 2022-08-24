@@ -1,20 +1,11 @@
 package main
 
 import (
-	"context"
 	"os"
 	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
-	"go.opentelemetry.io/otel/sdk/resource"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
-	semconv "go.opentelemetry.io/otel/semconv/v1.10.0"
-	"go.opentelemetry.io/otel/trace"
 
 	"github.com/re-star-ru/shtrih-m-driver/app/rest"
 )
@@ -48,48 +39,7 @@ func main() {
 	if addr == "" {
 		addr = "0.0.0.0:8080"
 	}
-
-	// tracing
-	ctx := context.Background()
-	exp, err := newExporter(ctx)
-	if err != nil {
-		log.Fatal().Err(err).Msg("failed to init exporter")
-	}
-	tp := newTraceProvider(exp)
-	defer func() { _ = tp.Shutdown(ctx) }()
-	otel.SetTracerProvider(tp)
-	tracer = tp.Tracer("KKTMainService")
-	_, span := tracer.Start(ctx, "init service")
-	span.End()
 	//
-
 	service := rest.New(kks, addr)
 	service.Run()
-}
-
-var tracer trace.Tracer
-
-func newExporter(ctx context.Context) (*otlptrace.Exporter, error) {
-	return otlptracegrpc.New(ctx, otlptracegrpc.WithInsecure())
-}
-
-func newTraceProvider(exp sdktrace.SpanExporter) *sdktrace.TracerProvider {
-	// Ensure default SDK resources and the required service name are set.
-	r, err := resource.Merge(
-		resource.Default(),
-		resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("Kkt service main"),
-			semconv.ServiceVersionKey.String("0.0.1"),
-		),
-	)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return sdktrace.NewTracerProvider(
-		sdktrace.WithBatcher(exp),
-		sdktrace.WithResource(r),
-	)
 }
